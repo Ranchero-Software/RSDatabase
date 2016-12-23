@@ -1,7 +1,11 @@
 # RSDatabase
 This is utility code for using SQLite via FMDB. It’s not a persistence framework — it’s lower-level.
 
-It builds as a framework — one for Mac, one for iOS — without any additional dependencies. But that’s because FMDB is actually included — you might want to instead make sure you have the [latest FMDB](https://github.com/ccgus/fmdb), which isn’t necessarily included here.
+It builds as a couple frameworks — one for Mac, one for iOS.
+
+It has no additional dependencies, but that’s because FMDB is actually included — you might want to instead make sure you have the [latest FMDB](https://github.com/ccgus/fmdb), which isn’t necessarily included here.
+
+#### What to look at
 
 The main thing is `RSDatabaseQueue`, which allows you to talk to SQLite-via-FMDB using a serial queue.
 
