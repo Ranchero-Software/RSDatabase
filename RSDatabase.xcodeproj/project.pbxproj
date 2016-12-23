@@ -7,6 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8400ABFF1E0CFC0700AA7C57 /* RSDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419ADC1B5ABD7F00C26BB2 /* RSDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8400AC001E0CFC0700AA7C57 /* RSDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419ADD1B5ABD7F00C26BB2 /* RSDatabaseQueue.m */; };
+		8400AC011E0CFC0700AA7C57 /* FMDatabase+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8400AC021E0CFC0700AA7C57 /* FMDatabase+RSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419AD51B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m */; };
+		8400AC031E0CFC0700AA7C57 /* FMResultSet+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419B031B5ABFF700C26BB2 /* FMResultSet+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8400AC041E0CFC0700AA7C57 /* FMResultSet+RSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419B041B5ABFF700C26BB2 /* FMResultSet+RSExtras.m */; };
+		8400AC051E0CFC0700AA7C57 /* NSString+RSDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD81B5ABD7400C26BB2 /* NSString+RSDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8400AC061E0CFC0700AA7C57 /* NSString+RSDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419AD91B5ABD7400C26BB2 /* NSString+RSDatabase.m */; };
+		8400AC071E0CFC1C00AA7C57 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 84DDF18B1C94FC45005E6CF5 /* FMDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8400AC081E0CFC2000AA7C57 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 84DDF18C1C94FC45005E6CF5 /* FMDatabase.m */; };
+		8400AC091E0CFC2500AA7C57 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 84DDF18D1C94FC45005E6CF5 /* FMDatabaseAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8400AC0A1E0CFC2900AA7C57 /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 84DDF18E1C94FC45005E6CF5 /* FMDatabaseAdditions.m */; };
+		8400AC0B1E0CFC2C00AA7C57 /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 84DDF1941C94FC45005E6CF5 /* FMResultSet.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		8400AC0C1E0CFC3100AA7C57 /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 84DDF1951C94FC45005E6CF5 /* FMResultSet.m */; };
+		8400AC0F1E0CFC5600AA7C57 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 8400AC0E1E0CFC5600AA7C57 /* libsqlite3.tbd */; };
+		8400AC101E0CFD6B00AA7C57 /* RSDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F22C581B52E0D9000060CE /* RSDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84419AD61B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84419AD71B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419AD51B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m */; };
 		84419ADA1B5ABD7400C26BB2 /* NSString+RSDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD81B5ABD7400C26BB2 /* NSString+RSDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -38,6 +54,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		8400ABF71E0CFBD800AA7C57 /* RSDatabase.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RSDatabase.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8400ABFA1E0CFBD800AA7C57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		8400AC0E1E0CFC5600AA7C57 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.2.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FMDatabase+RSExtras.h"; path = "RSDatabase/FMDatabase+RSExtras.h"; sourceTree = "<group>"; };
 		84419AD51B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FMDatabase+RSExtras.m"; path = "RSDatabase/FMDatabase+RSExtras.m"; sourceTree = "<group>"; };
 		84419AD81B5ABD7400C26BB2 /* NSString+RSDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+RSDatabase.h"; path = "RSDatabase/NSString+RSDatabase.h"; sourceTree = "<group>"; };
@@ -62,6 +81,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8400ABF31E0CFBD800AA7C57 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8400AC0F1E0CFC5600AA7C57 /* libsqlite3.tbd in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84F22C511B52E0D9000060CE /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -81,6 +108,22 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8400ABF81E0CFBD800AA7C57 /* RSDatabaseiOS */ = {
+			isa = PBXGroup;
+			children = (
+				8400ABFA1E0CFBD800AA7C57 /* Info.plist */,
+			);
+			path = RSDatabaseiOS;
+			sourceTree = "<group>";
+		};
+		8400AC0D1E0CFC5500AA7C57 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8400AC0E1E0CFC5600AA7C57 /* libsqlite3.tbd */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		84DDF18A1C94FC45005E6CF5 /* FMDB */ = {
 			isa = PBXGroup;
 			children = (
@@ -111,7 +154,9 @@
 				84F22C5A1B52E0D9000060CE /* Info.plist */,
 				849BF8C51C94FB8E0071D1DA /* libsqlite3.tbd */,
 				84F22C631B52E0D9000060CE /* RSDatabaseTests */,
+				8400ABF81E0CFBD800AA7C57 /* RSDatabaseiOS */,
 				84F22C561B52E0D9000060CE /* Products */,
+				8400AC0D1E0CFC5500AA7C57 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -120,6 +165,7 @@
 			children = (
 				84F22C551B52E0D9000060CE /* RSDatabase.framework */,
 				84F22C5F1B52E0D9000060CE /* RSDatabaseTests.xctest */,
+				8400ABF71E0CFBD800AA7C57 /* RSDatabase.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -136,6 +182,21 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		8400ABF41E0CFBD800AA7C57 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8400ABFF1E0CFC0700AA7C57 /* RSDatabaseQueue.h in Headers */,
+				8400AC0B1E0CFC2C00AA7C57 /* FMResultSet.h in Headers */,
+				8400AC031E0CFC0700AA7C57 /* FMResultSet+RSExtras.h in Headers */,
+				8400AC091E0CFC2500AA7C57 /* FMDatabaseAdditions.h in Headers */,
+				8400AC101E0CFD6B00AA7C57 /* RSDatabase.h in Headers */,
+				8400AC071E0CFC1C00AA7C57 /* FMDatabase.h in Headers */,
+				8400AC011E0CFC0700AA7C57 /* FMDatabase+RSExtras.h in Headers */,
+				8400AC051E0CFC0700AA7C57 /* NSString+RSDatabase.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84F22C521B52E0D9000060CE /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -154,6 +215,24 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
+		8400ABF61E0CFBD800AA7C57 /* RSDatabaseiOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8400ABFE1E0CFBD800AA7C57 /* Build configuration list for PBXNativeTarget "RSDatabaseiOS" */;
+			buildPhases = (
+				8400ABF21E0CFBD800AA7C57 /* Sources */,
+				8400ABF31E0CFBD800AA7C57 /* Frameworks */,
+				8400ABF41E0CFBD800AA7C57 /* Headers */,
+				8400ABF51E0CFBD800AA7C57 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RSDatabaseiOS;
+			productName = RSDatabaseiOS;
+			productReference = 8400ABF71E0CFBD800AA7C57 /* RSDatabase.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 		84F22C541B52E0D9000060CE /* RSDatabase */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 84F22C691B52E0D9000060CE /* Build configuration list for PBXNativeTarget "RSDatabase" */;
@@ -199,6 +278,11 @@
 				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Ranchero Software, LLC";
 				TargetAttributes = {
+					8400ABF61E0CFBD800AA7C57 = {
+						CreatedOnToolsVersion = 8.2.1;
+						DevelopmentTeam = 9C84TZ7Q6Z;
+						ProvisioningStyle = Automatic;
+					};
 					84F22C541B52E0D9000060CE = {
 						CreatedOnToolsVersion = 7.0;
 						LastSwiftMigration = 0800;
@@ -223,11 +307,19 @@
 			targets = (
 				84F22C541B52E0D9000060CE /* RSDatabase */,
 				84F22C5E1B52E0D9000060CE /* RSDatabaseTests */,
+				8400ABF61E0CFBD800AA7C57 /* RSDatabaseiOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8400ABF51E0CFBD800AA7C57 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84F22C531B52E0D9000060CE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -245,6 +337,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		8400ABF21E0CFBD800AA7C57 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8400AC001E0CFC0700AA7C57 /* RSDatabaseQueue.m in Sources */,
+				8400AC061E0CFC0700AA7C57 /* NSString+RSDatabase.m in Sources */,
+				8400AC0C1E0CFC3100AA7C57 /* FMResultSet.m in Sources */,
+				8400AC021E0CFC0700AA7C57 /* FMDatabase+RSExtras.m in Sources */,
+				8400AC081E0CFC2000AA7C57 /* FMDatabase.m in Sources */,
+				8400AC041E0CFC0700AA7C57 /* FMResultSet+RSExtras.m in Sources */,
+				8400AC0A1E0CFC2900AA7C57 /* FMDatabaseAdditions.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		84F22C501B52E0D9000060CE /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -278,6 +384,61 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		8400ABFC1E0CFBD800AA7C57 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9C84TZ7Q6Z;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = RSDatabaseiOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ranchero.RSDatabaseiOS;
+				PRODUCT_MODULE_NAME = RSDatabase;
+				PRODUCT_NAME = RSDatabase;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8400ABFD1E0CFBD800AA7C57 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CODE_SIGN_IDENTITY = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 9C84TZ7Q6Z;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = RSDatabaseiOS/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.2;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.ranchero.RSDatabaseiOS;
+				PRODUCT_MODULE_NAME = RSDatabase;
+				PRODUCT_NAME = RSDatabase;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		84F22C671B52E0D9000060CE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -428,6 +589,14 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8400ABFE1E0CFBD800AA7C57 /* Build configuration list for PBXNativeTarget "RSDatabaseiOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8400ABFC1E0CFBD800AA7C57 /* Debug */,
+				8400ABFD1E0CFBD800AA7C57 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
 		84F22C4F1B52E0D9000060CE /* Build configuration list for PBXProject "RSDatabase" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
