@@ -8,41 +8,46 @@
 
 import Foundation
 
-typealias ODBScalarDictionary = [String: Any]
+protocol ODBTableDelegate {
+
+	func fetchChildren(of: ODBTable) -> [String: Any]
+}
 
 public class ODBTable {
 
 	let databaseID: Int
 	let isRoot: Bool
+	weak var delegate: ODBTableDelegate?
 	var parentTableID: Int?
-	var scalars: ODBScalarDictionary?
 
-	init(databaseID: Int, parentTableID: Int?, isRoot: Bool, scalars: ODBScalarDictionary?) {
+	var children: [String: Any] {
+		get {
+			if _children == nil {
+				_children = delegate?.fetchChildren(of: self)
+			}
+
+			if let children = _children {
+				return children
+			}
+			return [String: Any];
+		}
+		set {
+			_children = newValue
+		}
+	}
+	private var _children: [String: Any]?
+
+	init(databaseID: Int, parentTableID: Int?, isRoot: Bool, delegate: ODBTableDelegate) {
 
 		self.databaseID = databaseID
 		self.parentTableID = parentTableID
-		self.scalars = scalars
 		self.isRoot = isRoot
+		self.delegate = delegate
 	}
 
-	func scalar(for name: String) -> Any? {
+	public subscript(_ key: String) -> Any? {
 
-		guard let scalars = scalars else {
-			return nil
-		}
-
-		if let value = scalars[name] {
-			return value
-		}
-
-		let lowerName = name.odbLowercased()
-		for (key, value) in scalars {
-			if lowerName == key.odbLowercased() {
-				return value
-			}
-		}
-
-		return nil
 	}
-
 }
+
+

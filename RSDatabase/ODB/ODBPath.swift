@@ -8,6 +8,10 @@
 
 import Foundation
 
+// A path is an array like ["system", "verbs", "apps", "Xcode"].
+// The first element in the array may be "root". If so, it’s ignored: "root" is implied.
+// An empty array or ["root"] refers to the root table.
+
 public struct ODBPath: Hashable {
 
 	let elements: [String]

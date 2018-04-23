@@ -14,18 +14,19 @@ public final class ODB {
 	private let queue: RSDatabaseQueue
 	private let odbTablesTable: ODBTablesTable
 	private let odbObjectsTable: ODBObjectsTable
-	private var cache = [ODBPath: Any]()
-	private let rootTable = ODBTable(databaseID: -1, parentTableID: nil, isRoot: true, scalars: nil)
+	private let rootTable = ODBTable(databaseID: -1, parentTableID: nil, isRoot: true)
+	public static let rootTableName = "root"
 
 	private static let tableCreationStatements = """
-	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER, name TEXT NOT NULL, scalars TEXT);
+	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER, name TEXT NOT NULL);
 
-	CREATE TABLE if not EXISTS odb_objects (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER, name TEXT NOT NULL, type TEXT NOT NULL, value BLOB);
+	CREATE TABLE if not EXISTS odb_objects (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, value BLOB);
+
+	CREATE INDEX if not EXISTS odb_tables_parent_id_index on odb_tables (parent_id);
+	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (parent_id);
 	"""
 
-	public static let rootTableName = "root"
-	
-	private let _lock = NSLock()
+	private let recursiveLock = NSRecursiveLock()
 
 	public init(filepath: String) {
 
@@ -44,31 +45,21 @@ public final class ODB {
 	public func item(at path: ODBPath) -> Any? {
 
 		// If not defined, it returns nil.
-		// Returns ODBTable, ODBObject, or a scalar value.
+		// Returns ODBTable or ODBObject.
 
 		lock()
 		defer {
 			unlock()
 		}
 
-		if let cachedObject = cache[path] {
-			return cachedObject
-		}
-
 		guard let parent = _parentTable(for: path) else {
 			return nil
 		}
 
-		if let scalar = parent.scalar(for: path.name) {
-			cache[path] = scalar
-			return scalar
-		}
 		if let table = table(for: path) {
-			cache[path] = table
 			return table
 		}
 		if let object = object(for: path) {
-			cache[path] = object
 			return object
 		}
 
@@ -92,8 +83,6 @@ public final class ODB {
 			unlock()
 		}
 
-		emptyCache()
-
 		return false
 	}
 
@@ -104,10 +93,6 @@ public final class ODB {
 			unlock()
 		}
 
-		if item is ODBTable {
-			emptyCache()
-		}
-		cache[path] = item
 	}
 
 	public func move(item: Any, toTableAtPath: ODBPath) throws {
@@ -116,25 +101,38 @@ public final class ODB {
 		defer {
 			unlock()
 		}
-
-		emptyCache()
 	}
+}
 
+extension ODB: ODBTableDelegate {
+
+	func fetchChildren(of table: ODBTable) -> [String: Any] {
+
+		lock()
+		defer {
+			unlock()
+		}
+
+		var children: [String: Any]? = nil
+
+		queue.fetchSync { (database) in
+
+			let rs = 
+
+		}
+
+		return children
+	}
 }
 
 private extension ODB {
 
 	func lock() {
-		_lock.lock()
+		recursiveLock.lock()
 	}
 
 	func unlock() {
-		_lock.unlock()
-	}
-
-	func emptyCache() {
-
-		cache.removeAll()
+		recursiveLock.unlock()
 	}
 
 	func _parentTable(for path: ODBPath) -> ODBTable? {
@@ -147,6 +145,31 @@ private extension ODB {
 		}
 
 		return nil
+	}
+
+	func _item(at path: ODBPath) -> Any? {
+
+		var nomad = rootTable
+		if path.isRoot {
+			return nomad
+		}
+
+		let numberOfElements = path.elements.count
+		var indexOfElement = 0
+		for element in path {
+
+			let isLastElement = (indexOfElement >= numberOfElements - 1)
+			if isLastElement {
+				return nomad[element]
+			}
+
+			guard let child = nomad[element] as? ODBTable else {
+				return nil
+			}
+			nomad = child
+
+			indexOfElement += 1
+		}
 	}
 
 	func table(for path: ODBPath) -> ODBTable? {

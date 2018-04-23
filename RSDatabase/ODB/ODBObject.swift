@@ -10,5 +10,10 @@ import Foundation
 
 final class ODBObject {
 
+	var databaseID: Int?
+	var parentTableID: Int?
+	let name: String
 	
+
+	init(
 }
