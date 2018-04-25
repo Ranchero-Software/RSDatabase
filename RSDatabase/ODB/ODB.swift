@@ -20,7 +20,7 @@ public final class ODB {
 	private static let tableCreationStatements = """
 	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER, name TEXT NOT NULL);
 
-	CREATE TABLE if not EXISTS odb_objects (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER NOT NULL, name TEXT NOT NULL, type TEXT NOT NULL, value BLOB);
+	CREATE TABLE if not EXISTS odb_objects (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER NOT NULL, name TEXT NOT NULL, primitive_type INTEGER NOT NULL, application_type TEXT, value BLOB);
 
 	CREATE INDEX if not EXISTS odb_tables_parent_id_index on odb_tables (parent_id);
 	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (parent_id);
@@ -86,21 +86,17 @@ public final class ODB {
 		return false
 	}
 
-	public func setItem(item: Any, at path: ODBPath) throws {
+	public func setValue(value: ODBPath, at path: ODBPath) -> Bool {
 
 		lock()
 		defer {
 			unlock()
 		}
-
 	}
 
-	public func move(item: Any, toTableAtPath: ODBPath) throws {
+	public func createTable(name: String, at path: ODBPath) -> Bool {
 
-		lock()
-		defer {
-			unlock()
-		}
+		
 	}
 }
 

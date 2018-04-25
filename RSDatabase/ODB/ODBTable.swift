@@ -46,7 +46,12 @@ public class ODBTable {
 	}
 
 	public subscript(_ key: String) -> Any? {
+		get {
 
+		}
+		set {
+			
+		}
 	}
 }
 

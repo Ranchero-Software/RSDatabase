@@ -14,6 +14,4 @@ final class ODBObject {
 	var parentTableID: Int?
 	let name: String
 	
-
-	init(
 }
