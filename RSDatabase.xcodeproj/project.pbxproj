@@ -62,8 +62,8 @@
 		84F4A301208BE763008BA1F8 /* ODBPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2FF208BE763008BA1F8 /* ODBPath.swift */; };
 		84F4A303208BE7A5008BA1F8 /* ODBTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A302208BE7A5008BA1F8 /* ODBTable.swift */; };
 		84F4A304208BE7A5008BA1F8 /* ODBTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A302208BE7A5008BA1F8 /* ODBTable.swift */; };
-		84F4A306208BE7AF008BA1F8 /* ODBObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A305208BE7AF008BA1F8 /* ODBObject.swift */; };
-		84F4A307208BE7AF008BA1F8 /* ODBObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A305208BE7AF008BA1F8 /* ODBObject.swift */; };
+		84F4A306208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */; };
+		84F4A307208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */; };
 		84F4A312208BEFF6008BA1F8 /* ODBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A311208BEFF6008BA1F8 /* ODBError.swift */; };
 		84F4A313208BEFF6008BA1F8 /* ODBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A311208BEFF6008BA1F8 /* ODBError.swift */; };
 		D511EF2E20244E8900712EC3 /* DatabaseObjectCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84314F491F68ECC600F710B2 /* DatabaseObjectCache.swift */; };
@@ -120,7 +120,7 @@
 		84F4A2F9208B0D56008BA1F8 /* ODBObjectsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBObjectsTable.swift; sourceTree = "<group>"; };
 		84F4A2FF208BE763008BA1F8 /* ODBPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBPath.swift; sourceTree = "<group>"; };
 		84F4A302208BE7A5008BA1F8 /* ODBTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBTable.swift; sourceTree = "<group>"; };
-		84F4A305208BE7AF008BA1F8 /* ODBObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBObject.swift; sourceTree = "<group>"; };
+		84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBValueObject.swift; sourceTree = "<group>"; };
 		84F4A311208BEFF6008BA1F8 /* ODBError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBError.swift; sourceTree = "<group>"; };
 		D511EF0320242E6400712EC3 /* RSDatabase_project_release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = RSDatabase_project_release.xcconfig; sourceTree = "<group>"; };
 		D511EF0420242E6400712EC3 /* RSDatabaseTests_target.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = RSDatabaseTests_target.xcconfig; sourceTree = "<group>"; };
@@ -258,7 +258,7 @@
 				84F4A2F9208B0D56008BA1F8 /* ODBObjectsTable.swift */,
 				84F4A2FF208BE763008BA1F8 /* ODBPath.swift */,
 				84F4A302208BE7A5008BA1F8 /* ODBTable.swift */,
-				84F4A305208BE7AF008BA1F8 /* ODBObject.swift */,
+				84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */,
 				84CED26C2090325C0073B251 /* ODBValue.swift */,
 			);
 			name = ODB;
@@ -459,7 +459,7 @@
 				84F4A2F8208B0C8A008BA1F8 /* ODBTablesTable.swift in Sources */,
 				8400AC0C1E0CFC3100AA7C57 /* FMResultSet.m in Sources */,
 				8400AC021E0CFC0700AA7C57 /* FMDatabase+RSExtras.m in Sources */,
-				84F4A307208BE7AF008BA1F8 /* ODBObject.swift in Sources */,
+				84F4A307208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */,
 				8400AC081E0CFC2000AA7C57 /* FMDatabase.m in Sources */,
 				8400AC041E0CFC0700AA7C57 /* FMResultSet+RSExtras.m in Sources */,
 				84F4A304208BE7A5008BA1F8 /* ODBTable.swift in Sources */,
@@ -491,7 +491,7 @@
 				84F4A2FA208B0D56008BA1F8 /* ODBObjectsTable.swift in Sources */,
 				84DDF1991C94FC45005E6CF5 /* FMDatabaseAdditions.m in Sources */,
 				84F4A2DA208B0612008BA1F8 /* DatabaseTable.swift in Sources */,
-				84F4A306208BE7AF008BA1F8 /* ODBObject.swift in Sources */,
+				84F4A306208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */,
 				848E22581F6653960031D7C5 /* RelatedObjectIDsMap.swift in Sources */,
 				848E22561F6652C70031D7C5 /* RelatedObjectsMap.swift in Sources */,
 			);

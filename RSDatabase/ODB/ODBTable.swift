@@ -15,7 +15,7 @@ protocol ODBTableDelegate {
 
 public class ODBTable {
 
-	let databaseID: Int
+	let uniqueID: Int
 	let isRoot: Bool
 	weak var delegate: ODBTableDelegate?
 	var parentTableID: Int?
@@ -37,9 +37,9 @@ public class ODBTable {
 	}
 	private var _children: [String: Any]?
 
-	init(databaseID: Int, parentTableID: Int?, isRoot: Bool, delegate: ODBTableDelegate) {
+	init(uniqueID: Int, parentTableID: Int?, isRoot: Bool, delegate: ODBTableDelegate) {
 
-		self.databaseID = databaseID
+		self.uniqueID = uniqueID
 		self.parentTableID = parentTableID
 		self.isRoot = isRoot
 		self.delegate = delegate

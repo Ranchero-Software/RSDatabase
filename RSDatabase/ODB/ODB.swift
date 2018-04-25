@@ -98,6 +98,10 @@ public final class ODB {
 
 		
 	}
+
+	public func ensureTable(name: String, at path: ODBPath) -> Bool {
+
+	}
 }
 
 extension ODB: ODBTableDelegate {
