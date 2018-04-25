@@ -8,6 +8,8 @@
 
 import Foundation
 
+// Thread-safety is up to the caller. Use odb.lock() and odb.unlock() when using ODB API and data.
+
 public final class ODB {
 
 	let filepath: String
@@ -26,7 +28,7 @@ public final class ODB {
 	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (parent_id);
 	"""
 
-	private let recursiveLock = NSRecursiveLock()
+	private let _lock = NSLock()
 
 	public init(filepath: String) {
 
@@ -42,10 +44,19 @@ public final class ODB {
 
 	// MARK: - API
 
-	public func item(at path: ODBPath) -> Any? {
+	func lock() {
+		_lock.lock()
+	}
+
+	func unlock() {
+		_lock.unlock()
+	}
+
+	// The ODB API is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
+
+	public func object(at path: ODBPath) -> ODBObject? {
 
 		// If not defined, it returns nil.
-		// Returns ODBTable or ODBObject.
 
 		lock()
 		defer {
@@ -66,17 +77,7 @@ public final class ODB {
 		return nil
 	}
 
-	public func parentTable(for path: ODBPath) -> ODBTable? {
-
-		lock()
-		defer {
-			unlock()
-		}
-
-		return _parentTable(for: path)
-	}
-
-	public func deleteItem(at path: ODBPath) -> Bool {
+	public func deleteObject(at path: ODBPath) -> Bool {
 
 		lock()
 		defer {
@@ -86,7 +87,7 @@ public final class ODB {
 		return false
 	}
 
-	public func setValue(value: ODBPath, at path: ODBPath) -> Bool {
+	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {
 
 		lock()
 		defer {
@@ -94,13 +95,45 @@ public final class ODB {
 		}
 	}
 
-	public func createTable(name: String, at path: ODBPath) -> Bool {
+	public func createTable(name: String, at path: ODBPath) -> ODBTable? {
 
-		
+		// Deletes any existing table.
+		// Parent table must already exist, or it returns nil.
+
+		guard let parent = parentTable(for: path) else {
+			return nil
+		}
 	}
 
-	public func ensureTable(name: String, at path: ODBPath) -> Bool {
+	public func ensureTable(name: String, at path: ODBPath) -> ODBTable? {
 
+		// Won’t delete anything.
+		// Return the table for the final item in the path.
+		// Return nil if the path contains an existing non-table item.
+
+		if path.isRoot {
+			return rootTable
+		}
+
+		var pathNomad = []
+		var table: ODBTable? = nil
+
+		for element in path.elements {
+			pathNomad += [element]
+			let oneObject = object(at: pathNomad)
+
+			if oneObject == nil {
+				table = createTable(pathNomad.name, at: pathNomad)
+			}
+			else if oneObject is ODBTable {
+				table = oneObject as! ODBTable
+			}
+			else {
+				return nil // Object found — but not a table
+			}
+		}
+
+		return table
 	}
 }
 
@@ -126,14 +159,6 @@ extension ODB: ODBTableDelegate {
 }
 
 private extension ODB {
-
-	func lock() {
-		recursiveLock.lock()
-	}
-
-	func unlock() {
-		recursiveLock.unlock()
-	}
 
 	func _parentTable(for path: ODBPath) -> ODBTable? {
 

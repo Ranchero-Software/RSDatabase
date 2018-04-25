@@ -7,3 +7,16 @@
 //
 
 import Foundation
+
+
+protocol ODBObject {
+
+	var name: String { get }
+	var isTable: Bool { get }
+	var isRootTable: Bool { get }
+	var parentTable: ODBTable? { get }
+	var path: ODBPath? { get }
+	var children: ODBDictionary? { get } // Tables only
+	var value: ODBValue? { get } // Value objects only
+	func delete()
+}

@@ -45,13 +45,15 @@ public class ODBTable {
 		self.delegate = delegate
 	}
 
-	public subscript(_ key: String) -> Any? {
-		get {
+	public subscript(_ key: String) -> ODBObject? {
+	}
 
-		}
-		set {
-			
-		}
+	public func deleteChildren() {
+
+	}
+
+	public func setValue(_ value: ODBValue, key: String) {
+
 	}
 }
 

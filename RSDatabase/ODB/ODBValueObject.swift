@@ -8,10 +8,10 @@
 
 import Foundation
 
-final class ODBValueObject: Hashable {
+public struct ODBValueObject: Equatable {
 
-	var uniqueID: Int
-	var parentTableID: Int
+	let uniqueID: Int
+	let parentTableID: Int
 	let name: String
 	let value: ODBValue
 

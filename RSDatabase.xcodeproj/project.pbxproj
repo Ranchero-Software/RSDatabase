@@ -32,6 +32,8 @@
 		84419AE71B5ABD7F00C26BB2 /* RSDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419ADD1B5ABD7F00C26BB2 /* RSDatabaseQueue.m */; };
 		84419B051B5ABFF700C26BB2 /* FMResultSet+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419B031B5ABFF700C26BB2 /* FMResultSet+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84419B061B5ABFF700C26BB2 /* FMResultSet+RSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419B041B5ABFF700C26BB2 /* FMResultSet+RSExtras.m */; };
+		844725F020903E720027551E /* ODBObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844725EF20903E720027551E /* ODBObject.swift */; };
+		844725F120903E720027551E /* ODBObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844725EF20903E720027551E /* ODBObject.swift */; };
 		844ECFB91F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844ECFB81F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift */; };
 		848E22541F6652990031D7C5 /* DatabaseRelatedObjectsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844ECFB81F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift */; };
 		848E22561F6652C70031D7C5 /* RelatedObjectsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848E22551F6652C70031D7C5 /* RelatedObjectsMap.swift */; };
@@ -95,6 +97,7 @@
 		84419ADD1B5ABD7F00C26BB2 /* RSDatabaseQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RSDatabaseQueue.m; path = RSDatabase/RSDatabaseQueue.m; sourceTree = "<group>"; };
 		84419B031B5ABFF700C26BB2 /* FMResultSet+RSExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FMResultSet+RSExtras.h"; path = "RSDatabase/FMResultSet+RSExtras.h"; sourceTree = "<group>"; };
 		84419B041B5ABFF700C26BB2 /* FMResultSet+RSExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FMResultSet+RSExtras.m"; path = "RSDatabase/FMResultSet+RSExtras.m"; sourceTree = "<group>"; };
+		844725EF20903E720027551E /* ODBObject.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBObject.swift; sourceTree = "<group>"; };
 		844ECFB81F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseRelatedObjectsTable.swift; sourceTree = "<group>"; };
 		848E22551F6652C70031D7C5 /* RelatedObjectsMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedObjectsMap.swift; sourceTree = "<group>"; };
 		848E22571F6653960031D7C5 /* RelatedObjectIDsMap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RelatedObjectIDsMap.swift; sourceTree = "<group>"; };
@@ -257,6 +260,7 @@
 				84F4A2F6208B0C8A008BA1F8 /* ODBTablesTable.swift */,
 				84F4A2F9208B0D56008BA1F8 /* ODBObjectsTable.swift */,
 				84F4A2FF208BE763008BA1F8 /* ODBPath.swift */,
+				844725EF20903E720027551E /* ODBObject.swift */,
 				84F4A302208BE7A5008BA1F8 /* ODBTable.swift */,
 				84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */,
 				84CED26C2090325C0073B251 /* ODBValue.swift */,
@@ -460,6 +464,7 @@
 				8400AC0C1E0CFC3100AA7C57 /* FMResultSet.m in Sources */,
 				8400AC021E0CFC0700AA7C57 /* FMDatabase+RSExtras.m in Sources */,
 				84F4A307208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */,
+				844725F120903E720027551E /* ODBObject.swift in Sources */,
 				8400AC081E0CFC2000AA7C57 /* FMDatabase.m in Sources */,
 				8400AC041E0CFC0700AA7C57 /* FMResultSet+RSExtras.m in Sources */,
 				84F4A304208BE7A5008BA1F8 /* ODBTable.swift in Sources */,
@@ -494,6 +499,7 @@
 				84F4A306208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */,
 				848E22581F6653960031D7C5 /* RelatedObjectIDsMap.swift in Sources */,
 				848E22561F6652C70031D7C5 /* RelatedObjectsMap.swift in Sources */,
+				844725F020903E720027551E /* ODBObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
