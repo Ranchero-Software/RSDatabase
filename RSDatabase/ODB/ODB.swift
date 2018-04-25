@@ -8,7 +8,9 @@
 
 import Foundation
 
-// Thread-safety is up to the caller. Use odb.lock() and odb.unlock() when using ODB API and data.
+// Always call API or refer to ODB objects within a performODBBlock() call.
+// Otherwise it’s not thread-safe, and behavior is undefined.
+// Exception: ODBValue structs are valid outside a performODBBlock() call.
 
 public final class ODB {
 
@@ -44,55 +46,44 @@ public final class ODB {
 
 	// MARK: - API
 
-	func lock() {
-		_lock.lock()
+	public func performODBBlock(_ block: () -> Void) {
+
+		lock()
+		block()
+		unlock()
 	}
 
-	func unlock() {
-		_lock.unlock()
-	}
-
-	// The ODB API is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
+	// The API below is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
 
 	public func object(at path: ODBPath) -> ODBObject? {
 
 		// If not defined, it returns nil.
 
-		lock()
-		defer {
-			unlock()
+		if path.isRoot {
+			return rootTable
 		}
 
-		guard let parent = _parentTable(for: path) else {
+		guard let parent = parentTable(for: path) else {
 			return nil
 		}
+		return parent[path.name]
+	}
 
-		if let table = table(for: path) {
-			return table
-		}
-		if let object = object(for: path) {
-			return object
-		}
+	public func parentTable(for path: ODBPath) -> ODBTable? {
 
-		return nil
+		if path.isRoot {
+			return nil
+		}
+		return object(at: path.parentTablePath()) as? ODBTable
 	}
 
 	public func deleteObject(at path: ODBPath) -> Bool {
-
-		lock()
-		defer {
-			unlock()
-		}
 
 		return false
 	}
 
 	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {
 
-		lock()
-		defer {
-			unlock()
-		}
 	}
 
 	public func createTable(name: String, at path: ODBPath) -> ODBTable? {
@@ -141,11 +132,6 @@ extension ODB: ODBTableDelegate {
 
 	func fetchChildren(of table: ODBTable) -> [String: Any] {
 
-		lock()
-		defer {
-			unlock()
-		}
-
 		var children: [String: Any]? = nil
 
 		queue.fetchSync { (database) in
@@ -159,6 +145,14 @@ extension ODB: ODBTableDelegate {
 }
 
 private extension ODB {
+
+	func lock() {
+		_lock.lock()
+	}
+
+	func unlock() {
+		_lock.unlock()
+	}
 
 	func _parentTable(for path: ODBPath) -> ODBTable? {
 

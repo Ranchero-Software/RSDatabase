@@ -55,32 +55,51 @@ public struct ODBValue: Equatable {
 
 private extension ODBValue {
 
-	func compareBooleans(_ left: Any, _ right: Any) -> Bool {
+	static func compareBooleans(_ left: Any, _ right: Any) -> Bool {
 
-
+		guard let left = left as? Bool, let right = right as? Bool else {
+			return false
+		}
+		return left == right
 	}
 
-	func compareIntegers(_ left: Any, _ right: Any) -> Bool {
+	static func compareIntegers(_ left: Any, _ right: Any) -> Bool {
 
-
+		guard let left = left as? Int, let right = right as? Int else {
+			return false
+		}
+		return left == right
 	}
 
-	func compareDoubles(_ left: Any, _ right: Any) -> Bool {
+	static func compareDoubles(_ left: Any, _ right: Any) -> Bool {
 
-
+		guard let left = left as? Double, let right = right as? Double else {
+			return false
+		}
+		return left == right
 	}
 
-	func compareStrings(_ left: Any, _ right: Any) -> Bool {
+	static func compareStrings(_ left: Any, _ right: Any) -> Bool {
 
-
+		guard let left = left as? String, let right = right as? String else {
+			return false
+		}
+		return left == right
 	}
 
-	func compareData(_ left: Any, _ right: Any) -> Bool {
+	static func compareData(_ left: Any, _ right: Any) -> Bool {
 
-
+		guard let left = left as? Data, let right = right as? Data else {
+			return false
+		}
+		return left == right
 	}
 
-	func compareDates(_ left: Any, _ right: Any) -> Bool {
+	static func compareDates(_ left: Any, _ right: Any) -> Bool {
 
+		guard let left = left as? Date, let right = right as? Date else {
+			return false
+		}
+		return left == right
 	}
 }
