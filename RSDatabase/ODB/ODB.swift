@@ -22,7 +22,7 @@ public final class ODB {
 	public static let rootTableName = "root"
 
 	private static let tableCreationStatements = """
-	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER, name TEXT NOT NULL);
+	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER NOT NULL, name TEXT NOT NULL);
 
 	CREATE TABLE if not EXISTS odb_objects (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER NOT NULL, name TEXT NOT NULL, primitive_type INTEGER NOT NULL, application_type TEXT, value BLOB);
 
@@ -62,7 +62,6 @@ public final class ODB {
 		if path.isRoot {
 			return rootTable
 		}
-
 		guard let parent = parentTable(for: path) else {
 			return nil
 		}
@@ -79,11 +78,22 @@ public final class ODB {
 
 	public func deleteObject(at path: ODBPath) -> Bool {
 
-		return false
+		// If not defined, return false.
+
+		guard let parent = parentTable(for: path) else {
+			return false
+		}
+		return parent[path.name] = nil
 	}
 
 	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {
 
+		// If not defined, return false.
+		
+		guard let parent = parentTable(for: path) else {
+			return false
+		}
+		parent[path.name] = value
 	}
 
 	public func createTable(name: String, at path: ODBPath) -> ODBTable? {
