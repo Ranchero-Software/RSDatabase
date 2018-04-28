@@ -8,9 +8,9 @@
 
 import Foundation
 
-// Always call API or refer to ODB objects within a performODBBlock() call.
+// Always call API or refer to ODB objects within an ODB.perform() call, which takes a block.
 // Otherwise it’s not thread-safe, and behavior is undefined.
-// Exception: ODBValue structs are valid outside a performODBBlock() call.
+// Exception: ODBValue structs are valid outside an ODB.perform() call.
 
 public final class ODB {
 
@@ -31,7 +31,7 @@ public final class ODB {
 	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (parent_id);
 	"""
 
-	private let _lock = NSLock()
+	private static let lock = NSLock()
 
 	public init(filepath: String) {
 
@@ -47,11 +47,11 @@ public final class ODB {
 
 	// MARK: - API
 
-	public func performODBBlock(_ block: () -> Void) {
+	public static func perform(_ block: () -> Void) {
 
-		lock()
+		lock.lock()
 		block()
-		unlock()
+		lock.unlock()
 	}
 
 	// The API below is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
@@ -97,7 +97,7 @@ public final class ODB {
 		parent[path.name] = value
 	}
 
-	public func createTable(name: String, at path: ODBPath) -> ODBTable? {
+	public func createTable(at path: ODBPath) -> ODBTable? {
 
 		// Deletes any existing table.
 		// Parent table must already exist, or it returns nil.
@@ -105,9 +105,10 @@ public final class ODB {
 		guard let parent = parentTable(for: path) else {
 			return nil
 		}
+		return parent.addSubtable(name: path.name)
 	}
 
-	public func ensureTable(name: String, at path: ODBPath) -> ODBTable? {
+	public func ensureTable(at path: ODBPath) -> ODBTable? {
 
 		// Won’t delete anything.
 		// Return the table for the final item in the path.
@@ -156,14 +157,6 @@ extension ODB: ODBTableDelegate {
 }
 
 private extension ODB {
-
-	func lock() {
-		_lock.lock()
-	}
-
-	func unlock() {
-		_lock.unlock()
-	}
 
 	func _parentTable(for path: ODBPath) -> ODBTable? {
 
