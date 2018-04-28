@@ -20,6 +20,7 @@ public final class ODB {
 	private let odbObjectsTable: ODBObjectsTable
 	private let rootTable = ODBTable(databaseID: -1, parentTableID: nil, isRoot: true)
 	public static let rootTableName = "root"
+	public static let rootTableID = -1
 
 	private static let tableCreationStatements = """
 	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER NOT NULL, name TEXT NOT NULL);
@@ -89,7 +90,7 @@ public final class ODB {
 	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {
 
 		// If not defined, return false.
-		
+
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
