@@ -13,12 +13,13 @@ protocol ODBTableDelegate {
 	func fetchChildren(of: ODBTable) -> [String: Any]
 }
 
-public class ODBTable {
+public class ODBTable: ODBObject, Hashable {
 
 	let uniqueID: Int
 	let isRoot: Bool
 	weak var delegate: ODBTableDelegate?
 	var parentTableID: Int?
+	let hashValue: Int
 
 	var children: [String: Any] {
 		get {
@@ -29,7 +30,7 @@ public class ODBTable {
 			if let children = _children {
 				return children
 			}
-			return [String: Any];
+			return [String: Any]
 		}
 		set {
 			_children = newValue
@@ -43,9 +44,13 @@ public class ODBTable {
 		self.parentTableID = parentTableID
 		self.isRoot = isRoot
 		self.delegate = delegate
+		self.hashValue = uniqueID
 	}
 
 	public subscript(_ key: String) -> ODBObject? {
+		get {
+			return children[key.odbLowercased()]
+		}
 	}
 
 	public func deleteChildren() {
@@ -54,6 +59,11 @@ public class ODBTable {
 
 	public func setValue(_ value: ODBValue, key: String) {
 
+	}
+
+	public static func ==(lhs: ODBTable, rhs: ODBTable) -> Bool {
+
+		return lhs.uniqueID == rhs.uniqueID
 	}
 }
 

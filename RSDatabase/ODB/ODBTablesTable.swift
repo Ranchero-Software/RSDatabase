@@ -24,37 +24,52 @@ final class ODBTablesTable: DatabaseTable {
 		static let name = "name"
 	}
 
-	func table(for databaseID: Int, in database: FMDatabase) -> ODBTable {
+	func fetchChildren(of table: ODBTable) -> [String: Any] {
 
-		guard let row = selectSingleRowWhere(key: Key.databaseID, equals: databaseID, in: database) else {
-			return
-		}
-
+		// Keys are lower-cased, since we case-insensitive lookups.
 		
-	}
+		let tables = fetchSubtables(of: table, database: database)
+		let valueObjects = fetchValueObjects(of: table, database: database)
 
-	func fetchChildTables(of table: ODBTable, in database: FMDatabase) -> [String: ODBTable] {
+		var children = [String: ODBObject]()
 
-		guard let resultSet = selectRowsWhere(key: Key.parentID, equals: table.databaseID, in: database) else {
-			return [String: ODBTable]
+		for valueObject in valueObjects {
+			let lowerName = valueObject.name.odbLowercased()
+			children[lowerName] = valueObject
 		}
 
-		var tableDictionary = [String: ODBTable]()
-		while resultSet.next() {
-			if let oneTable = table(with: resultSet) {
-				tableDictionary[oneTable.name] = oneTable
-			}
+		for table in tables {
+			let lowerName = table.name.odbLowercased()
+			children[lowerName] = table
 		}
 
-		return tableDictionary
+		return children
 	}
 }
 
 private extension ODBTablesTable {
 
+	func fetchSubtables(of table: ODBTable, database: FMDatabase) -> Set<ODBTable> {
+
+		guard let rs: FMResultSet = database.executeQuery("select * from odb_tables where parent_id = ?", withArgumentsIn: [table.uniqueID]) else {
+			return Set<ODBTable>()
+		}
+
+		return rs.mapToSet{ table(with: $0) }
+	}
+
+	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
+
+		guard let rs: FMResultSet = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
+			return Set<ODBValueObject>()
+		}
+
+		return rs.mapToSet{ valueObject(with: $0) }
+	}
+
 	func table(with row: FMResultSet) -> ODBTable? {
 
-		guard let databaseID = row.longLongInt(forColumn: Key.id) else {
+		guard let uniqueID = row.longLongInt(forColumn: Key.id) else {
 			return nil
 		}
 		guard let parentID = row.longLongInt(forColumn: Key.parentID) else {
@@ -64,6 +79,6 @@ private extension ODBTablesTable {
 			return nil
 		}
 
-		return ODBTable(databaseID: databaseID, parentTableID: parentID, isRoot: false, delegate: tableDelegate)
+		return ODBTable(uniqueID: uniqueID, parentTableID: parentID, isRoot: false, delegate: tableDelegate)
 	}
 }

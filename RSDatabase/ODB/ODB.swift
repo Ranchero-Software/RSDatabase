@@ -32,6 +32,7 @@ public final class ODB {
 	"""
 
 	private static let lock = NSLock()
+	private static var isLocked = false
 
 	public init(filepath: String) {
 
@@ -50,7 +51,9 @@ public final class ODB {
 	public static func perform(_ block: () -> Void) {
 
 		lock.lock()
+		isLocked = true
 		block()
+		isLocked = false
 		lock.unlock()
 	}
 
@@ -59,6 +62,8 @@ public final class ODB {
 	public func object(at path: ODBPath) -> ODBObject? {
 
 		// If not defined, it returns nil.
+
+		assert(ODB.isLocked)
 
 		if path.isRoot {
 			return rootTable
@@ -71,6 +76,8 @@ public final class ODB {
 
 	public func parentTable(for path: ODBPath) -> ODBTable? {
 
+		assert(ODB.isLocked)
+
 		if path.isRoot {
 			return nil
 		}
@@ -81,6 +88,8 @@ public final class ODB {
 
 		// If not defined, return false.
 
+		assert(ODB.isLocked)
+
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
@@ -90,6 +99,8 @@ public final class ODB {
 	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {
 
 		// If not defined, return false.
+
+		assert(ODB.isLocked)
 
 		guard let parent = parentTable(for: path) else {
 			return false
@@ -102,6 +113,8 @@ public final class ODB {
 		// Deletes any existing table.
 		// Parent table must already exist, or it returns nil.
 
+		assert(ODB.isLocked)
+
 		guard let parent = parentTable(for: path) else {
 			return nil
 		}
@@ -113,6 +126,8 @@ public final class ODB {
 		// Won’t delete anything.
 		// Return the table for the final item in the path.
 		// Return nil if the path contains an existing non-table item.
+
+		assert(ODB.isLocked)
 
 		if path.isRoot {
 			return rootTable
@@ -144,65 +159,40 @@ extension ODB: ODBTableDelegate {
 
 	func fetchChildren(of table: ODBTable) -> [String: Any] {
 
+		assert(ODB.isLocked)
+
 		var children: [String: Any]? = nil
 
 		queue.fetchSync { (database) in
 
-			let rs = 
+			let tables = odbTablesTable.fetchSubtables(of: table, database: database)
+			let valueObjects = odbTablesTable.fetchValueObjects(of: table, database: database)
 
 		}
 
 		return children
 	}
+
 }
 
 private extension ODB {
 
-	func _parentTable(for path: ODBPath) -> ODBTable? {
+	func fetchSubtables(of table: ODBTable, database: FMDatabase) -> Set<ODBTable> {
 
-		guard let parentPath = path.parentTablePath() else {
-			return nil
-		}
-		if parentPath.isRoot {
-			return rootTable
+		guard let rs: FMResultSet = database.executeQuery("select * from odb_tables where parent_id = ?", withArgumentsIn: [table.uniqueID]) else {
+			return Set<ODBTable>()
 		}
 
-		return nil
+		return rs.mapToSet{ table(with: $0) }
 	}
 
-	func _item(at path: ODBPath) -> Any? {
+	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
 
-		var nomad = rootTable
-		if path.isRoot {
-			return nomad
+		guard let rs: FMResultSet = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
+			return Set<ODBValueObject>()
 		}
 
-		let numberOfElements = path.elements.count
-		var indexOfElement = 0
-		for element in path {
-
-			let isLastElement = (indexOfElement >= numberOfElements - 1)
-			if isLastElement {
-				return nomad[element]
-			}
-
-			guard let child = nomad[element] as? ODBTable else {
-				return nil
-			}
-			nomad = child
-
-			indexOfElement += 1
-		}
-	}
-
-	func table(for path: ODBPath) -> ODBTable? {
-
-		return nil
-	}
-
-	func object(for path: ODBPath) -> ODBObject? {
-
-		return nil
+		return rs.mapToSet{ valueObject(with: $0) }
 	}
 }
 

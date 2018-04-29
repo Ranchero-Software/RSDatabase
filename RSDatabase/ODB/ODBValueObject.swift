@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ODBValueObject: Equatable {
+public struct ODBValueObject: ODBObject, Equatable {
 
 	let uniqueID: Int
 	let parentTableID: Int
