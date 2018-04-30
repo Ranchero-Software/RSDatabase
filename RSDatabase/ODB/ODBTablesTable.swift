@@ -36,15 +36,6 @@ final class ODBTablesTable: DatabaseTable {
 
 private extension ODBTablesTable {
 
-	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
-
-		guard let rs: FMResultSet = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
-			return Set<ODBValueObject>()
-		}
-
-		return rs.mapToSet{ valueObject(with: $0) }
-	}
-
 	func table(with row: FMResultSet) -> ODBTable? {
 
 		guard let uniqueID = row.longLongInt(forColumn: Key.id) else {

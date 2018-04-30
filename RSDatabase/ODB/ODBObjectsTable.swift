@@ -20,7 +20,7 @@ final class ODBObjectsTable: DatabaseTable {
 	}
 
 	private struct Key {
-		static let databaseID = "id"
+		static let uniqueID = "id"
 		static let parentID = "odb_table_id"
 		static let name = "name"
 		static let primitiveType = "primitive_type"
@@ -30,7 +30,7 @@ final class ODBObjectsTable: DatabaseTable {
 
 	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
 
-		guard let rs: FMResultSet = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
+		guard let rs = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
 			return Set<ODBValueObject>()
 		}
 
@@ -40,26 +40,49 @@ final class ODBObjectsTable: DatabaseTable {
 
 private extension ODBObjectsTable {
 
-	func valueObject(with row: FMResultSet) -> ODBValueObject {
+	func valueObject(with row: FMResultSet) -> ODBValueObject? {
 
 		guard let value = value(with row: FMResultSet) else {
-			return nil
-		}
-		guard let uniqueID = row.longLongInt(forColumn: Key.id) else {
-			return nil
-		}
-		guard let parentID = row.longLongInt(forColumn: Key.parentID) else {
 			return nil
 		}
 		guard let name = row.string(forColumn: Key.name) else {
 			return nil
 		}
+		let uniqueID = row.longLongInt(forColumn: Key.uniqueID)
+		let parentID = row.longLongInt(forColumn: Key.parentID)
 
 		return ODBValueObject(uniqueID: uniqueID, parentTableID: parentID, name: name, value: value)
 	}
 
-	func value(with row: FMResultSet) -> ODBValue {
+	func value(with row: FMResultSet) -> ODBValue? {
 
-		let primitiveType = row.longLongInt(forColumn: Key.)
+		guard let primitiveType = ODBValue.PrimitiveType(rawValue: row.longLongInt(forColumn: Key.uniqueID)) else {
+			return nil
+		}
+		guard let applicationType = row.string(forColumn: Key.applicationType) else {
+			return nil
+		}
+		var value: Any? = nil
+
+		switch primitiveType {
+		case boolean:
+			value = row.bool(forColumn: Key.value)
+		case integer:
+			value = row.longLongInt(forColumn: Key.value)
+		case double:
+			value = row.double(forColumn: Key.value)
+		case string:
+			value = row.string(forColumn: Key.value)
+		case data:
+			value = row.data(forColumn: Key.value)
+		case date:
+			value = row.date(forColumn: Key.value)
+		}
+
+		guard let fetchedValue = value else {
+			return nil
+		}
+
+		return ODBValue(value: fetchedValue, primitiveType: primitiveType, applicationType: applicationType)
 	}
 }
