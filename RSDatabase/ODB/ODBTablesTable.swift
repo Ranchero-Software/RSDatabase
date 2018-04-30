@@ -24,31 +24,6 @@ final class ODBTablesTable: DatabaseTable {
 		static let name = "name"
 	}
 
-	func fetchChildren(of table: ODBTable) -> [String: Any] {
-
-		// Keys are lower-cased, since we case-insensitive lookups.
-		
-		let tables = fetchSubtables(of: table, database: database)
-		let valueObjects = fetchValueObjects(of: table, database: database)
-
-		var children = [String: ODBObject]()
-
-		for valueObject in valueObjects {
-			let lowerName = valueObject.name.odbLowercased()
-			children[lowerName] = valueObject
-		}
-
-		for table in tables {
-			let lowerName = table.name.odbLowercased()
-			children[lowerName] = table
-		}
-
-		return children
-	}
-}
-
-private extension ODBTablesTable {
-
 	func fetchSubtables(of table: ODBTable, database: FMDatabase) -> Set<ODBTable> {
 
 		guard let rs: FMResultSet = database.executeQuery("select * from odb_tables where parent_id = ?", withArgumentsIn: [table.uniqueID]) else {
@@ -57,6 +32,9 @@ private extension ODBTablesTable {
 
 		return rs.mapToSet{ table(with: $0) }
 	}
+}
+
+private extension ODBTablesTable {
 
 	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
 

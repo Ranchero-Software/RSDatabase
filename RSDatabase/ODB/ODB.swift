@@ -161,13 +161,24 @@ extension ODB: ODBTableDelegate {
 
 		assert(ODB.isLocked)
 
-		var children: [String: Any]? = nil
+		var children = [String: Any]()
 
 		queue.fetchSync { (database) in
 
 			let tables = odbTablesTable.fetchSubtables(of: table, database: database)
-			let valueObjects = odbTablesTable.fetchValueObjects(of: table, database: database)
+			let valueObjects = odbObjectsTable.fetchValueObjects(of: table, database: database)
 
+			// Keys are lower-cased, since we case-insensitive lookups.
+
+			for valueObject in valueObjects {
+				let lowerName = valueObject.name.odbLowercased()
+				children[lowerName] = valueObject
+			}
+
+			for table in tables {
+				let lowerName = table.name.odbLowercased()
+				children[lowerName] = table
+			}
 		}
 
 		return children

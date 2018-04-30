@@ -23,33 +23,29 @@ final class ODBObjectsTable: DatabaseTable {
 		static let databaseID = "id"
 		static let parentID = "odb_table_id"
 		static let name = "name"
-		static let type = "type"
+		static let primitiveType = "primitive_type"
+		static let applicationType = "application_type"
 		static let value = "value"
 	}
 
-	func fetchChildObjects(of table: ODBTable, in database: FMDatabase) -> [String: ODBObject] {
+	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
 
-		guard let resultSet = selectRowsWhere(key: Key.parentID, equals: table.databaseID, in: database) else {
-			return [String: ODBTable]
+		guard let rs: FMResultSet = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
+			return Set<ODBValueObject>()
 		}
 
-		var objectDictionary = [String: ODBTable]()
-		while resultSet.next() {
-			if let oneObject = object(with: resultSet) {
-				objectDictionary[oneObject.name] = oneObject
-			}
-		}
-
-		return objectDictionary
-
+		return rs.mapToSet{ valueObject(with: $0) }
 	}
 }
 
 private extension ODBObjectsTable {
 
-	func object(with row: FMResultSet) -> ODBObject {
+	func valueObject(with row: FMResultSet) -> ODBValueObject {
 
-		guard let databaseID = row.longLongInt(forColumn: Key.id) else {
+		guard let value = value(with row: FMResultSet) else {
+			return nil
+		}
+		guard let uniqueID = row.longLongInt(forColumn: Key.id) else {
 			return nil
 		}
 		guard let parentID = row.longLongInt(forColumn: Key.parentID) else {
@@ -58,11 +54,12 @@ private extension ODBObjectsTable {
 		guard let name = row.string(forColumn: Key.name) else {
 			return nil
 		}
-		guard let type = row.string(forColumn: Key.type) else {
-			return nil
-		}
 
-		
-		return ODBTable(databaseID: databaseID, parentTableID: parentID, isRoot: false, delegate: tableDelegate)
+		return ODBValueObject(uniqueID: uniqueID, parentTableID: parentID, name: name, value: value)
+	}
+
+	func value(with row: FMResultSet) -> ODBValue {
+
+		let primitiveType = row.longLongInt(forColumn: Key.)
 	}
 }
