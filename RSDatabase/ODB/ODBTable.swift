@@ -8,48 +8,35 @@
 
 import Foundation
 
-protocol ODBTableDelegate {
+protocol ODBTableDelegate: class {
 
-	func fetchChildren(of: ODBTable) -> [String: Any]
+	func fetchChildren(of: ODBTable) -> ODBDictionary
 }
 
-public class ODBTable: ODBObject, Hashable {
+public class ODBTable: Hashable {
 
 	let uniqueID: Int
-	let isRoot: Bool
+	public let isRootTable: Bool
+	public let isTable = true
 	weak var delegate: ODBTableDelegate?
-	var parentTableID: Int?
-	let hashValue: Int
+	public var parentTable: ODBTable?
+	public var name: String
+	public let hashValue: Int
+	private var _children: ODBDictionary?
 
-	var children: [String: Any] {
-		get {
-			if _children == nil {
-				_children = delegate?.fetchChildren(of: self)
-			}
-
-			if let children = _children {
-				return children
-			}
-			return [String: Any]
-		}
-		set {
-			_children = newValue
-		}
-	}
-	private var _children: [String: Any]?
-
-	init(uniqueID: Int, parentTableID: Int?, isRoot: Bool, delegate: ODBTableDelegate) {
+	init(uniqueID: Int, name: String, parentTable: ODBTable?, isRootTable: Bool, delegate: ODBTableDelegate) {
 
 		self.uniqueID = uniqueID
-		self.parentTableID = parentTableID
-		self.isRoot = isRoot
+		self.name = name
+		self.parentTable = parentTable
+		self.isRootTable = isRootTable
 		self.delegate = delegate
 		self.hashValue = uniqueID
 	}
 
 	public subscript(_ key: String) -> ODBObject? {
 		get {
-			return children[key.odbLowercased()]
+			return children![key.odbLowercased()]
 		}
 	}
 
@@ -67,4 +54,30 @@ public class ODBTable: ODBObject, Hashable {
 	}
 }
 
+extension ODBTable: ODBObject {
 
+	public var path: ODBPath? {
+		return nil // TODO
+	}
+
+	public var value: ODBValue? {
+		return nil
+	}
+
+	public var children: ODBDictionary? {
+		get {
+			if _children == nil {
+				_children = delegate?.fetchChildren(of: self)
+			}
+			return _children!
+		}
+		set {
+			_children = newValue
+		}
+	}
+
+	public func delete() {
+		// TODO
+	}
+
+}

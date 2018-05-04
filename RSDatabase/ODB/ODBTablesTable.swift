@@ -11,15 +11,15 @@ import Foundation
 final class ODBTablesTable: DatabaseTable {
 
 	let name = "odb_tables"
-	weak var tableDelegate: ODBTableDelegate?
+	weak var delegate: ODBTableDelegate?
 
-	init(tableDelegate: ODBTableDelegate) {
+	init(delegate: ODBTableDelegate) {
 
-		self.tableDelegate = tableDelegate
+		self.delegate = delegate
 	}
 
 	private struct Key {
-		static let databaseID = "id"
+		static let uniqueID = "id"
 		static let parentID = "parent_id"
 		static let name = "name"
 	}
@@ -30,24 +30,22 @@ final class ODBTablesTable: DatabaseTable {
 			return Set<ODBTable>()
 		}
 
-		return rs.mapToSet{ table(with: $0) }
+		return rs.mapToSet{ createTable(with: $0, parentTable: table) }
 	}
 }
 
 private extension ODBTablesTable {
 
-	func table(with row: FMResultSet) -> ODBTable? {
+	func createTable(with row: FMResultSet, parentTable: ODBTable) -> ODBTable? {
 
-		guard let uniqueID = row.longLongInt(forColumn: Key.id) else {
-			return nil
-		}
-		guard let parentID = row.longLongInt(forColumn: Key.parentID) else {
+		guard let delegate = delegate else {
 			return nil
 		}
 		guard let name = row.string(forColumn: Key.name) else {
 			return nil
 		}
+		let uniqueID = Int(row.longLongInt(forColumn: Key.uniqueID))
 
-		return ODBTable(uniqueID: uniqueID, parentTableID: parentID, isRoot: false, delegate: tableDelegate)
+		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, delegate: delegate)
 	}
 }

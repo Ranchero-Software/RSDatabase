@@ -18,7 +18,11 @@ public final class ODB {
 	private let queue: RSDatabaseQueue
 	private let odbTablesTable: ODBTablesTable
 	private let odbObjectsTable: ODBObjectsTable
-	private let rootTable = ODBTable(databaseID: -1, parentTableID: nil, isRoot: true)
+
+	public lazy var rootTable: ODBTable = {
+		ODBTable(uniqueID: -1, name: ODB.rootTableName, parentTable: nil, isRootTable: true, delegate: self)
+	}()
+
 	public static let rootTableName = "root"
 	public static let rootTableID = -1
 
@@ -157,15 +161,15 @@ public final class ODB {
 
 extension ODB: ODBTableDelegate {
 
-	func fetchChildren(of table: ODBTable) -> [String: Any] {
+	func fetchChildren(of table: ODBTable) -> ODBDictionary {
 
 		assert(ODB.isLocked)
 
-		var children = [String: Any]()
+		var children = ODBDictionary()
 
 		queue.fetchSync { (database) in
 
-			let tables = odbTablesTable.fetchSubtables(of: table, database: database)
+			let tables = self.odbTablesTable.fetchSubtables(of: table, database: database)
 			let valueObjects = odbObjectsTable.fetchValueObjects(of: table, database: database)
 
 			// Keys are lower-cased, since we case-insensitive lookups.
@@ -183,7 +187,6 @@ extension ODB: ODBTableDelegate {
 
 		return children
 	}
-
 }
 
 private extension ODB {

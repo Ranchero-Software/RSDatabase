@@ -8,8 +8,9 @@
 
 import Foundation
 
+public typealias ODBDictionary = [String: ODBObject]
 
-protocol ODBObject {
+public protocol ODBObject {
 
 	var name: String { get }
 	var isTable: Bool { get }

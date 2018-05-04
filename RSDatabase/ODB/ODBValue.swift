@@ -37,18 +37,18 @@ public struct ODBValue: Equatable {
 		}
 
 		switch lhs.primitiveType {
-		case boolean:
-			compareBooleans(lhs.value, rhs.value)
-		case integer:
-			compareIntegers(lhs.value, rhs.value)
-		case double:
-			compareDoubles(lhs.value, rhs.value)
-		case string:
-			compareStrings(lhs.value, rhs.value)
-		case data:
-			compareData(lhs.value, rhs.value)
-		case date:
-			compareDates(lhs.value, rhs.value)
+		case .boolean:
+			return compareBooleans(lhs.value, rhs.value)
+		case .integer:
+			return compareIntegers(lhs.value, rhs.value)
+		case .double:
+			return compareDoubles(lhs.value, rhs.value)
+		case .string:
+			return compareStrings(lhs.value, rhs.value)
+		case .data:
+			return compareData(lhs.value, rhs.value)
+		case .date:
+			return compareDates(lhs.value, rhs.value)
 		}
 	}
 }
