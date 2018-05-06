@@ -13,7 +13,7 @@ public struct ODBValueObject: ODBObject, Hashable {
 	let uniqueID: Int
 	public let parentTable: ODBTable?
 	public let name: String
-	public let value: ODBValue
+	public let value: ODBValue?
 	public let hashValue: Int
 	public let isTable = false
 	public let isRootTable = false
@@ -33,7 +33,7 @@ public struct ODBValueObject: ODBObject, Hashable {
 	}
 
 	public func delete() {
-
+		// TODO
 	}
 
 	public static func ==(lhs: ODBValueObject, rhs: ODBValueObject) -> Bool {

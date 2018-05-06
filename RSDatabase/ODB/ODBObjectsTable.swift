@@ -41,8 +41,7 @@ private extension ODBObjectsTable {
 		guard let name = row.string(forColumn: Key.name) else {
 			return nil
 		}
-		let uniqueID = row.longLongInt(forColumn: Key.uniqueID)
-		let parentID = row.longLongInt(forColumn: Key.parentID)
+		let uniqueID = Int(row.longLongInt(forColumn: Key.uniqueID))
 
 		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value)
 	}

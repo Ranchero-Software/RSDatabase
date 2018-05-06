@@ -103,7 +103,8 @@ public final class ODB {
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
-		return parent[path.name] = nil
+		parent[path.name] = nil
+		return true
 	}
 
 	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {

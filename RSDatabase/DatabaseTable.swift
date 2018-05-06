@@ -22,7 +22,7 @@ public extension DatabaseTable {
 		return database.rs_selectRowsWhereKey(key, equalsValue: value, tableName: name)
 	}
 
-	public func selectSingleRowWhere(key: String, equals value: any, in database: FMDatabase) -> FMResultSet? {
+	public func selectSingleRowWhere(key: String, equals value: Any, in database: FMDatabase) -> FMResultSet? {
 
 		return database.rs_selectSingleRowWhereKey(key, equalsValue: value, tableName: name)
 	}
