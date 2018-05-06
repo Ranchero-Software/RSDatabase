@@ -27,15 +27,15 @@ final class ODBObjectsTable: DatabaseTable {
 			return Set<ODBValueObject>()
 		}
 
-		return rs.mapToSet{ valueObject(with: $0) }
+		return rs.mapToSet{ valueObject(with: $0, parentTable: table) }
 	}
 }
 
 private extension ODBObjectsTable {
 
-	func valueObject(with row: FMResultSet) -> ODBValueObject? {
+	func valueObject(with row: FMResultSet, parentTable: ODBTable) -> ODBValueObject? {
 
-		guard let value = value(with row: FMResultSet) else {
+		guard let value = value(with: row) else {
 			return nil
 		}
 		guard let name = row.string(forColumn: Key.name) else {
@@ -44,7 +44,7 @@ private extension ODBObjectsTable {
 		let uniqueID = row.longLongInt(forColumn: Key.uniqueID)
 		let parentID = row.longLongInt(forColumn: Key.parentID)
 
-		return ODBValueObject(uniqueID: uniqueID, parentTableID: parentID, name: name, value: value)
+		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value)
 	}
 
 	func value(with row: FMResultSet) -> ODBValue? {

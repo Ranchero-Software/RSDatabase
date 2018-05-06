@@ -38,6 +38,9 @@ public class ODBTable: Hashable {
 		get {
 			return children![key.odbLowercased()]
 		}
+		set {
+			children![key.odbLowercased()] = newValue
+		}
 	}
 
 	public func deleteChildren() {

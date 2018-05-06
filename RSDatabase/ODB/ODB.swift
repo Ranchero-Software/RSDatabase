@@ -32,7 +32,10 @@ public final class ODB {
 	CREATE TABLE if not EXISTS odb_objects (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER NOT NULL, name TEXT NOT NULL, primitive_type INTEGER NOT NULL, application_type TEXT, value BLOB);
 
 	CREATE INDEX if not EXISTS odb_tables_parent_id_index on odb_tables (parent_id);
-	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (parent_id);
+	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (odb_table_id);
+
+	CREATE TRIGGER if not EXISTS odb_tables_after_delete_trigger_delete_subtables after delete on odb_tables begin delete from odb_tables where parent_id = OLD.id; end;
+	CREATE TRIGGER  if not EXISTS odb_tables_after_delete_trigger_delete_child_objects after delete on odb_tables begin delete from odb_objects where odb_table_id = OLD.id; end;
 	"""
 
 	private static let lock = NSLock()
@@ -47,7 +50,7 @@ public final class ODB {
 		self.queue = queue
 
 		self.odbTablesTable = ODBTablesTable(delegate: self)
-		self.odbObjectsTable = ODBObjectsTable(name: "odb_objects")
+		self.odbObjectsTable = ODBObjectsTable()
 	}
 
 	// MARK: - API
@@ -85,7 +88,10 @@ public final class ODB {
 		if path.isRoot {
 			return nil
 		}
-		return object(at: path.parentTablePath()) as? ODBTable
+		guard let parentTablePath = path.parentTablePath() else {
+			return nil
+		}
+		return object(at: parentTablePath) as? ODBTable
 	}
 
 	public func deleteObject(at path: ODBPath) -> Bool {

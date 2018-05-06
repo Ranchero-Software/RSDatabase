@@ -11,17 +11,33 @@ import Foundation
 public struct ODBValueObject: ODBObject, Hashable {
 
 	let uniqueID: Int
-	let parentTableID: Int
-	let name: String
-	let value: ODBValue
+	public let parentTable: ODBTable?
+	public let name: String
+	public let value: ODBValue
+	public let hashValue: Int
+	public let isTable = false
+	public let isRootTable = false
+	public let children: ODBDictionary? = nil
 
-	init(uniqueID: Int, parentTableID: Int, name: String, value: ODBValue) {
-
-		self.uniqueID = uniqueID
-		self.parentTableID = parentTableID
-		self.name = name
-		self.value = value
+	public var path: ODBPath? {
+		return nil // TODO
 	}
 
-	public static func ==(lhs: ODBValueObject, rhs: ODBValueObject)
+	init(uniqueID: Int, parentTable: ODBTable, name: String, value: ODBValue) {
+
+		self.uniqueID = uniqueID
+		self.parentTable = parentTable
+		self.name = name
+		self.value = value
+		self.hashValue = uniqueID.hashValue
+	}
+
+	public func delete() {
+
+	}
+
+	public static func ==(lhs: ODBValueObject, rhs: ODBValueObject) -> Bool {
+
+		return lhs.uniqueID == rhs.uniqueID
+	}
 }
