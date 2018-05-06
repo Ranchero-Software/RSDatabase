@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ODBValueObject: ODBObject, Equatable {
+public struct ODBValueObject: ODBObject, Hashable {
 
 	let uniqueID: Int
 	let parentTableID: Int
@@ -22,4 +22,6 @@ public struct ODBValueObject: ODBObject, Equatable {
 		self.name = name
 		self.value = value
 	}
+
+	public static func ==(lhs: ODBValueObject, rhs: ODBValueObject)
 }

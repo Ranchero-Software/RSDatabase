@@ -10,14 +10,7 @@ import Foundation
 
 final class ODBObjectsTable: DatabaseTable {
 
-	let name: String
-	let queue: RSDatabaseQueue
-
-	init(name: String, queue: RSDatabaseQueue) {
-
-		self.name = name
-		self.queue = queue
-	}
+	let name = "odb_objects"
 
 	private struct Key {
 		static let uniqueID = "id"
@@ -56,26 +49,26 @@ private extension ODBObjectsTable {
 
 	func value(with row: FMResultSet) -> ODBValue? {
 
-		guard let primitiveType = ODBValue.PrimitiveType(rawValue: row.longLongInt(forColumn: Key.uniqueID)) else {
+		guard let applicationType = row.string(forColumn: Key.applicationType) else {
 			return nil
 		}
-		guard let applicationType = row.string(forColumn: Key.applicationType) else {
+		guard let primitiveType = ODBValue.PrimitiveType(rawValue: Int(row.longLongInt(forColumn: Key.uniqueID))) else {
 			return nil
 		}
 		var value: Any? = nil
 
 		switch primitiveType {
-		case boolean:
+		case .boolean:
 			value = row.bool(forColumn: Key.value)
-		case integer:
+		case .integer:
 			value = row.longLongInt(forColumn: Key.value)
-		case double:
+		case .double:
 			value = row.double(forColumn: Key.value)
-		case string:
+		case .string:
 			value = row.string(forColumn: Key.value)
-		case data:
+		case .data:
 			value = row.data(forColumn: Key.value)
-		case date:
+		case .date:
 			value = row.date(forColumn: Key.value)
 		}
 

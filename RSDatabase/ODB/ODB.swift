@@ -46,8 +46,8 @@ public final class ODB {
 		queue.createTables(usingStatements: ODB.tableCreationStatements)
 		self.queue = queue
 
-		self.odbTablesTable = ODBTablesTable(name: "odb_tables", queue: queue)
-		self.odbObjectsTable = ODBObjectsTable(name: "odb_objects", queue: queue)
+		self.odbTablesTable = ODBTablesTable(delegate: self)
+		self.odbObjectsTable = ODBObjectsTable(name: "odb_objects")
 	}
 
 	// MARK: - API
