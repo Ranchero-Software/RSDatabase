@@ -44,7 +44,7 @@ public class ODBTable: Hashable {
 	}
 
 	public func deleteChildren() {
-
+		// TODO: set children to empty dictionary; tell delegate to delete tables and objects for this table
 	}
 
 	public func setValue(_ value: ODBValue, key: String) {

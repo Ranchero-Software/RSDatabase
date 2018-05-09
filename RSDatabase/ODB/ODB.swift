@@ -59,9 +59,13 @@ public final class ODB {
 
 		lock.lock()
 		isLocked = true
+
+		defer {
+			isLocked = false
+			lock.unlock()
+		}
+
 		block()
-		isLocked = false
-		lock.unlock()
 	}
 
 	// The API below is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
@@ -144,7 +148,7 @@ public final class ODB {
 			return rootTable
 		}
 
-		var pathNomad = []
+		var pathNomad = [String]()
 		var table: ODBTable? = nil
 
 		for element in path.elements {
@@ -177,7 +181,7 @@ extension ODB: ODBTableDelegate {
 		queue.fetchSync { (database) in
 
 			let tables = self.odbTablesTable.fetchSubtables(of: table, database: database)
-			let valueObjects = odbObjectsTable.fetchValueObjects(of: table, database: database)
+			let valueObjects = self.odbObjectsTable.fetchValueObjects(of: table, database: database)
 
 			// Keys are lower-cased, since we case-insensitive lookups.
 
@@ -193,27 +197,6 @@ extension ODB: ODBTableDelegate {
 		}
 
 		return children
-	}
-}
-
-private extension ODB {
-
-	func fetchSubtables(of table: ODBTable, database: FMDatabase) -> Set<ODBTable> {
-
-		guard let rs: FMResultSet = database.executeQuery("select * from odb_tables where parent_id = ?", withArgumentsIn: [table.uniqueID]) else {
-			return Set<ODBTable>()
-		}
-
-		return rs.mapToSet{ table(with: $0) }
-	}
-
-	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
-
-		guard let rs: FMResultSet = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
-			return Set<ODBValueObject>()
-		}
-
-		return rs.mapToSet{ valueObject(with: $0) }
 	}
 }
 
