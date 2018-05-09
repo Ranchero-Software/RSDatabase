@@ -120,7 +120,7 @@ public final class ODB {
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
-		parent[path.name] = value
+		parent.setValue(value, name: path.name)
 	}
 
 	public func createTable(at path: ODBPath) -> ODBTable? {
