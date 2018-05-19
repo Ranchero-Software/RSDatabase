@@ -47,8 +47,14 @@ public class ODBTable: Hashable {
 
 	}
 
-	public func setValue(_ value: ODBValue, key: String) {
+	public func setValue(_ value: ODBValue, name: String) {
 
+		
+	}
+
+	public func addSubtable(_ name: String) {
+
+		
 	}
 
 	public static func ==(lhs: ODBTable, rhs: ODBTable) -> Bool {
