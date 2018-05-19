@@ -74,7 +74,7 @@ public final class ODB {
 
 		// If not defined, it returns nil.
 
-		assert(ODB.isLocked)
+		precondition(ODB.isLocked)
 
 		if path.isRoot {
 			return rootTable
@@ -87,7 +87,7 @@ public final class ODB {
 
 	public func parentTable(for path: ODBPath) -> ODBTable? {
 
-		assert(ODB.isLocked)
+		precondition(ODB.isLocked)
 
 		if path.isRoot {
 			return nil
@@ -102,12 +102,12 @@ public final class ODB {
 
 		// If not defined, return false.
 
-		assert(ODB.isLocked)
+		precondition(ODB.isLocked)
 
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
-		parent[path.name] = nil
+		parent.deleteObject(name: path.name)
 		return true
 	}
 
@@ -115,12 +115,12 @@ public final class ODB {
 
 		// If not defined, return false.
 
-		assert(ODB.isLocked)
+		precondition(ODB.isLocked)
 
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
-		parent.setValue(value, name: path.name)
+		return parent.setValue(value, name: path.name)
 	}
 
 	public func createTable(at path: ODBPath) -> ODBTable? {
@@ -128,7 +128,7 @@ public final class ODB {
 		// Deletes any existing table.
 		// Parent table must already exist, or it returns nil.
 
-		assert(ODB.isLocked)
+		precondition(ODB.isLocked)
 
 		guard let parent = parentTable(for: path) else {
 			return nil
@@ -142,7 +142,7 @@ public final class ODB {
 		// Return the table for the final item in the path.
 		// Return nil if the path contains an existing non-table item.
 
-		assert(ODB.isLocked)
+		precondition(ODB.isLocked)
 
 		if path.isRoot {
 			return rootTable
@@ -174,7 +174,7 @@ extension ODB: ODBTableDelegate {
 
 	func fetchChildren(of table: ODBTable) -> ODBDictionary {
 
-		assert(ODB.isLocked)
+		precondition(ODB.isLocked)
 
 		var children = ODBDictionary()
 
