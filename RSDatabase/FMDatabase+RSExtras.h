@@ -78,7 +78,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)rs_insertRowWithDictionary:(NSDictionary *)d insertType:(RSDatabaseInsertType)insertType tableName:(NSString *)tableName;
 
-
 @end
 
 NS_ASSUME_NONNULL_END

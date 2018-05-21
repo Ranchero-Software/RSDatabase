@@ -33,9 +33,16 @@ final class ODBTablesTable: DatabaseTable {
 		return rs.mapToSet{ createTable(with: $0, parentTable: table) }
 	}
 
-	func insertTable(name: String, parentTableID: Int, database: FMDatabase) -> ODBTable? {
+	func insertTable(name: String, parentTable: ODBTable, database: FMDatabase) -> ODBTable? {
 
-		guard let rs: FMResultSet = database.executeUpdate(<#T##sql: String!##String!#>, withArgumentsIn: <#T##[Any]!#>)
+		guard let delegate = delegate else {
+			return nil
+		}
+
+		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, name: name]
+		insertRow(d, insertType: .normal, in: database)
+		let uniqueID = database.lastInsertRowId()
+		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, delegate: delegate)
 	}
 }
 

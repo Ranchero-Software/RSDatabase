@@ -183,10 +183,11 @@ extension ODB: ODBTableDelegate {
 
 		precondition(ODB.isLocked)
 
+		var table: ODBTable? = nil
 		queue.fetchSync { (database) in
-
-			
+			table = self.odbTablesTable.insertTable(name: name, parentTable: parent, database: database)
 		}
+		return table
 	}
 
 	func insertValueObject(name: String, value: ODBValue, parent: ODBTable) -> ODBValueObject? {

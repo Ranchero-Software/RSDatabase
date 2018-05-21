@@ -22,7 +22,6 @@ static void logSQL(NSString *sql) {
 @implementation FMDatabase (RSExtras)
 
 
-
 #pragma mark - Deleting
 
 - (BOOL)rs_deleteRowsWhereKey:(NSString *)key inValues:(NSArray *)values tableName:(NSString *)tableName {
@@ -176,7 +175,6 @@ static void logSQL(NSString *sql) {
 
 	return [self executeUpdate:sql withArgumentsInArray:values];
 }
-
 
 @end
 
