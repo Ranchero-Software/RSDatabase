@@ -20,7 +20,7 @@ public struct ODBPath: Hashable {
 	let isRoot: Bool
 	public let hashValue: Int
 
-	init?(elements: [String]) {
+	init(elements: [String]) {
 
 		let canonicalElements = ODBPath.dropLeadingRootElement(from: elements)
 		self.elements = canonicalElements
@@ -36,6 +36,13 @@ public struct ODBPath: Hashable {
 		}
 
 		self.hashValue = ODBPath.hashValue(with: self.lowercasedElements)
+	}
+
+	static let root = ODBPath(elements: [String]())
+
+	public func pathByAdding(_ element: String) -> ODBPath {
+
+		return ODBPath(elements: elements + [element])
 	}
 
 	public func parentTablePath() -> ODBPath? {

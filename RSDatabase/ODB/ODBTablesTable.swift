@@ -32,6 +32,11 @@ final class ODBTablesTable: DatabaseTable {
 
 		return rs.mapToSet{ createTable(with: $0, parentTable: table) }
 	}
+
+	func insertTable(name: String, parentTableID: Int, database: FMDatabase) -> ODBTable? {
+
+		guard let rs: FMResultSet = database.executeUpdate(<#T##sql: String!##String!#>, withArgumentsIn: <#T##[Any]!#>)
+	}
 }
 
 private extension ODBTablesTable {

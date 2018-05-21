@@ -57,6 +57,7 @@ public class ODBTable: Hashable {
 	public func deleteChildren() -> Bool {
 
 		delegate?.deleteChildren(of: self)
+		return true
 	}
 
 	public func deleteObject(_ object: ODBObject) {
@@ -70,20 +71,18 @@ public class ODBTable: Hashable {
 			return false
 		}
 		deleteObject(child)
+		return true
 	}
 
-	public func addSubtable(name: String) -> Bool {
+	public func addSubtable(name: String) -> ODBTable? {
 
 		guard let subtable = delegate?.insertTable(name: name, parent: self) else {
-			return false
+			return nil
 		}
 		addChild(name: name, object: subtable)
+		return subtable
 	}
 
-	public func addSubtable(_ name: String) {
-
-	}
-		
 	public func setValue(_ value: ODBValue, name: String) -> Bool {
 
 		guard let valueObject = delegate?.insertValueObject(name: name, value: value, parent: self) else {

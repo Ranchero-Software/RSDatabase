@@ -66,6 +66,11 @@ public extension DatabaseTable {
 		}
 	}
 
+	public func insertRow(_ rowDictionary: NSDictionary, insertType: RSDatabaseInsertType, in database: FMDatabase) {
+
+		insertRows([rowDictionary], insertType: insertType, in: database)
+	}
+
 	// MARK: Counting
 
 	func numberWithCountResultSet(_ resultSet: FMResultSet) -> Int {

@@ -9,22 +9,25 @@
 import Foundation
 
 // Always call API or refer to ODB objects within an ODB.perform() call, which takes a block.
-// Otherwise it’s not thread-safe, and behavior is undefined.
+// Otherwise it’s not thread-safe. It will crash. On purpose.
 // Exception: ODBValue structs are valid outside an ODB.perform() call.
 
 public final class ODB {
 
-	let filepath: String
-	private let queue: RSDatabaseQueue
-	private let odbTablesTable: ODBTablesTable
-	private let odbObjectsTable: ODBObjectsTable
+	public let filepath: String
 
 	public lazy var rootTable: ODBTable = {
 		ODBTable(uniqueID: -1, name: ODB.rootTableName, parentTable: nil, isRootTable: true, delegate: self)
 	}()
 
-	public static let rootTableName = "root"
-	public static let rootTableID = -1
+	static let rootTableName = "root"
+	static let rootTableID = -1
+
+	private let queue: RSDatabaseQueue
+	private let odbObjectsTable = ODBObjectsTable()
+	private lazy var odbTablesTable: ODBTablesTable = {
+		return ODBTablesTable(delegate: self)
+	}()
 
 	private static let tableCreationStatements = """
 	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER NOT NULL, name TEXT NOT NULL);
@@ -48,9 +51,6 @@ public final class ODB {
 		let queue = RSDatabaseQueue(filepath: filepath, excludeFromBackup: false)
 		queue.createTables(usingStatements: ODB.tableCreationStatements)
 		self.queue = queue
-
-		self.odbTablesTable = ODBTablesTable(delegate: self)
-		self.odbObjectsTable = ODBObjectsTable()
 	}
 
 	// MARK: - API
@@ -107,8 +107,7 @@ public final class ODB {
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
-		parent.deleteObject(name: path.name)
-		return true
+		return parent.deleteObject(name: path.name)
 	}
 
 	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {
@@ -148,18 +147,18 @@ public final class ODB {
 			return rootTable
 		}
 
-		var pathNomad = [String]()
+		var pathNomad = ODBPath.root
 		var table: ODBTable? = nil
 
 		for element in path.elements {
-			pathNomad += [element]
+			pathNomad = pathNomad.pathByAdding(element)
 			let oneObject = object(at: pathNomad)
 
 			if oneObject == nil {
-				table = createTable(pathNomad.name, at: pathNomad)
+				table = createTable(at: pathNomad)
 			}
 			else if oneObject is ODBTable {
-				table = oneObject as! ODBTable
+				table = oneObject as? ODBTable
 			}
 			else {
 				return nil // Object found — but not a table
@@ -171,6 +170,28 @@ public final class ODB {
 }
 
 extension ODB: ODBTableDelegate {
+
+	func deleteObject(_: ODBObject) {
+
+	}
+
+	func deleteChildren(of: ODBTable) {
+
+	}
+
+	func insertTable(name: String, parent: ODBTable) -> ODBTable? {
+
+		precondition(ODB.isLocked)
+
+		queue.fetchSync { (database) in
+
+			
+		}
+	}
+
+	func insertValueObject(name: String, value: ODBValue, parent: ODBTable) -> ODBValueObject? {
+
+	}
 
 	func fetchChildren(of table: ODBTable) -> ODBDictionary {
 
