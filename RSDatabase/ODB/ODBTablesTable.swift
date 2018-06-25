@@ -41,9 +41,11 @@ final class ODBTablesTable: DatabaseTable {
 
 		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, name: name]
 		insertRow(d, insertType: .normal, in: database)
-		let uniqueID = database.lastInsertRowId()
+		let uniqueID = Int(database.lastInsertRowId())
 		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, delegate: delegate)
 	}
+
+	func deleteTable(uniqueID: Int, database: FMDatabase)
 }
 
 private extension ODBTablesTable {

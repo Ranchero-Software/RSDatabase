@@ -38,7 +38,7 @@ public final class ODB {
 	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (odb_table_id);
 
 	CREATE TRIGGER if not EXISTS odb_tables_after_delete_trigger_delete_subtables after delete on odb_tables begin delete from odb_tables where parent_id = OLD.id; end;
-	CREATE TRIGGER  if not EXISTS odb_tables_after_delete_trigger_delete_child_objects after delete on odb_tables begin delete from odb_objects where odb_table_id = OLD.id; end;
+	CREATE TRIGGER if not EXISTS odb_tables_after_delete_trigger_delete_child_objects after delete on odb_tables begin delete from odb_objects where odb_table_id = OLD.id; end;
 	"""
 
 	private static let lock = NSLock()
@@ -171,7 +171,25 @@ public final class ODB {
 
 extension ODB: ODBTableDelegate {
 
-	func deleteObject(_: ODBObject) {
+	func deleteObject(_ object: ODBObject) {
+
+		precondition(ODB.isLocked)
+
+		if let valueObject = object as? ODBValueObject {
+			let uniqueID = valueObject.uniqueID
+			queue.update { (database) in
+				self.odbObjectsTable.deleteObject(uniqueID: uniqueID, database: database)
+			}
+		}
+		else if let tableObject = object as? ODBTable {
+			let uniqueID = tableObject.uniqueID
+			queue.update { (database) in
+				self.odbTablesTable.deleteObject(uniqueID: valueObject.uniqueID, database: database)
+			}
+		}
+		queue.update { (database) in
+			table = self.odbObjectsTable.deleteObject(uniqueID: <#T##Int#>, database: <#T##FMDatabase#>)
+		}
 
 	}
 

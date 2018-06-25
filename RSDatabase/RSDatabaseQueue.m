@@ -95,16 +95,27 @@
 - (void)update:(RSDatabaseBlock)updateBlock {
 
 	dispatch_async(self.serialDispatchQueue, ^{
-
-		@autoreleasepool {
-			FMDatabase *database = [self database];
-			[database beginTransaction];
-			updateBlock(database);
-			[database commit];
-		}
+		[self runInTransaction:updateBlock];
 	});
 }
 
+
+- (void)updateSync:(RSDatabaseBlock)updateBlock {
+
+	dispatch_sync(self.serialDispatchQueue, ^{
+		[self runInTransaction:updateBlock];
+	});
+}
+
+- (void)runInTransaction:(RSDatabaseBlock)databaseBlock {
+
+	@autoreleasepool {
+		FMDatabase *database = [self database];
+		[database beginTransaction];
+		databaseBlock(database);
+		[database commit];
+	}
+}
 
 - (void)runInDatabase:(RSDatabaseBlock)databaseBlock {
 

@@ -29,6 +29,11 @@ final class ODBObjectsTable: DatabaseTable {
 
 		return rs.mapToSet{ valueObject(with: $0, parentTable: table) }
 	}
+
+	func deleteObject(uniqueID: Int, database: FMDatabase) {
+
+		database.rs_deleteRowsWhereKey(Key.uniqueID, equalsValue: uniqueID, tableName: name)
+	}
 }
 
 private extension ODBObjectsTable {
