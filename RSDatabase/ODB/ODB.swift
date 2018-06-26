@@ -184,17 +184,21 @@ extension ODB: ODBTableDelegate {
 		else if let tableObject = object as? ODBTable {
 			let uniqueID = tableObject.uniqueID
 			queue.update { (database) in
-				self.odbTablesTable.deleteObject(uniqueID: valueObject.uniqueID, database: database)
+				self.odbTablesTable.deleteTable(uniqueID: uniqueID, database: database)
 			}
 		}
-		queue.update { (database) in
-			table = self.odbObjectsTable.deleteObject(uniqueID: <#T##Int#>, database: <#T##FMDatabase#>)
+		else {
+			preconditionFailure("deleteObject: object neither ODBValueObject or ODBTable")
 		}
-
 	}
 
-	func deleteChildren(of: ODBTable) {
+	func deleteChildren(of table: ODBTable) {
 
+		let parentUniqueID = table.uniqueID
+		queue.update { (database) in
+			self.odbTablesTable.deleteChildTables(parentUniqueID: parentUniqueID, database: database)
+			self.odbObjectsTable.deleteChildObjects(parentUniqueID: parentUniqueID, database: database)
+		}
 	}
 
 	func insertTable(name: String, parent: ODBTable) -> ODBTable? {

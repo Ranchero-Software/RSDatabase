@@ -23,7 +23,7 @@ final class ODBObjectsTable: DatabaseTable {
 
 	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
 
-		guard let rs = database.executeQuery("select * from odb_objects where odb_table_id = ?", withArgumentsIn: [table.uniqueID]) else {
+		guard let rs = database.rs_selectRowsWhereKey(Key.parentID, equalsValue: table.uniqueID, tableName: name) else {
 			return Set<ODBValueObject>()
 		}
 
@@ -33,6 +33,11 @@ final class ODBObjectsTable: DatabaseTable {
 	func deleteObject(uniqueID: Int, database: FMDatabase) {
 
 		database.rs_deleteRowsWhereKey(Key.uniqueID, equalsValue: uniqueID, tableName: name)
+	}
+
+	func deleteChildObjects(parentUniqueID: Int, database: FMDatabase) {
+
+		database.rs_deleteRowsWhereKey(Key.parentID, equalsValue: parentUniqueID, tableName: name)
 	}
 }
 

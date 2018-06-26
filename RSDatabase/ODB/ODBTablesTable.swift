@@ -45,7 +45,15 @@ final class ODBTablesTable: DatabaseTable {
 		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, delegate: delegate)
 	}
 
-	func deleteTable(uniqueID: Int, database: FMDatabase)
+	func deleteTable(uniqueID: Int, database: FMDatabase) {
+
+		database.rs_deleteRowsWhereKey(Key.uniqueID, equalsValue: uniqueID, tableName: name)
+	}
+
+	func deleteChildTables(parentUniqueID: Int, database: FMDatabase) {
+
+		database.rs_deleteRowsWhereKey(Key.parentID, equalsValue: parentUniqueID, tableName: name)
+	}
 }
 
 private extension ODBTablesTable {
