@@ -40,6 +40,7 @@ typedef void (^RSDatabaseBlock)(FMDatabase * __nonnull database);
 - (void)createTablesUsingStatements:(NSString *)createStatements;
 
 - (void)update:(RSDatabaseBlock)updateBlock;
+- (void)updateSync:(RSDatabaseBlock)updateBlock;
 
 - (void)runInDatabase:(RSDatabaseBlock)databaseBlock; // Same as update, but no transaction.
 

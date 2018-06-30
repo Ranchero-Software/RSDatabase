@@ -39,6 +39,14 @@ final class ODBObjectsTable: DatabaseTable {
 
 		database.rs_deleteRowsWhereKey(Key.parentID, equalsValue: parentUniqueID, tableName: name)
 	}
+
+	func insertValueObject(name: String, value: ODBValue, parentTable: ODBTable, database: FMDatabase) -> ODBValueObject? {
+
+		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, name: name]
+		insertRow(d, insertType: .normal, in: database)
+		let uniqueID = Int(database.lastInsertRowId())
+		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value)
+	}
 }
 
 private extension ODBObjectsTable {

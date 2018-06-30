@@ -214,6 +214,14 @@ extension ODB: ODBTableDelegate {
 
 	func insertValueObject(name: String, value: ODBValue, parent: ODBTable) -> ODBValueObject? {
 
+		precondition(ODB.isLocked)
+
+		var valueObject: ODBValueObject? = nil
+		queue.updateSync { (database) in
+			valueObject = self.odbObjectsTable.insertValueObject(name: name, value: value, parentTable: parent, database: database)
+		}
+
+		return valueObject
 	}
 
 	func fetchChildren(of table: ODBTable) -> ODBDictionary {
