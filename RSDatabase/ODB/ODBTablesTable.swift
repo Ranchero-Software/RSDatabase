@@ -11,11 +11,11 @@ import Foundation
 final class ODBTablesTable: DatabaseTable {
 
 	let name = "odb_tables"
-	weak var delegate: ODBTableDelegate?
+	weak var odb: ODB? = nil
 
-	init(delegate: ODBTableDelegate) {
+	init(odb: ODB) {
 
-		self.delegate = delegate
+		self.odb = odb
 	}
 
 	private struct Key {
@@ -35,14 +35,14 @@ final class ODBTablesTable: DatabaseTable {
 
 	func insertTable(name: String, parentTable: ODBTable, database: FMDatabase) -> ODBTable? {
 
-		guard let delegate = delegate else {
+		guard let odb = odb else {
 			return nil
 		}
 
 		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, name: name]
 		insertRow(d, insertType: .normal, in: database)
 		let uniqueID = Int(database.lastInsertRowId())
-		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, delegate: delegate)
+		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, odb: odb)
 	}
 
 	func deleteTable(uniqueID: Int, database: FMDatabase) {
@@ -60,7 +60,7 @@ private extension ODBTablesTable {
 
 	func createTable(with row: FMResultSet, parentTable: ODBTable) -> ODBTable? {
 
-		guard let delegate = delegate else {
+		guard let odb = odb else {
 			return nil
 		}
 		guard let name = row.string(forColumn: Key.name) else {
@@ -68,6 +68,6 @@ private extension ODBTablesTable {
 		}
 		let uniqueID = Int(row.longLongInt(forColumn: Key.uniqueID))
 
-		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, delegate: delegate)
+		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, odb: odb)
 	}
 }

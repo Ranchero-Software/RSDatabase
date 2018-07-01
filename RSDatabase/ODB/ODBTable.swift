@@ -8,21 +8,12 @@
 
 import Foundation
 
-protocol ODBTableDelegate: class {
-
-	func fetchChildren(of: ODBTable) -> ODBDictionary
-	func deleteObject(_: ODBObject)
-	func deleteChildren(of: ODBTable)
-	func insertTable(name: String, parent: ODBTable) -> ODBTable?
-	func insertValueObject(name: String, value: ODBValue, parent: ODBTable) -> ODBValueObject?
-}
-
-public class ODBTable: Hashable {
+public class ODBTable: ODBObject, Hashable {
 
 	let uniqueID: Int
 	public let isRootTable: Bool
 	public let isTable = true
-	weak var delegate: ODBTableDelegate?
+	public weak var odb: ODB?
 	public var parentTable: ODBTable?
 	public var name: String
 	public let hashValue: Int
@@ -31,7 +22,7 @@ public class ODBTable: Hashable {
 	public var children: ODBDictionary {
 		get {
 			if _children == nil {
-				_children = delegate?.fetchChildren(of: self)
+				_children = odb?.fetchChildren(of: self)
 			}
 			return _children!
 		}
@@ -40,14 +31,19 @@ public class ODBTable: Hashable {
 		}
 	}
 
-	init(uniqueID: Int, name: String, parentTable: ODBTable?, isRootTable: Bool, delegate: ODBTableDelegate) {
+	public var path: ODBPath? {
+		//TODO
+		return nil
+	}
+
+	init(uniqueID: Int, name: String, parentTable: ODBTable?, isRootTable: Bool, odb: ODB) {
 
 		self.uniqueID = uniqueID
 		self.name = name
 		self.parentTable = parentTable
 		self.isRootTable = isRootTable
-		self.delegate = delegate
-		self.hashValue = uniqueID
+		self.odb = odb
+		self.hashValue = uniqueID ^ name.hashValue
 	}
 
 	public subscript(_ name: String) -> ODBObject? {
@@ -56,13 +52,13 @@ public class ODBTable: Hashable {
 
 	public func deleteChildren() -> Bool {
 
-		delegate?.deleteChildren(of: self)
+		odb?.deleteChildren(of: self)
 		return true
 	}
 
 	public func deleteObject(_ object: ODBObject) {
 
-		delegate?.deleteObject(object)
+		odb?.deleteObject(object)
 	}
 
 	public func deleteObject(name: String) -> Bool {
@@ -76,7 +72,7 @@ public class ODBTable: Hashable {
 
 	public func addSubtable(name: String) -> ODBTable? {
 
-		guard let subtable = delegate?.insertTable(name: name, parent: self) else {
+		guard let subtable = odb?.insertTable(name: name, parent: self) else {
 			return nil
 		}
 		addChild(name: name, object: subtable)
@@ -85,16 +81,27 @@ public class ODBTable: Hashable {
 
 	public func setValue(_ value: ODBValue, name: String) -> Bool {
 
-		guard let valueObject = delegate?.insertValueObject(name: name, value: value, parent: self) else {
+		guard let valueObject = odb?.insertValueObject(name: name, value: value, parent: self) else {
 			return false
 		}
 		addChild(name: name, object: valueObject)
 		return true
 	}
 
+	public func delete() {
+
+		odb?.deleteObject(self)
+	}
+
 	public static func ==(lhs: ODBTable, rhs: ODBTable) -> Bool {
 
-		return lhs.uniqueID == rhs.uniqueID
+		if lhs.uniqueID != rhs.uniqueID {
+			return false
+		}
+		guard let leftODB = lhs.odb, let rightODB = rhs.odb else {
+			return false
+		}
+		return leftODB === rightODB
 	}
 }
 
@@ -104,16 +111,4 @@ private extension ODBTable {
 		let _ = deleteObject(name: name)
 		children[name.odbLowercased()] = object
 	}
-}
-
-extension ODBTable: ODBObject {
-
-	public var path: ODBPath? {
-		return nil // TODO
-	}
-
-	public func delete() {
-		deleteObject(self)
-	}
-
 }

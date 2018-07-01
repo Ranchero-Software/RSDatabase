@@ -11,6 +11,12 @@ import Foundation
 final class ODBObjectsTable: DatabaseTable {
 
 	let name = "odb_objects"
+	weak var odb: ODB? = nil
+
+	init(odb: ODB) {
+
+		self.odb = odb
+	}
 
 	private struct Key {
 		static let uniqueID = "id"
@@ -42,10 +48,14 @@ final class ODBObjectsTable: DatabaseTable {
 
 	func insertValueObject(name: String, value: ODBValue, parentTable: ODBTable, database: FMDatabase) -> ODBValueObject? {
 
+		guard let odb = odb else {
+			return nil
+		}
+
 		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, name: name]
 		insertRow(d, insertType: .normal, in: database)
 		let uniqueID = Int(database.lastInsertRowId())
-		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value)
+		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value, odb: odb)
 	}
 }
 
@@ -53,6 +63,9 @@ private extension ODBObjectsTable {
 
 	func valueObject(with row: FMResultSet, parentTable: ODBTable) -> ODBValueObject? {
 
+		guard let odb = odb else {
+			return nil
+		}
 		guard let value = value(with: row) else {
 			return nil
 		}
@@ -61,7 +74,7 @@ private extension ODBObjectsTable {
 		}
 		let uniqueID = Int(row.longLongInt(forColumn: Key.uniqueID))
 
-		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value)
+		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value, odb: odb)
 	}
 
 	func value(with row: FMResultSet) -> ODBValue? {

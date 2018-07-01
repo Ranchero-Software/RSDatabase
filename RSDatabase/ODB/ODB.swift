@@ -17,16 +17,20 @@ public final class ODB {
 	public let filepath: String
 
 	public lazy var rootTable: ODBTable = {
-		ODBTable(uniqueID: -1, name: ODB.rootTableName, parentTable: nil, isRootTable: true, delegate: self)
+		ODBTable(uniqueID: -1, name: ODB.rootTableName, parentTable: nil, isRootTable: true, odb: self)
 	}()
 
 	static let rootTableName = "root"
 	static let rootTableID = -1
 
 	private let queue: RSDatabaseQueue
-	private let odbObjectsTable = ODBObjectsTable()
+
+	private lazy var odbObjectsTable: ODBObjectsTable = {
+		return ODBObjectsTable(odb: self)
+	}()
+	
 	private lazy var odbTablesTable: ODBTablesTable = {
-		return ODBTablesTable(delegate: self)
+		return ODBTablesTable(odb: self)
 	}()
 
 	private static let tableCreationStatements = """
@@ -169,7 +173,7 @@ public final class ODB {
 	}
 }
 
-extension ODB: ODBTableDelegate {
+extension ODB {
 
 	func deleteObject(_ object: ODBObject) {
 

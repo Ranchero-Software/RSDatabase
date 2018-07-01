@@ -10,6 +10,8 @@ import Foundation
 
 public typealias ODBDictionary = [String: ODBObject]
 
+// ODBTable and ODBValueObject conform to ODBObject.
+
 public protocol ODBObject {
 
 	var name: String { get }
@@ -17,5 +19,7 @@ public protocol ODBObject {
 	var isRootTable: Bool { get }
 	var parentTable: ODBTable? { get }
 	var path: ODBPath? { get }
+	var odb: ODB? { get }
+
 	func delete()
 }
