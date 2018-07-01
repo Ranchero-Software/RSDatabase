@@ -19,6 +19,9 @@ public final class ODB {
 	public lazy var rootTable: ODBTable = {
 		ODBTable(uniqueID: -1, name: ODB.rootTableName, parentTable: nil, isRootTable: true, odb: self)
 	}()
+	private lazy var rootPath: ODBPath = {
+		return ODBPath.root(self)
+	}()
 
 	static let rootTableName = "root"
 	static let rootTableID = -1
@@ -151,7 +154,7 @@ public final class ODB {
 			return rootTable
 		}
 
-		var pathNomad = ODBPath.root
+		var pathNomad = rootPath
 		var table: ODBTable? = nil
 
 		for element in path.elements {

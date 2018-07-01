@@ -18,9 +18,10 @@ public struct ODBPath: Hashable {
 	let lowercasedElements: [String]
 	let name: String
 	let isRoot: Bool
+	weak var odb: ODB?
 	public let hashValue: Int
 
-	init(elements: [String]) {
+	init(elements: [String], odb: ODB?) {
 
 		let canonicalElements = ODBPath.dropLeadingRootElement(from: elements)
 		self.elements = canonicalElements
@@ -35,14 +36,18 @@ public struct ODBPath: Hashable {
 			self.isRoot = false
 		}
 
+		self.odb = odb
 		self.hashValue = ODBPath.hashValue(with: self.lowercasedElements)
 	}
 
-	static let root = ODBPath(elements: [String]())
+	public static func root(_ odb: ODB) -> ODBPath {
+
+		return ODBPath(elements: [String](), odb: odb)
+	}
 
 	public func pathByAdding(_ element: String) -> ODBPath {
 
-		return ODBPath(elements: elements + [element])
+		return ODBPath(elements: elements + [element], odb: odb)
 	}
 
 	public func parentTablePath() -> ODBPath? {
@@ -51,12 +56,24 @@ public struct ODBPath: Hashable {
 			return nil
 		}
 
-		return ODBPath(elements: Array(elements.dropLast()))
+		return ODBPath(elements: Array(elements.dropLast()), odb: odb)
 	}
 
 	public static func ==(lhs: ODBPath, rhs: ODBPath) -> Bool {
 
-		return lhs.lowercasedElements == rhs.lowercasedElements
+		if lhs.lowercasedElements != rhs.lowercasedElements {
+			return false
+		}
+		guard let leftODB = lhs.odb, let rightODB = rhs.odb else {
+			if lhs.odb == nil && rhs.odb != nil {
+				return false
+			}
+			if lhs.odb != nil && rhs.odb == nil {
+				return false
+			}
+			return true //both nil
+		}
+		return leftODB === rightODB
 	}
 }
 
