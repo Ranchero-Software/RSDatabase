@@ -59,6 +59,14 @@ public struct ODBPath: Hashable {
 		return ODBPath(elements: Array(elements.dropLast()), odb: odb)
 	}
 
+	public func resolvedObject() -> ODBObject? {
+
+		guard let odb = odb else {
+			return nil
+		}
+		return odb.object(at: self)
+	}
+
 	public static func ==(lhs: ODBPath, rhs: ODBPath) -> Bool {
 
 		if lhs.lowercasedElements != rhs.lowercasedElements {

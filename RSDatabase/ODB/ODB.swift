@@ -11,6 +11,7 @@ import Foundation
 // Always call API or refer to ODB objects within an ODB.perform() call, which takes a block.
 // Otherwise it’s not thread-safe. It will crash. On purpose.
 // Exception: ODBValue structs are valid outside an ODB.perform() call.
+// ODB.perform() calls are not nestable.
 
 public final class ODB {
 
@@ -19,14 +20,15 @@ public final class ODB {
 	public lazy var rootTable: ODBTable = {
 		ODBTable(uniqueID: -1, name: ODB.rootTableName, parentTable: nil, isRootTable: true, odb: self)
 	}()
-	private lazy var rootPath: ODBPath = {
-		return ODBPath.root(self)
-	}()
 
 	static let rootTableName = "root"
 	static let rootTableID = -1
 
 	private let queue: RSDatabaseQueue
+
+	private lazy var rootPath: ODBPath = {
+		return ODBPath.root(self)
+	}()
 
 	private lazy var odbObjectsTable: ODBObjectsTable = {
 		return ODBObjectsTable(odb: self)
@@ -83,6 +85,11 @@ public final class ODB {
 
 		precondition(ODB.isLocked)
 
+		guard pathIsForThisODB(path) else {
+			assertionFailure("path must refer to this ODB.")
+			return nil
+		}
+
 		if path.isRoot {
 			return rootTable
 		}
@@ -95,6 +102,11 @@ public final class ODB {
 	public func parentTable(for path: ODBPath) -> ODBTable? {
 
 		precondition(ODB.isLocked)
+
+		guard pathIsForThisODB(path) else {
+			assertionFailure("path must refer to this ODB.")
+			return nil
+		}
 
 		if path.isRoot {
 			return nil
@@ -111,6 +123,11 @@ public final class ODB {
 
 		precondition(ODB.isLocked)
 
+		guard pathIsForThisODB(path) else {
+			assertionFailure("path must refer to this ODB.")
+			return nil
+		}
+
 		guard let parent = parentTable(for: path) else {
 			return false
 		}
@@ -122,6 +139,11 @@ public final class ODB {
 		// If not defined, return false.
 
 		precondition(ODB.isLocked)
+
+		guard pathIsForThisODB(path) else {
+			assertionFailure("path must refer to this ODB.")
+			return nil
+		}
 
 		guard let parent = parentTable(for: path) else {
 			return false
@@ -136,6 +158,11 @@ public final class ODB {
 
 		precondition(ODB.isLocked)
 
+		guard pathIsForThisODB(path) else {
+			assertionFailure("path must refer to this ODB.")
+			return nil
+		}
+
 		guard let parent = parentTable(for: path) else {
 			return nil
 		}
@@ -149,6 +176,11 @@ public final class ODB {
 		// Return nil if the path contains an existing non-table item.
 
 		precondition(ODB.isLocked)
+
+		guard pathIsForThisODB(path) else {
+			assertionFailure("path must refer to this ODB.")
+			return nil
+		}
 
 		if path.isRoot {
 			return rootTable
@@ -177,6 +209,14 @@ public final class ODB {
 }
 
 extension ODB {
+
+	func pathIsForThisODB(_ path: ODBPath) -> Bool {
+
+		guard let pathODB = path.odb else {
+			return false
+		}
+		return pathODB === self
+	}
 
 	func deleteObject(_ object: ODBObject) {
 
