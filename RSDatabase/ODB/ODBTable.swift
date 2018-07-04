@@ -32,8 +32,16 @@ public class ODBTable: ODBObject, Hashable {
 	}
 
 	public var path: ODBPath? {
-		//TODO
-		return nil
+		guard let odb = odb else {
+			return nil
+		}
+		if isRootTable {
+			return ODBPath.root(odb)
+		}
+		guard let parentTablePath = parentTable?.path else {
+			return nil
+		}
+		return parentTablePath.pathByAdding(name)
 	}
 
 	init(uniqueID: Int, name: String, parentTable: ODBTable?, isRootTable: Bool, odb: ODB) {
@@ -56,7 +64,9 @@ public class ODBTable: ODBObject, Hashable {
 		return true
 	}
 
-	public func deleteObject(_ object: ODBObject) {
+	public func deleteChild(_ object: ODBObject) {
+
+		precondition(ODB.isLocked)
 
 		odb?.deleteObject(object)
 	}
@@ -66,7 +76,7 @@ public class ODBTable: ODBObject, Hashable {
 		guard let child = self[name] else {
 			return false
 		}
-		deleteObject(child)
+		deleteChild(child)
 		return true
 	}
 
@@ -86,11 +96,6 @@ public class ODBTable: ODBObject, Hashable {
 		}
 		addChild(name: name, object: valueObject)
 		return true
-	}
-
-	public func delete() {
-
-		odb?.deleteObject(self)
 	}
 
 	public static func ==(lhs: ODBTable, rhs: ODBTable) -> Bool {

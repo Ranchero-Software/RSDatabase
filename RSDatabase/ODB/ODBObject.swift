@@ -23,3 +23,18 @@ public protocol ODBObject {
 
 	func delete()
 }
+
+public extension ODBObject {
+
+	func delete() {
+
+		guard !isRootTable else {
+			preconditionFailure("Can’t delete root table.")
+		}
+		guard let parentTable = parentTable else {
+			preconditionFailure("Expected parent table for object, found nil.")
+		}
+
+		parentTable.deleteChild(self)
+	}
+}
