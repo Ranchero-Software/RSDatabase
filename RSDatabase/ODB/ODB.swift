@@ -79,44 +79,6 @@ public final class ODB {
 
 	// The API below is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
 
-	public func object(at path: ODBPath) -> ODBObject? {
-
-		// If not defined, it returns nil.
-
-		precondition(ODB.isLocked)
-
-		guard pathIsForThisODB(path) else {
-			assertionFailure("path must refer to this ODB.")
-			return nil
-		}
-
-		if path.isRoot {
-			return rootTable
-		}
-		guard let parent = parentTable(for: path) else {
-			return nil
-		}
-		return parent[path.name]
-	}
-
-	public func parentTable(for path: ODBPath) -> ODBTable? {
-
-		precondition(ODB.isLocked)
-
-		guard pathIsForThisODB(path) else {
-			assertionFailure("path must refer to this ODB.")
-			return nil
-		}
-
-		if path.isRoot {
-			return nil
-		}
-		guard let parentTablePath = path.parentTablePath() else {
-			return nil
-		}
-		return object(at: parentTablePath) as? ODBTable
-	}
-
 	public func deleteObject(at path: ODBPath) -> Bool {
 
 		// If not defined, return false.

@@ -253,13 +253,13 @@
 			isa = PBXGroup;
 			children = (
 				84F4A2E0208B0719008BA1F8 /* ODB.swift */,
-				84F4A2F6208B0C8A008BA1F8 /* ODBTablesTable.swift */,
-				84F4A2F9208B0D56008BA1F8 /* ODBObjectsTable.swift */,
 				84F4A2FF208BE763008BA1F8 /* ODBPath.swift */,
 				844725EF20903E720027551E /* ODBObject.swift */,
 				84F4A302208BE7A5008BA1F8 /* ODBTable.swift */,
-				84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */,
 				84CED26C2090325C0073B251 /* ODBValue.swift */,
+				84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */,
+				84F4A2F6208B0C8A008BA1F8 /* ODBTablesTable.swift */,
+				84F4A2F9208B0D56008BA1F8 /* ODBObjectsTable.swift */,
 			);
 			name = ODB;
 			path = RSDatabase/ODB;
