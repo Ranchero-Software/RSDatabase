@@ -33,6 +33,14 @@ public struct ODBPath: Hashable {
 		return ODBPath(elements: Array(elements.dropLast()), odb: odb)
 	}
 
+	public var parentTable: ODBTable? {
+
+		if isRoot {
+			return nil
+		}
+		return parentTablePath?.object
+	}
+
 	init(elements: [String], odb: ODB) {
 
 		let canonicalElements = ODBPath.dropLeadingRootElement(from: elements)
@@ -60,6 +68,40 @@ public struct ODBPath: Hashable {
 	public func pathByAdding(_ element: String) -> ODBPath {
 
 		return ODBPath(elements: elements + [element], odb: odb)
+	}
+
+	public func setValue(_ value: ODBValue) -> Bool {
+
+		// If not defined or is root table, return false.
+
+		precondition(ODB.isLocked)
+		guard let parentTable = parentTable else {
+			return false
+		}
+		parentTable.setValue(value, name: name)
+	}
+
+	public func createTable() -> ODBTable? {
+
+		// Deletes any existing table.
+		// Parent table must already exist, or it returns nil.
+
+		precondition(ODB.isLocked)
+		return parentTable?.addSubtable(name: name)
+	}
+
+	public func ensureTable() -> ODBTable? {
+
+		// Won’t delete anything.
+		// Return the table for the final item in the path.
+		// Return nil if the path contains an existing non-table item.
+
+		precondition(ODB.isLocked)
+		if isRoot {
+			return odb?.rootTable
+		}
+
+		
 	}
 
 	public static func ==(lhs: ODBPath, rhs: ODBPath) -> Bool {

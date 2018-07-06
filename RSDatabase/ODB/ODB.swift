@@ -51,7 +51,7 @@ public final class ODB {
 	"""
 
 	private static let lock = NSLock()
-	private static var isLocked = false
+	static var isLocked = false
 
 	public init(filepath: String) {
 
@@ -78,41 +78,6 @@ public final class ODB {
 	}
 
 	// The API below is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
-
-	public func setValue(value: ODBValue, at path: ODBPath) -> Bool {
-
-		// If not defined, return false.
-
-		precondition(ODB.isLocked)
-
-		guard pathIsForThisODB(path) else {
-			assertionFailure("path must refer to this ODB.")
-			return nil
-		}
-
-		guard let parent = parentTable(for: path) else {
-			return false
-		}
-		return parent.setValue(value, name: path.name)
-	}
-
-	public func createTable(at path: ODBPath) -> ODBTable? {
-
-		// Deletes any existing table.
-		// Parent table must already exist, or it returns nil.
-
-		precondition(ODB.isLocked)
-
-		guard pathIsForThisODB(path) else {
-			assertionFailure("path must refer to this ODB.")
-			return nil
-		}
-
-		guard let parent = parentTable(for: path) else {
-			return nil
-		}
-		return parent.addSubtable(name: path.name)
-	}
 
 	public func ensureTable(at path: ODBPath) -> ODBTable? {
 
@@ -154,14 +119,6 @@ public final class ODB {
 }
 
 extension ODB {
-
-	func pathIsForThisODB(_ path: ODBPath) -> Bool {
-
-		guard let pathODB = path.odb else {
-			return false
-		}
-		return pathODB === self
-	}
 
 	func deleteObject(_ object: ODBObject) {
 
