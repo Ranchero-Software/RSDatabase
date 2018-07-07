@@ -101,7 +101,14 @@ public struct ODBPath: Hashable {
 			return odb?.rootTable
 		}
 
-		
+		if let object = object {
+			return object as? ODBTable // Return existing table, or nil if it’s an ODBValueObject
+		}
+
+		guard let parentTable = parentTablePath?.ensureTable() else {
+			return nil
+		}
+		return parentTable.addSubtable(name: name)
 	}
 
 	public static func ==(lhs: ODBPath, rhs: ODBPath) -> Bool {

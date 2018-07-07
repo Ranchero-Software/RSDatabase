@@ -76,46 +76,6 @@ public final class ODB {
 
 		block()
 	}
-
-	// The API below is path-based. See ODBObject, ODBTable, ODBValueObject, and ODBValue for more API.
-
-	public func ensureTable(at path: ODBPath) -> ODBTable? {
-
-		// Won’t delete anything.
-		// Return the table for the final item in the path.
-		// Return nil if the path contains an existing non-table item.
-
-		precondition(ODB.isLocked)
-
-		guard pathIsForThisODB(path) else {
-			assertionFailure("path must refer to this ODB.")
-			return nil
-		}
-
-		if path.isRoot {
-			return rootTable
-		}
-
-		var pathNomad = rootPath
-		var table: ODBTable? = nil
-
-		for element in path.elements {
-			pathNomad = pathNomad.pathByAdding(element)
-			let oneObject = object(at: pathNomad)
-
-			if oneObject == nil {
-				table = createTable(at: pathNomad)
-			}
-			else if oneObject is ODBTable {
-				table = oneObject as? ODBTable
-			}
-			else {
-				return nil // Object found — but not a table
-			}
-		}
-
-		return table
-	}
 }
 
 extension ODB {
