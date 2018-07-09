@@ -25,6 +25,10 @@ public struct ODBPath: Hashable {
 		return resolvedObject()
 	}
 
+	public var table: ODBTable? {
+
+		return resolvedObject() as? ODBTable
+	}
 	public var parentTablePath: ODBPath? {
 
 		guard let odb = odb, elements.count > 0 else {
@@ -38,7 +42,7 @@ public struct ODBPath: Hashable {
 		if isRoot {
 			return nil
 		}
-		return parentTablePath?.object
+		return parentTablePath?.table
 	}
 
 	init(elements: [String], odb: ODB) {
@@ -65,8 +69,11 @@ public struct ODBPath: Hashable {
 		return ODBPath(elements: [String](), odb: odb)
 	}
 
-	public func pathByAdding(_ element: String) -> ODBPath {
+	public func pathByAdding(_ element: String) -> ODBPath? {
 
+		guard let odb = odb else {
+			return nil
+		}
 		return ODBPath(elements: elements + [element], odb: odb)
 	}
 

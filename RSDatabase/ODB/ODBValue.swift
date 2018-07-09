@@ -19,15 +19,65 @@ public struct ODBValue: Equatable {
 		case data
 	}
 
-	let value: Any
-	let primitiveType: PrimitiveType
-	let applicationType: String? // Application-defined
+	public let value: Any
+	public let primitiveType: PrimitiveType
+	public let applicationType: String? // Application-defined
 
-	init(value: Any, primitiveType: PrimitiveType, applicationType: String?) {
+	private static let trueValue = ODBValue(value: true, primitiveType: .boolean)
+	private static let falseValue = ODBValue(value: false, primitiveType: .boolean)
+	private static var integerValueCache = [Int: ODBValue]()
+	private static let integerValueCacheLock = NSLock()
+
+	public init(value: Any, primitiveType: PrimitiveType, applicationType: String?) {
 
 		self.value = value
 		self.primitiveType = primitiveType
 		self.applicationType = applicationType
+	}
+
+	public init(value: Any, primitiveType: PrimitiveType) {
+
+		self.init(value: value, primitiveType: primitiveType, applicationType: nil)
+	}
+
+	public static func bool(_ boolean: Bool) -> ODBValue {
+
+		return boolean ? ODBValue.trueValue : ODBValue.falseValue
+	}
+
+	public static func integer(_ integer: Int) -> ODBValue {
+
+		integerValueCacheLock.lock()
+		defer {
+			integerValueCacheLock.unlock()
+		}
+
+		if let cachedValue = integerValueCache[integer] {
+			return cachedValue
+		}
+		let value = ODBValue(value: integer, primitiveType: .integer)
+		integerValueCache[integer] = value
+		return value
+	}
+
+	public static func double(_ double: Double) -> ODBValue {
+
+		return ODBValue(value: double, primitiveType: .double)
+	}
+
+	public static func date(_ date: Date) -> ODBValue {
+
+		return ODBValue(value: date, primitiveType: .double)
+	}
+
+	public static func string(_ string: String) -> ODBValue {
+
+		return ODBValue(value: string, primitiveType: .string)
+	}
+
+	public static func data(_ data: Data) -> ODBValue {
+
+		return ODBValue(value: data, primitiveType: .data)
 	}
 
 	public static func ==(lhs: ODBValue, rhs: ODBValue) -> Bool {
