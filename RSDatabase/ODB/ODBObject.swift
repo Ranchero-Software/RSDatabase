@@ -15,7 +15,6 @@ public typealias ODBDictionary = [String: ODBObject]
 public protocol ODBObject {
 
 	var name: String { get }
-	var isTable: Bool { get }
 	var isRootTable: Bool { get }
 	var parentTable: ODBTable? { get }
 	var path: ODBPath? { get }

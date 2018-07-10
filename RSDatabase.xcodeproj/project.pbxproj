@@ -41,7 +41,6 @@
 		849BF8C61C94FB8E0071D1DA /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 849BF8C51C94FB8E0071D1DA /* libsqlite3.tbd */; };
 		84ABC1D11F364B07000DCC55 /* DatabaseLookupTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ABC1D01F364B07000DCC55 /* DatabaseLookupTable.swift */; };
 		84ABC1D21F364B07000DCC55 /* DatabaseLookupTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ABC1D01F364B07000DCC55 /* DatabaseLookupTable.swift */; };
-		84BB215720F13C5700AF2687 /* README.markdown in Resources */ = {isa = PBXBuildFile; fileRef = 84BB215620F13C5700AF2687 /* README.markdown */; };
 		84C6DD011F395C13009AFB47 /* DatabaseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C6DD001F395C13009AFB47 /* DatabaseObject.swift */; };
 		84CED26D2090325C0073B251 /* ODBValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CED26C2090325C0073B251 /* ODBValue.swift */; };
 		84CED26E2090325C0073B251 /* ODBValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CED26C2090325C0073B251 /* ODBValue.swift */; };
@@ -430,7 +429,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84BB215720F13C5700AF2687 /* README.markdown in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

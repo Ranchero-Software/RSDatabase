@@ -25,6 +25,21 @@ public struct ODBPath: Hashable {
 		return resolvedObject()
 	}
 
+	public var table: ODBTable? {
+		// Convenience for getting the ODBTable this refers to.
+		// Return nil if not defined or if this points to a value.
+		return object? as ODBTable
+	}
+
+	public var value: ODBValue? {
+		// Convenience for getting the ODBValue at this path.
+		// Return nil if not defined or if this points to a table.
+		guard let valueObject = object as? ODBValueObject else {
+			return nil
+		}
+		return valueObject.value
+	}
+
 	public var parentTablePath: ODBPath? {
 
 		guard let odb = odb, elements.count > 0 else {

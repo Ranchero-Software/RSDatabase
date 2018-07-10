@@ -38,7 +38,7 @@ The `ensureTable` function returns an `ODBTable`. It makes sure that the entire 
 
 There is a similar `createTable` function that deletes any existing table at that path and then creates a new table. It does *not* ensure that the entire path exists, and it returns nil if the necessary ancestor tables don’t exist.
 
-Operations referencing `ODBTable` and `ODBValueObject` must be enclosed in an `ODB.perform` block. This is for thread safety.
+Operations referencing `ODBTable` and `ODBValueObject` must be enclosed in an `ODB.perform` block. This is for thread safety. If you don’t use an `ODB.perform` block, it will crash deliberately with a `preconditionFailure`.
 
 You should *not* hold a reference to an `ODBTable`, `ODBValueObject`, or `ODBObject` outside of the `perform` block. You *can* hold a reference to an `ODBPath` and to an `ODBValue`.
 
@@ -91,23 +91,57 @@ Say the user undoes editing the feed’s name, and now you want to delete `RSS.f
 
 This works on both tables and values. You can also call `delete()`  directly on an `ODBTable`, `ODBValueObject`, or `ODBObject`.
 
-### Note about the root table
+### ODBObject
+
+Some functions take or return an `ODBObject`. This is a protocol — the object is either an `ODBTable` or `ODBValueObject`.
+
+There is useful API to be aware of in ODBObject.swift. (But, again, an `ODBObject` reference is valid only with an `ODB.perform` call.)
+
+### ODBTable
+
+You can do some of the same things you can do with an `ODBPath`. You can also get the entire dictionary of `children`, look up any child object, delete all children, add child objects, and more.
+
+### ODBValueObject
+
+You won’t use this directly all that often. It wraps an `ODBValue`, which you’ll use way more often. The useful API for `ODBValueObject` is almost entirely in `ODBObject`.
+
+## Notes
+
+### The root table
 
 The one table you can’t delete is the root table — every ODB has a top-level table named `root`. You don’t usually specify `root` as the first part of a path, but you could. It’s implied.
 
 A path like `["RSS", "feeds"]` is precisely the same as `["root", "RSS", "feeds"]` — they’re interchangeable paths.
 
-### Note about case-sensitivity
+### Case-sensitivity
 
-Frontier’s object database was case-insensitive: you could refer to the "feeds" table as the "FEEDS" table — it would be the same thing.
+Frontier’s object database was case-insensitive: you could refer to the "feeds" table as the "FEeDs" table — it would be the same thing.
 
 While I don’t know this for sure, I assume this was because the Mac’s file system is also case-insensitive. This was considered one of the user-friendly things about Macs.
 
 We’re preserved this: this ODB is also case-insensitive. When comparing two keys it always uses the English locale, so that results are predictable no matter what the machine’s locale actually is. This is something to be aware of.
 
+### Caching and Performance
 
+The database is cached in memory as it is used. A table’s children are not read into memory until referenced.
 
+For objects already in memory, reads are fast since there’s no need to query the SQLite database.
 
+If this caching becomes a problem in production use — if it tends to use too much memory — we’ll make it smarter.
+
+### Thread safety
+
+Why is it okay to create and refer to `ODBPath` and `ODBValue` objects outside of an `ODB.perform` call, while it’s not okay with `ODBObject`, `ODBTable`, and `ODBValueObject`?
+
+Because:
+
+`ODBPath` represents a *query* rather than a direct reference. Each time you resolve the object it points to, it recalculates. You can create paths to things that don’t exist. The database can change while you hold an `ODBPath` reference, and that’s okay: it’s by design. Just know that you might get back something different every time you refer to `path.object`, `path.value`, and `path.table`.
+
+`ODBValue` is an immutable struct with no connection to the database. Once you get one, it doesn’t change, even if the database object it came from changes. (In general these will be short-lived — you just use them for wrapping and unwrapping your app’s data.)
+
+On the other hand, `ODBObject`, `ODBTable`, and `ODBValueObject` are direct references to the database. To prevent conflicts and maintain the structure of the database properly, it’s necessary to use a lock when working with these — that’s what `ODB.perform` does.
+
+Say you have a particular table that your app uses a lot. It would seem natural to want to keep a reference to that particular `ODBTable`. Instead, create and keep a reference to an `ODBPath` and refer to `path.table` inside an `ODB.perform` block when you need the table.
 
 
 
