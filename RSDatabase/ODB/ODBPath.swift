@@ -26,6 +26,7 @@ public struct ODBPath: Hashable {
 	}
 
 	public var table: ODBTable? {
+<<<<<<< HEAD
 		// Convenience for getting the ODBTable this refers to.
 		// Return nil if not defined or if this points to a value.
 		return object? as ODBTable
@@ -40,6 +41,11 @@ public struct ODBPath: Hashable {
 		return valueObject.value
 	}
 
+=======
+
+		return resolvedObject() as? ODBTable
+	}
+>>>>>>> b6ca388ec00b96e5c9540b50eef2bf9da92b4361
 	public var parentTablePath: ODBPath? {
 
 		guard let odb = odb, elements.count > 0 else {
@@ -53,7 +59,7 @@ public struct ODBPath: Hashable {
 		if isRoot {
 			return nil
 		}
-		return parentTablePath?.object
+		return parentTablePath?.table
 	}
 
 	init(elements: [String], odb: ODB) {
@@ -80,8 +86,11 @@ public struct ODBPath: Hashable {
 		return ODBPath(elements: [String](), odb: odb)
 	}
 
-	public func pathByAdding(_ element: String) -> ODBPath {
+	public func pathByAdding(_ element: String) -> ODBPath? {
 
+		guard let odb = odb else {
+			return nil
+		}
 		return ODBPath(elements: elements + [element], odb: odb)
 	}
 
