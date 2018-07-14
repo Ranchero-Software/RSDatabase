@@ -8,9 +8,11 @@
 
 import Foundation
 
-// A path is an array like ["system", "verbs", "apps", "Xcode"].
-// The first element in the array may be "root". If so, it’s ignored: "root" is implied.
-// An empty array or ["root"] refers to the root table.
+/**
+	An ODBPath is an array like ["system", "verbs", "apps", "Xcode"] plus an associated ODB.
+	The first element in the array may be "root". If so, it’s ignored: "root" is implied.
+	An empty array or ["root"] refers to the root table.
+*/
 
 public struct ODBPath: Hashable {
 
@@ -21,26 +23,25 @@ public struct ODBPath: Hashable {
 	weak var odb: ODB?
 	public let hashValue: Int
 
+	/// The optional ODBObject at this path.
 	public var object: ODBObject? {
 		return resolvedObject()
 	}
 
+	/// The optional ODBTable at this path. Returns nil if undefined or is a value.
 	public var table: ODBTable? {
-		// Convenience for getting the ODBTable this refers to.
-		// Return nil if not defined or if this points to a value.
 		return object as? ODBTable
 	}
 
+	/// The optional ODBValue at this path. Returns nil if undefined or is a table.
 	public var value: ODBValue? {
-		// Convenience for getting the ODBValue at this path.
-		// Return nil if not defined or if this points to a table.
 		guard let valueObject = object as? ODBValueObject else {
 			return nil
 		}
 		return valueObject.value
 	}
 
-
+	/// The optional path to the parent table. Nil if path is to the root table.
 	public var parentTablePath: ODBPath? {
 
 		guard let odb = odb, elements.count > 0 else {
