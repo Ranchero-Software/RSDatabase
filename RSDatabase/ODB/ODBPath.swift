@@ -97,7 +97,7 @@ public struct ODBPath: Hashable {
 		guard let parentTable = parentTable else {
 			return false
 		}
-		parentTable.setValue(value, name: name)
+		return parentTable.setValue(value, name: name)
 	}
 
 	public func createTable() -> ODBTable? {
