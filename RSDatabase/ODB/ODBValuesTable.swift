@@ -1,5 +1,5 @@
 //
-//  ODBObjectsTable.swift
+//  ODBValuesTable.swift
 //  RSDatabase
 //
 //  Created by Brent Simmons on 4/20/18.
@@ -8,9 +8,9 @@
 
 import Foundation
 
-final class ODBObjectsTable: DatabaseTable {
+final class ODBValuesTable: DatabaseTable {
 
-	let name = "odb_objects"
+	let name = "odb_values"
 	weak var odb: ODB? = nil
 
 	init(odb: ODB) {
@@ -59,7 +59,7 @@ final class ODBObjectsTable: DatabaseTable {
 	}
 }
 
-private extension ODBObjectsTable {
+private extension ODBValuesTable {
 
 	func valueObject(with row: FMResultSet, parentTable: ODBTable) -> ODBValueObject? {
 
