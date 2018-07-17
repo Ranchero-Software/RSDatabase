@@ -52,7 +52,11 @@ final class ODBValuesTable: DatabaseTable {
 			return nil
 		}
 
-		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, name: name]
+		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, Key.name: name, Key.primitiveType: value.primitiveType, Key.value: value.value]
+		if let applicationType = value.applicationType {
+			d.setValue(applicationType, forKey: Key.applicationType)
+		}
+
 		insertRow(d, insertType: .normal, in: database)
 		let uniqueID = Int(database.lastInsertRowId())
 		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value, odb: odb)
