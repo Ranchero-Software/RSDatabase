@@ -30,8 +30,8 @@ public final class ODB {
 		return ODBPath.root(self)
 	}()
 
-	private lazy var odbObjectsTable: ODBObjectsTable = {
-		return ODBObjectsTable(odb: self)
+	private lazy var odbValuesTable: ODBValuesTable = {
+		return ODBValuesTable(odb: self)
 	}()
 	
 	private lazy var odbTablesTable: ODBTablesTable = {
@@ -41,13 +41,13 @@ public final class ODB {
 	private static let tableCreationStatements = """
 	CREATE TABLE if not EXISTS odb_tables (id INTEGER PRIMARY KEY AUTOINCREMENT, parent_id INTEGER NOT NULL, name TEXT NOT NULL);
 
-	CREATE TABLE if not EXISTS odb_objects (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER NOT NULL, name TEXT NOT NULL, primitive_type INTEGER NOT NULL, application_type TEXT, value BLOB);
+	CREATE TABLE if not EXISTS odb_values (id INTEGER PRIMARY KEY AUTOINCREMENT, odb_table_id INTEGER NOT NULL, name TEXT NOT NULL, primitive_type INTEGER NOT NULL, application_type TEXT, value BLOB);
 
 	CREATE INDEX if not EXISTS odb_tables_parent_id_index on odb_tables (parent_id);
-	CREATE INDEX if not EXISTS odb_objects_odb_table_id_index on odb_objects (odb_table_id);
+	CREATE INDEX if not EXISTS odb_values_odb_table_id_index on odb_values (odb_table_id);
 
 	CREATE TRIGGER if not EXISTS odb_tables_after_delete_trigger_delete_subtables after delete on odb_tables begin delete from odb_tables where parent_id = OLD.id; end;
-	CREATE TRIGGER if not EXISTS odb_tables_after_delete_trigger_delete_child_objects after delete on odb_tables begin delete from odb_objects where odb_table_id = OLD.id; end;
+	CREATE TRIGGER if not EXISTS odb_tables_after_delete_trigger_delete_child_values after delete on odb_tables begin delete from odb_values where odb_table_id = OLD.id; end;
 	"""
 
 	private static let lock = NSLock()
@@ -87,7 +87,7 @@ extension ODB {
 		if let valueObject = object as? ODBValueObject {
 			let uniqueID = valueObject.uniqueID
 			queue.update { (database) in
-				self.odbObjectsTable.deleteObject(uniqueID: uniqueID, database: database)
+				self.odbValuesTable.deleteObject(uniqueID: uniqueID, database: database)
 			}
 		}
 		else if let tableObject = object as? ODBTable {
@@ -106,7 +106,7 @@ extension ODB {
 		let parentUniqueID = table.uniqueID
 		queue.update { (database) in
 			self.odbTablesTable.deleteChildTables(parentUniqueID: parentUniqueID, database: database)
-			self.odbObjectsTable.deleteChildObjects(parentUniqueID: parentUniqueID, database: database)
+			self.odbValuesTable.deleteChildObjects(parentUniqueID: parentUniqueID, database: database)
 		}
 	}
 
@@ -127,7 +127,7 @@ extension ODB {
 
 		var valueObject: ODBValueObject? = nil
 		queue.updateSync { (database) in
-			valueObject = self.odbObjectsTable.insertValueObject(name: name, value: value, parentTable: parent, database: database)
+			valueObject = self.odbValuesTable.insertValueObject(name: name, value: value, parentTable: parent, database: database)
 		}
 
 		return valueObject
@@ -142,7 +142,7 @@ extension ODB {
 		queue.fetchSync { (database) in
 
 			let tables = self.odbTablesTable.fetchSubtables(of: table, database: database)
-			let valueObjects = self.odbObjectsTable.fetchValueObjects(of: table, database: database)
+			let valueObjects = self.odbValuesTable.fetchValueObjects(of: table, database: database)
 
 			// Keys are lower-cased, since we case-insensitive lookups.
 
