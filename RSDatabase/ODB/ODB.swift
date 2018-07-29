@@ -53,6 +53,9 @@ public final class ODB {
 	private static let lock = NSLock()
 	static var isLocked = false
 
+	private var pathCache = [[String]: ODBPath]()
+	private static let pathCacheLock = NSLock()
+
 	public init(filepath: String) {
 
 		self.filepath = filepath
@@ -75,6 +78,22 @@ public final class ODB {
 		}
 
 		block()
+	}
+
+	public func path(elements: [String]) -> ODBPath {
+
+		// ODBPath objects will usually be uniqued, but it’s not guaranteed and isn’t necessary.
+		pathCacheLock.lock()
+		defer {
+			pathCacheLock.unlock()
+		}
+
+		if let cachedPath = pathCache[elements] {
+			return cachedPath
+		}
+		let path = ODBPath(elements: elements, odb: self)
+		pathCache[elements] = path
+		return path
 	}
 }
 

@@ -21,7 +21,7 @@ public final class ODBPath: Hashable {
 	let name: String
 	let isRoot: Bool
 	weak var odb: ODB?
-	public let hashValue: Int
+	let odbFilepath: String
 
 	/// The optional ODBObject at this path.
 	public var object: ODBObject? {
@@ -62,11 +62,11 @@ public final class ODBPath: Hashable {
 		else {
 			self.name = canonicalElements.last!
 			self.isRoot = false
-			self.parentTablePath = ODBPath(elements: Array(elements.dropLast()), odb: odb)
+			self.parentTablePath = odb.path(elements: Array(elements.dropLast()))
 		}
 
 		self.odb = odb
-		self.hashValue = ODBPath.hashValue(with: self.lowercasedElements)
+		self.odbFilepath = odb.filepath
 	}
 
 	public static func root(_ odb: ODB) -> ODBPath {
@@ -76,10 +76,7 @@ public final class ODBPath: Hashable {
 
 	public func pathByAdding(_ element: String) -> ODBPath? {
 
-		guard let odb = odb else {
-			return nil
-		}
-		return ODBPath(elements: elements + [element], odb: odb)
+		return odb?.path(elements + [element])
 	}
 
 	public func setValue(_ value: ODBValue) -> Bool {
@@ -123,21 +120,14 @@ public final class ODBPath: Hashable {
 		return parentTable.addSubtable(name: name)
 	}
 
+	func hash(into hasher: inout Hasher) {
+		hasher.combine(lowercasedElements)
+		hasher.combine(odbFilepath)
+	}
+
 	public static func ==(lhs: ODBPath, rhs: ODBPath) -> Bool {
 
-		if lhs.lowercasedElements != rhs.lowercasedElements {
-			return false
-		}
-		guard let leftODB = lhs.odb, let rightODB = rhs.odb else {
-			if lhs.odb == nil && rhs.odb != nil {
-				return false
-			}
-			if lhs.odb != nil && rhs.odb == nil {
-				return false
-			}
-			return true //both nil
-		}
-		return leftODB === rightODB
+		return lhs.odbFilepath == rhs.odbFilepath && lhs.lowercasedElements == rhs.lowercasedElements
 	}
 }
 
