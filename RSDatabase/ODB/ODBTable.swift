@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class ODBTable: ODBObject, Hashable {
+public final class ODBTable: ODBObject, Hashable {
 
 	let uniqueID: Int
 	public let isRootTable: Bool
