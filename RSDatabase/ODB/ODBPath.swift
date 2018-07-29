@@ -147,13 +147,6 @@ private extension ODBPath {
 		return parentTable[name]
 	}
 
-	static func hashValue(with elements: [String]) -> Int {
-
-		return elements.reduce(0) { (result, element) -> Int in
-			return result + element.hashValue
-		}
-	}
-
 	static func dropLeadingRootElement(from elements: [String]) -> [String] {
 
 		if elements.count < 1 {
