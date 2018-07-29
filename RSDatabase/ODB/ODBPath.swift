@@ -14,7 +14,7 @@ import Foundation
 	An empty array or ["root"] refers to the root table.
 */
 
-public struct ODBPath: Hashable {
+public final class ODBPath: Hashable {
 
 	let elements: [String]
 	let lowercasedElements: [String]
@@ -42,19 +42,9 @@ public struct ODBPath: Hashable {
 	}
 
 	/// The optional path to the parent table. Nil if path is to the root table.
-	public var parentTablePath: ODBPath? {
-
-		guard let odb = odb, elements.count > 0 else {
-			return nil
-		}
-		return ODBPath(elements: Array(elements.dropLast()), odb: odb)
-	}
+	public let parentTablePath: ODBPath?
 
 	public var parentTable: ODBTable? {
-
-		if isRoot {
-			return nil
-		}
 		return parentTablePath?.table
 	}
 
@@ -67,10 +57,12 @@ public struct ODBPath: Hashable {
 		if canonicalElements.count < 1 {
 			self.name = ODB.rootTableName
 			self.isRoot = true
+			self.parentTablePath = nil
 		}
 		else {
 			self.name = canonicalElements.last!
 			self.isRoot = false
+			self.parentTablePath = ODBPath(elements: Array(elements.dropLast()), odb: odb)
 		}
 
 		self.odb = odb
