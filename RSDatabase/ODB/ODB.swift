@@ -80,12 +80,12 @@ public final class ODB {
 		block()
 	}
 
-	public func path(elements: [String]) -> ODBPath {
+	public func path(_ elements: [String]) -> ODBPath {
 
 		// ODBPath objects will usually be uniqued, but it’s not guaranteed and isn’t necessary.
-		pathCacheLock.lock()
+		ODB.pathCacheLock.lock()
 		defer {
-			pathCacheLock.unlock()
+			ODB.pathCacheLock.unlock()
 		}
 
 		if let cachedPath = pathCache[elements] {

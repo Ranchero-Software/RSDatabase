@@ -62,7 +62,7 @@ public final class ODBPath: Hashable {
 		else {
 			self.name = canonicalElements.last!
 			self.isRoot = false
-			self.parentTablePath = odb.path(elements: Array(elements.dropLast()))
+			self.parentTablePath = odb.path(Array(elements.dropLast()))
 		}
 
 		self.odb = odb
@@ -120,7 +120,7 @@ public final class ODBPath: Hashable {
 		return parentTable.addSubtable(name: name)
 	}
 
-	func hash(into hasher: inout Hasher) {
+	public func hash(into hasher: inout Hasher) {
 		hasher.combine(lowercasedElements)
 		hasher.combine(odbFilepath)
 	}
