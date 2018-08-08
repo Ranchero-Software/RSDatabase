@@ -12,19 +12,17 @@ public final class ODBTable: ODBObject, Hashable {
 
 	let uniqueID: Int
 	public let isRootTable: Bool
-	public let isTable = true
-	public weak var odb: ODB?
+	public let odb: ODB
 	public var parentTable: ODBTable?
 	public var name: String
-	public let hashValue: Int
 	private var _children: ODBDictionary?
 
 	public var children: ODBDictionary {
 		get {
 			if _children == nil {
-				_children = odb?.fetchChildren(of: self)
+				_children = odb.fetchChildren(of: self)
 			}
-			return _children!
+			return _children
 		}
 		set {
 			_children = newValue
@@ -32,16 +30,13 @@ public final class ODBTable: ODBObject, Hashable {
 	}
 
 	public var path: ODBPath? {
-		guard let odb = odb else {
-			return nil
-		}
 		if isRootTable {
-			return ODBPath.root(odb)
+			return ODBPath.root
 		}
 		guard let parentTablePath = parentTable?.path else {
 			return nil
 		}
-		return parentTablePath.pathByAdding(name)
+		return parentTablePath + name
 	}
 
 	init(uniqueID: Int, name: String, parentTable: ODBTable?, isRootTable: Bool, odb: ODB) {
@@ -51,7 +46,6 @@ public final class ODBTable: ODBObject, Hashable {
 		self.parentTable = parentTable
 		self.isRootTable = isRootTable
 		self.odb = odb
-		self.hashValue = uniqueID ^ name.hashValue
 	}
 
 	public subscript(_ name: String) -> ODBObject? {
@@ -65,8 +59,6 @@ public final class ODBTable: ODBObject, Hashable {
 	}
 
 	public func deleteChild(_ object: ODBObject) {
-
-		precondition(ODB.isLocked)
 
 		odb?.deleteObject(object)
 	}
@@ -98,15 +90,13 @@ public final class ODBTable: ODBObject, Hashable {
 		return true
 	}
 
-	public static func ==(lhs: ODBTable, rhs: ODBTable) -> Bool {
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(uniqueID)
+		hasher.combine(odb)
+	}
 
-		if lhs.uniqueID != rhs.uniqueID {
-			return false
-		}
-		guard let leftODB = lhs.odb, let rightODB = rhs.odb else {
-			return false
-		}
-		return leftODB === rightODB
+	public static func ==(lhs: ODBTable, rhs: ODBTable) -> Bool {
+		return lhs.uniqueID == rhs.uniqueID && lhs.odb == rhs.odb
 	}
 }
 

@@ -9,112 +9,132 @@
 import Foundation
 
 /**
-	An ODBPath is an array like ["system", "verbs", "apps", "Xcode"] plus an associated ODB.
+	An ODBPath is an array like ["system", "verbs", "apps", "Xcode"].
 	The first element in the array may be "root". If so, it’s ignored: "root" is implied.
 	An empty array or ["root"] refers to the root table.
+	A path does not necessarily point to something that exists. It’s like file paths or URLs.
 */
 
-public final class ODBPath: Hashable {
+public struct ODBPath: Hashable {
 
-	let elements: [String]
-	let lowercasedElements: [String]
-	let name: String
-	let isRoot: Bool
-	weak var odb: ODB?
-	let odbFilepath: String
+	/// The last element in the path. May not have same capitalization as canonical name in the database.
+	public let name: String
 
-	/// The optional ODBObject at this path.
-	public var object: ODBObject? {
-		return resolvedObject()
-	}
+	/// True if this path points to a root table.
+	public let isRoot: Bool
 
-	/// The optional ODBTable at this path. Returns nil if undefined or is a value.
-	public var table: ODBTable? {
-		return object as? ODBTable
-	}
+	/// Root table name. Constant.
+	public static let rootTableName = "root"
 
-	/// The optional ODBValue at this path. Returns nil if undefined or is a table.
-	public var value: ODBValue? {
-		guard let valueObject = object as? ODBValueObject else {
+	/// Elements of the path minus any unneccessary initial "root" element.
+	public let elements: [String]
+
+	/// ODBPath that represents the root table.
+	public static let root = ODBPath.path([String]())
+
+	/// The optional path to the parent table. Nil only if path is to the root table.
+	public var parentTablePath: ODBPath? {
+		if isRoot {
 			return nil
 		}
-		return valueObject.value
+		return ODBPath.path(Array(elements.dropLast()))
 	}
 
-	/// The optional path to the parent table. Nil if path is to the root table.
-	public let parentTablePath: ODBPath?
+	private let lowercasedElements: [String]
+	private static var pathCache = [[String]: ODBPath]()
+	private static let pathCacheLock = NSLock()
 
-	public var parentTable: ODBTable? {
-		return parentTablePath?.table
-	}
-
-	init(elements: [String], odb: ODB) {
+	private init(elements: [String]) {
 
 		let canonicalElements = ODBPath.dropLeadingRootElement(from: elements)
 		self.elements = canonicalElements
-		self.lowercasedElements = canonicalElements.map{ $0.odbLowercased() }
+		self.lowercasedElements = canonicalElements.odbLowercased()
 
 		if canonicalElements.count < 1 {
-			self.name = ODB.rootTableName
+			self.name = ODBPath.rootTableName
 			self.isRoot = true
-			self.parentTablePath = nil
 		}
 		else {
 			self.name = canonicalElements.last!
 			self.isRoot = false
-			self.parentTablePath = odb.path(Array(elements.dropLast()))
+		}
+	}
+
+	/// Create a path.
+	public static func path(_ elements: [String]) -> ODBPath {
+
+		pathCacheLock.lock()
+		defer {
+			pathCacheLock.unlock()
 		}
 
-		self.odb = odb
-		self.odbFilepath = odb.filepath
-	}
-
-	public static func root(_ odb: ODB) -> ODBPath {
-
-		return ODBPath(elements: [String](), odb: odb)
-	}
-
-	public func pathByAdding(_ element: String) -> ODBPath? {
-
-		return odb?.path(elements + [element])
-	}
-
-	public func setValue(_ value: ODBValue) -> Bool {
-
-		// If not defined or is root table, return false.
-
-		precondition(ODB.isLocked)
-		guard let parentTable = parentTable else {
-			return false
+		if let cachedPath = pathCache[elements] {
+			return cachedPath
 		}
-		return parentTable.setValue(value, name: name)
+		let path = ODBPath(elements: elements)
+		pathCache[elements] = path
+		return path
 	}
 
-	public func createTable() -> ODBTable? {
-
-		// Deletes any existing table.
-		// Parent table must already exist, or it returns nil.
-
-		precondition(ODB.isLocked)
-		return parentTable?.addSubtable(name: name)
+	/// Create a path by adding an element.
+	public func pathByAdding(_ element: String) -> ODBPath {
+		return ODBPath.path(elements + [element])
 	}
 
-	public func ensureTable() -> ODBTable? {
+	/// Create a path by adding an element.
+	public static func +(lhs: ODBPath, rhs: String) -> ODBPath {
+		return lhs.pathByAdding(rhs)
+	}
 
-		// Won’t delete anything.
-		// Return the table for the final item in the path.
-		// Return nil if the path contains an existing non-table item.
+	/// Fetch the database object at this path.
+	public func odbObject(with odb: ODB) -> ODBObject? {
+		return resolvedObject(odb)
+	}
 
-		precondition(ODB.isLocked)
+	/// Fetch the value at this path.
+	public func value(with odb: ODB) -> ODBValue? {
+		return odbObject(with: odb) as? ODBValue
+	}
+
+	/// Set a value for this path. Will overwrite existing value or table.
+	/// Return false if not defined or is root table.
+	public func setValue(_ value: ODBValue, odb: ODB) -> Bool {
+		return parentTable(with: odb)?.setValue(value, name: name) ?? false
+	}
+
+	/// Fetch the table at this path.
+	public func table(with odb: ODB) -> ODBTable? {
+		return odbObject(with: odb) as? ODBTable
+	}
+
+	/// Fetch the parent table. Nil if this is the root table or if table doesn’t exist.
+	public func parentTable(with odb: ODB) -> ODBTable? {
+		return parentTablePath?.table(with: odb)
+	}
+
+	/// Creates a table — will delete existing table.
+	/// Returns nil if parent table doesn’t already exist. (See ensureTable.)
+	public func createTable(with odb: ODB) -> ODBTable? {
+		return parentTable(with: odb)?.addSubtable(name: name)
+	}
+
+	/// Return the table for the final item in the path.
+	/// Won’t delete anything.
+	/// Returns nil if the path contains an existing non-table (value) item.
+	@discardableResult
+	public func ensureTable(with odb: ODB) -> ODBTable? {
 		if isRoot {
-			return odb?.rootTable
+			return odb.rootTable
 		}
 
-		if let object = object {
-			return object as? ODBTable // Return existing table, or nil if it’s an ODBValueObject
+		if let existingObject = odbObject(with: odb) {
+			if let existingTable = existingObject as? ODBTable {
+				return existingTable
+			}
+			return nil // It must be a value: don’t overwrite.
 		}
 
-		guard let parentTable = parentTablePath?.ensureTable() else {
+		guard let parentTable = parentTablePath?.ensureTable(with: odb) else {
 			return nil
 		}
 		return parentTable.addSubtable(name: name)
@@ -122,38 +142,29 @@ public final class ODBPath: Hashable {
 
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(lowercasedElements)
-		hasher.combine(odbFilepath)
 	}
 
 	public static func ==(lhs: ODBPath, rhs: ODBPath) -> Bool {
-
-		return lhs.odbFilepath == rhs.odbFilepath && lhs.lowercasedElements == rhs.lowercasedElements
+		return lhs.lowercasedElements == rhs.lowercasedElements
 	}
 }
 
 private extension ODBPath {
 
-	func resolvedObject() -> ODBObject? {
-
-		guard let odb = odb else {
-			return nil
-		}
+	func resolvedObject(_ odb: ODB) -> ODBObject? {
 		if isRoot {
 			return odb.rootTable
 		}
-		guard let parentTablePath = parentTablePath, let parentTable = parentTablePath.object as? ODBTable else {
-			return nil
-		}
-		return parentTable[name]
+		return parentTable(with: odb)?[name]
 	}
 
 	static func dropLeadingRootElement(from elements: [String]) -> [String] {
-
 		if elements.count < 1 {
 			return elements
 		}
+		
 		let firstElement = elements.first!
-		if firstElement.odbLowercased() == ODB.rootTableName {
+		if firstElement.odbLowercased() == ODBPath.rootTableName {
 			return Array(elements.dropFirst())
 		}
 

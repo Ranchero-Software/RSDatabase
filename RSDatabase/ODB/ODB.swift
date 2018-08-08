@@ -8,27 +8,22 @@
 
 import Foundation
 
-// Always call API or refer to ODB objects within an ODB.perform() call, which takes a block.
-// Otherwise it’s not thread-safe. It will crash. On purpose.
-// Exception: ODBValue structs are valid outside an ODB.perform() call.
-// ODB.perform() calls are not nestable.
+// This is not thread-safe. Neither are the other ODB* objects and structs.
+// It’s up to the caller to implement thread safety.
+// Recommended use: in your code, create references to ODB and ODBPath,
+// and use ODBObject, ODBTable, and ODBValueObject the least amount possible. Do not keep references to them.
 
-public final class ODB {
+public final class ODB: Hashable {
 
 	public let filepath: String
 
 	public lazy var rootTable: ODBTable = {
-		ODBTable(uniqueID: -1, name: ODB.rootTableName, parentTable: nil, isRootTable: true, odb: self)
+		ODBTable(uniqueID: -1, name: ODBPath.rootTableName, parentTable: nil, isRootTable: true, odb: self)
 	}()
 
-	static let rootTableName = "root"
 	static let rootTableID = -1
 
 	private let queue: RSDatabaseQueue
-
-	private lazy var rootPath: ODBPath = {
-		return ODBPath.root(self)
-	}()
 
 	private lazy var odbValuesTable: ODBValuesTable = {
 		return ODBValuesTable(odb: self)
@@ -50,14 +45,7 @@ public final class ODB {
 	CREATE TRIGGER if not EXISTS odb_tables_after_delete_trigger_delete_child_values after delete on odb_tables begin delete from odb_values where odb_table_id = OLD.id; end;
 	"""
 
-	private static let lock = NSLock()
-	static var isLocked = false
-
-	private var pathCache = [[String]: ODBPath]()
-	private static let pathCacheLock = NSLock()
-
 	public init(filepath: String) {
-
 		self.filepath = filepath
 
 		let queue = RSDatabaseQueue(filepath: filepath, excludeFromBackup: false)
@@ -65,43 +53,18 @@ public final class ODB {
 		self.queue = queue
 	}
 
-	// MARK: - API
-
-	public static func perform(_ block: () -> Void) {
-
-		lock.lock()
-		isLocked = true
-
-		defer {
-			isLocked = false
-			lock.unlock()
-		}
-
-		block()
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(filepath)
 	}
 
-	public func path(_ elements: [String]) -> ODBPath {
-
-		// ODBPath objects will usually be uniqued, but it’s not guaranteed and isn’t necessary.
-		ODB.pathCacheLock.lock()
-		defer {
-			ODB.pathCacheLock.unlock()
-		}
-
-		if let cachedPath = pathCache[elements] {
-			return cachedPath
-		}
-		let path = ODBPath(elements: elements, odb: self)
-		pathCache[elements] = path
-		return path
+	public static func ==(lhs: ODB, rhs: ODB) -> Bool {
+		return lhs.filepath == rhs.filepath
 	}
 }
 
 extension ODB {
 
 	func deleteObject(_ object: ODBObject) {
-
-		precondition(ODB.isLocked)
 
 		if let valueObject = object as? ODBValueObject {
 			let uniqueID = valueObject.uniqueID
@@ -131,8 +94,6 @@ extension ODB {
 
 	func insertTable(name: String, parent: ODBTable) -> ODBTable? {
 
-		precondition(ODB.isLocked)
-
 		var table: ODBTable? = nil
 		queue.fetchSync { (database) in
 			table = self.odbTablesTable.insertTable(name: name, parentTable: parent, database: database)
@@ -141,8 +102,6 @@ extension ODB {
 	}
 
 	func insertValueObject(name: String, value: ODBValue, parent: ODBTable) -> ODBValueObject? {
-
-		precondition(ODB.isLocked)
 
 		var valueObject: ODBValueObject? = nil
 		queue.updateSync { (database) in
@@ -153,8 +112,6 @@ extension ODB {
 	}
 
 	func fetchChildren(of table: ODBTable) -> ODBDictionary {
-
-		precondition(ODB.isLocked)
 
 		var children = ODBDictionary()
 
@@ -180,12 +137,18 @@ extension ODB {
 	}
 }
 
-public extension String {
+extension String {
 
 	private static let lowercaseLocale = Locale(identifier: "en")
 
-	public func odbLowercased() -> String {
-
+	func odbLowercased() -> String {
 		return self.lowercased(with: String.lowercaseLocale)
+	}
+}
+
+extension Array where Element == String {
+
+	func odbLowercased() -> [String] {
+		return self.map{ $0.odbLowercased() }
 	}
 }
