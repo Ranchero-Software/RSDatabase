@@ -12,12 +12,11 @@ public struct ODBValueObject: ODBObject, Hashable {
 
 	let uniqueID: Int
 	public let value: ODBValue
-	public let hashValue: Int
 
 	// ODBObject protocol properties
 	public let name: String
 	public let parentTable: ODBTable?
-	public weak var odb: ODB?
+	public let odb: ODB
 
 	public var isTable: Bool {
 		return false
@@ -38,22 +37,20 @@ public struct ODBValueObject: ODBObject, Hashable {
 		self.name = name
 		self.value = value
 		self.odb = odb
-		self.hashValue = uniqueID ^ name.hashValue
 	}
 
 	public func delete() { // ODBObject
 
-		odb?.deleteObject(self)
+		odb.deleteObject(self)
+	}
+
+	public func hash(into hasher: inout Hasher) {
+		hasher.combine(uniqueID)
+		hasher.combine(odb)
 	}
 
 	public static func ==(lhs: ODBValueObject, rhs: ODBValueObject) -> Bool {
 
-		if lhs.uniqueID != rhs.uniqueID {
-			return false
-		}
-		guard let leftODB = lhs.odb, let rightODB = rhs.odb else {
-			return false
-		}
-		return leftODB === rightODB
+		return lhs.uniqueID == rhs.uniqueID && lhs.odb === rhs.odb
 	}
 }

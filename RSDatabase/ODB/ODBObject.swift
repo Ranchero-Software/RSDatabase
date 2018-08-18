@@ -18,7 +18,7 @@ public protocol ODBObject {
 	var isRootTable: Bool { get }
 	var parentTable: ODBTable? { get }
 	var path: ODBPath? { get }
-	var odb: ODB? { get }
+	var odb: ODB { get }
 
 	func delete()
 }

@@ -22,7 +22,7 @@ public final class ODBTable: ODBObject, Hashable {
 			if _children == nil {
 				_children = odb.fetchChildren(of: self)
 			}
-			return _children
+			return _children!
 		}
 		set {
 			_children = newValue
@@ -54,13 +54,13 @@ public final class ODBTable: ODBObject, Hashable {
 
 	public func deleteChildren() -> Bool {
 
-		odb?.deleteChildren(of: self)
+		odb.deleteChildren(of: self)
 		return true
 	}
 
 	public func deleteChild(_ object: ODBObject) {
 
-		odb?.deleteObject(object)
+		odb.deleteObject(object)
 	}
 
 	public func deleteObject(name: String) -> Bool {
@@ -74,7 +74,7 @@ public final class ODBTable: ODBObject, Hashable {
 
 	public func addSubtable(name: String) -> ODBTable? {
 
-		guard let subtable = odb?.insertTable(name: name, parent: self) else {
+		guard let subtable = odb.insertTable(name: name, parent: self) else {
 			return nil
 		}
 		addChild(name: name, object: subtable)
@@ -83,7 +83,7 @@ public final class ODBTable: ODBObject, Hashable {
 
 	public func setValue(_ value: ODBValue, name: String) -> Bool {
 
-		guard let valueObject = odb?.insertValueObject(name: name, value: value, parent: self) else {
+		guard let valueObject = odb.insertValueObject(name: name, value: value, parent: self) else {
 			return false
 		}
 		addChild(name: name, object: valueObject)
