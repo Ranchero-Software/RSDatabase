@@ -54,6 +54,8 @@ typedef void (^RSDatabaseBlock)(FMDatabase * __nonnull database);
 
 - (NSArray *)arrayWithSingleColumnResultSet:(FMResultSet *)rs;
 
+- (void)close;
+
 @end
 
 NS_ASSUME_NONNULL_END

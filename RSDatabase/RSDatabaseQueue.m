@@ -14,6 +14,8 @@
 @property (nonatomic, strong, readwrite) NSString *databasePath;
 @property (nonatomic, assign) BOOL excludeFromBackup;
 @property (nonatomic, strong, readonly) dispatch_queue_t serialDispatchQueue;
+@property (nonatomic) BOOL closing;
+@property (nonatomic) BOOL closed;
 
 @end
 
@@ -45,6 +47,10 @@
 
 	/*I've always done it this way -- kept a per-thread database in the threadDictionary -- and I know it's solid. Maybe it's not necessary with a serial queue, but my understanding was that SQLite wanted a different database per thread (and a serial queue may run on different threads).*/
 
+	if (self.closed) {
+		return nil;
+	}
+	
 	NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
 	FMDatabase *database = threadDictionary[self.databasePath];
 
@@ -209,6 +215,13 @@
 	return [results copy];
 }
 
+- (void)close {
+	self.closing = YES;
+	[self runInDatabaseSync:^(FMDatabase *database) {
+		self.closed = YES;
+		[database close];
+	}];
+}
 
 @end
 

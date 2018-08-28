@@ -41,6 +41,7 @@ public final class ODB: Hashable {
 	/// It’s not necessary to call this on app termination.
 	public func close() {
 		isClosed = true
+		queue.close()
 		odbValuesTable = nil
 		odbTablesTable = nil
 		rootTable.close()
