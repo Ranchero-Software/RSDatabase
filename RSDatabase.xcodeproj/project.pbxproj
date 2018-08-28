@@ -27,6 +27,7 @@
 		84297FEC2133AE49004F3988 /* ODBTableValueLookup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84297FEA2133AE49004F3988 /* ODBTableValueLookup.swift */; };
 		84297FEE2133AEE5004F3988 /* ODBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84297FED2133AEE5004F3988 /* ODBError.swift */; };
 		84297FEF2133AEE5004F3988 /* ODBError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84297FED2133AEE5004F3988 /* ODBError.swift */; };
+		84297FF2213503AE004F3988 /* ODBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84297FF1213503AE004F3988 /* ODBTests.swift */; };
 		84314F4A1F68ECC600F710B2 /* DatabaseObjectCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84314F491F68ECC600F710B2 /* DatabaseObjectCache.swift */; };
 		84419AD61B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84419AD71B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419AD51B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m */; };
@@ -92,6 +93,8 @@
 		8400AC0E1E0CFC5600AA7C57 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS10.2.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		84297FEA2133AE49004F3988 /* ODBTableValueLookup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBTableValueLookup.swift; sourceTree = "<group>"; };
 		84297FED2133AEE5004F3988 /* ODBError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBError.swift; sourceTree = "<group>"; };
+		84297FF0213503AD004F3988 /* RSDatabaseTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "RSDatabaseTests-Bridging-Header.h"; sourceTree = "<group>"; };
+		84297FF1213503AE004F3988 /* ODBTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ODBTests.swift; sourceTree = "<group>"; };
 		84314F491F68ECC600F710B2 /* DatabaseObjectCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = DatabaseObjectCache.swift; path = RSDatabase/DatabaseObjectCache.swift; sourceTree = "<group>"; };
 		84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "FMDatabase+RSExtras.h"; path = "RSDatabase/FMDatabase+RSExtras.h"; sourceTree = "<group>"; };
 		84419AD51B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "FMDatabase+RSExtras.m"; path = "RSDatabase/FMDatabase+RSExtras.m"; sourceTree = "<group>"; };
@@ -251,7 +254,9 @@
 			isa = PBXGroup;
 			children = (
 				84F22C641B52E0D9000060CE /* RSDatabaseTests.m */,
+				84297FF1213503AE004F3988 /* ODBTests.swift */,
 				84F22C661B52E0D9000060CE /* Info.plist */,
+				84297FF0213503AD004F3988 /* RSDatabaseTests-Bridging-Header.h */,
 			);
 			path = RSDatabaseTests;
 			sourceTree = "<group>";
@@ -402,7 +407,7 @@
 					};
 					84F22C5E1B52E0D9000060CE = {
 						CreatedOnToolsVersion = 7.0;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 1000;
 					};
 				};
 			};
@@ -516,6 +521,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				84F22C651B52E0D9000060CE /* RSDatabaseTests.m in Sources */,
+				84297FF2213503AE004F3988 /* ODBTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -578,6 +584,11 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D511EF0420242E6400712EC3 /* RSDatabaseTests_target.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				SWIFT_OBJC_BRIDGING_HEADER = "RSDatabaseTests/RSDatabaseTests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -585,6 +596,10 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D511EF0420242E6400712EC3 /* RSDatabaseTests_target.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
+				SWIFT_OBJC_BRIDGING_HEADER = "RSDatabaseTests/RSDatabaseTests-Bridging-Header.h";
+				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
