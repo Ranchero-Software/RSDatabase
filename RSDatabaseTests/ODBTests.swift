@@ -60,8 +60,11 @@ private extension ODBTests {
 		return (folder as NSString).appendingPathComponent(name)
 	}
 
+	static var databaseFileID = 0;
+
 	func pathForGenericTestFile() -> String {
-		return pathForTestFile("Test.odb")
+		ODBTests.databaseFileID += 1
+		return pathForTestFile("Test\(ODBTests.databaseFileID).odb")
 	}
 
 	func genericTestODB() -> ODB {
