@@ -127,7 +127,6 @@ private extension ODBTable {
 	}
 
 	func addChild(name: String, object: ODBObject) throws {
-		let _ = try deleteObject(name: name)
 		children[name.odbLowercased()] = object
 	}
 }

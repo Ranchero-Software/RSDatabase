@@ -12,13 +12,38 @@ import RSDatabase
 class ODBTests: XCTestCase {
 
 	func testODBCreation() {
-		let f = pathForTestFile(name: "Test.odb")
-		var odb: ODB? = ODB(filepath: f)
-		odb!.close()
-		odb = nil
-		try! FileManager.default.removeItem(atPath: f)
+		let odb = genericTestODB()
+		closeAndDelete(odb)
 	}
 
+	func testSimpleBoolStorage() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["testBool"])
+		try! path.setRawValue(true, odb: odb)
+
+		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+		closeAndDelete(odb)
+	}
+
+	func testSimpleIntStorage() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["TestInt"])
+		let intValue = 3487456
+		try! path.setRawValue(intValue, odb: odb)
+
+		XCTAssertEqual(try! path.rawValue(with: odb) as! Int, intValue)
+		closeAndDelete(odb)
+	}
+
+	func testSimpleDoubleStorage() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["TestDouble"])
+		let doubleValue = 3498.45745
+		try! path.setRawValue(doubleValue, odb: odb)
+
+		XCTAssertEqual(try! path.rawValue(with: odb) as! Double, doubleValue)
+		closeAndDelete(odb)
+	}
 
 }
 
@@ -30,8 +55,22 @@ private extension ODBTests {
 		return folder.path
 	}
 
-	func pathForTestFile(name: String) -> String {
+	func pathForTestFile(_ name: String) -> String {
 		let folder = desktopFolderPath()
 		return (folder as NSString).appendingPathComponent(name)
+	}
+
+	func pathForGenericTestFile() -> String {
+		return pathForTestFile("Test.odb")
+	}
+
+	func genericTestODB() -> ODB {
+		let f = pathForGenericTestFile()
+		return ODB(filepath: f)
+	}
+
+	func closeAndDelete(_ odb: ODB) {
+		odb.close()
+		try! FileManager.default.removeItem(atPath: odb.filepath)
 	}
 }

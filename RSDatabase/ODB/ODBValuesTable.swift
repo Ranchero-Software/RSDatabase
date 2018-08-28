@@ -38,7 +38,7 @@ final class ODBValuesTable: DatabaseTable {
 
 	func insertValueObject(name: String, value: ODBValue, parentTable: ODBTable, database: FMDatabase) -> ODBValueObject {
 
-		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, Key.name: name, Key.primitiveType: value.primitiveType, Key.value: value.rawValue]
+		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, Key.name: name, Key.primitiveType: value.primitiveType.rawValue, Key.value: value.rawValue]
 		if let applicationType = value.applicationType {
 			d.setValue(applicationType, forKey: Key.applicationType)
 		}
