@@ -38,6 +38,7 @@ typedef void (^RSDatabaseBlock)(FMDatabase * __nonnull database);
 // You can feed it the contents of a file that includes comments, etc.
 // Lines that start with case-insensitive "create " are executed.
 - (void)createTablesUsingStatements:(NSString *)createStatements;
+- (void)createTablesUsingStatementsSync:(NSString *)createStatements;
 
 - (void)update:(RSDatabaseBlock)updateBlock;
 - (void)updateSync:(RSDatabaseBlock)updateBlock;

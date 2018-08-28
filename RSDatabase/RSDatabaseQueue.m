@@ -82,15 +82,27 @@
 - (void)createTablesUsingStatements:(NSString *)createStatements {
 
 	[self runInDatabase:^(FMDatabase *database) {
-
-		[createStatements enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
-			if ([line.lowercaseString hasPrefix:@"create "]) {
-				[database executeUpdate:line];
-			}
-		}];
+		[self runCreateStatements:createStatements database:database];
 	}];
 }
 
+
+- (void)createTablesUsingStatementsSync:(NSString *)createStatements {
+
+	[self runInDatabaseSync:^(FMDatabase *database) {
+		[self runCreateStatements:createStatements database:database];
+	}];
+}
+
+- (void)runCreateStatements:(NSString *)createStatements database:(FMDatabase *)database {
+
+	[createStatements enumerateLinesUsingBlock:^(NSString *line, BOOL *stop) {
+		if ([line.lowercaseString hasPrefix:@"create "]) {
+			[database executeUpdate:line];
+		}
+		*stop = NO;
+	}];
+}
 
 - (void)update:(RSDatabaseBlock)updateBlock {
 
@@ -126,6 +138,15 @@
 	});
 }
 
+
+- (void)runInDatabaseSync:(RSDatabaseBlock)databaseBlock {
+
+	dispatch_sync(self.serialDispatchQueue, ^{
+		@autoreleasepool {
+			databaseBlock([self database]);
+		}
+	});
+}
 
 - (void)fetch:(RSDatabaseBlock)fetchBlock {
 

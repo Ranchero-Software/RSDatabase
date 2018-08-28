@@ -33,7 +33,7 @@ public final class ODB: Hashable {
 	public init(filepath: String) {
 		self.filepath = filepath
 		let queue = RSDatabaseQueue(filepath: filepath, excludeFromBackup: false)
-		queue.createTables(usingStatements: ODB.tableCreationStatements)
+		queue.createTables(usingStatementsSync: ODB.tableCreationStatements)
 		self.queue = queue
 	}
 
@@ -43,6 +43,7 @@ public final class ODB: Hashable {
 		isClosed = true
 		odbValuesTable = nil
 		odbTablesTable = nil
+		rootTable.close()
 	}
 
 	/// Make sure it’s okay to use the odb — check that it hasn’t been closed.
