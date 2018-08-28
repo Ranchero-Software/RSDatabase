@@ -74,13 +74,13 @@ extension ODB {
 
 		if let valueObject = object as? ODBValueObject {
 			let uniqueID = valueObject.uniqueID
-			queue.update { (database) in
+			queue.updateSync { (database) in
 				self.odbValuesTable!.deleteObject(uniqueID: uniqueID, database: database)
 			}
 		}
 		else if let tableObject = object as? ODBTable {
 			let uniqueID = tableObject.uniqueID
-			queue.update { (database) in
+			queue.updateSync { (database) in
 				self.odbTablesTable!.deleteTable(uniqueID: uniqueID, database: database)
 			}
 		}
@@ -94,7 +94,7 @@ extension ODB {
 		try preflightCall()
 
 		let parentUniqueID = table.uniqueID
-		queue.update { (database) in
+		queue.updateSync { (database) in
 			self.odbTablesTable!.deleteChildTables(parentUniqueID: parentUniqueID, database: database)
 			self.odbValuesTable!.deleteChildObjects(parentUniqueID: parentUniqueID, database: database)
 		}
