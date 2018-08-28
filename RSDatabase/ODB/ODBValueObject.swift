@@ -16,41 +16,25 @@ public struct ODBValueObject: ODBObject, Hashable {
 	// ODBObject protocol properties
 	public let name: String
 	public let parentTable: ODBTable?
-	public let odb: ODB
 
-	public var isTable: Bool {
-		return false
-	}
-
-	public var isRootTable: Bool {
-		return false
-	}
-
-	public var path: ODBPath? {
-		return nil // TODO
-	}
-
-	init(uniqueID: Int, parentTable: ODBTable, name: String, value: ODBValue, odb: ODB) {
+	init(uniqueID: Int, parentTable: ODBTable, name: String, value: ODBValue) {
 
 		self.uniqueID = uniqueID
 		self.parentTable = parentTable
 		self.name = name
 		self.value = value
-		self.odb = odb
 	}
 
-	public func delete() { // ODBObject
-
-		odb.deleteObject(self)
-	}
+	// MARK: - Hashable
 
 	public func hash(into hasher: inout Hasher) {
 		hasher.combine(uniqueID)
-		hasher.combine(odb)
+		hasher.combine(value)
 	}
 
+	// MARK: - Equatable
+	
 	public static func ==(lhs: ODBValueObject, rhs: ODBValueObject) -> Bool {
-
-		return lhs.uniqueID == rhs.uniqueID && lhs.odb === rhs.odb
+		return lhs.uniqueID == rhs.uniqueID && lhs.value == rhs.value
 	}
 }

@@ -11,12 +11,6 @@ import Foundation
 final class ODBValuesTable: DatabaseTable {
 
 	let name = "odb_values"
-	weak var odb: ODB? = nil
-
-	init(odb: ODB) {
-
-		self.odb = odb
-	}
 
 	private struct Key {
 		static let uniqueID = "id"
@@ -28,38 +22,30 @@ final class ODBValuesTable: DatabaseTable {
 	}
 
 	func fetchValueObjects(of table: ODBTable, database: FMDatabase) -> Set<ODBValueObject> {
-
 		guard let rs = database.rs_selectRowsWhereKey(Key.parentID, equalsValue: table.uniqueID, tableName: name) else {
 			return Set<ODBValueObject>()
 		}
-
 		return rs.mapToSet{ valueObject(with: $0, parentTable: table) }
 	}
 
 	func deleteObject(uniqueID: Int, database: FMDatabase) {
-
 		database.rs_deleteRowsWhereKey(Key.uniqueID, equalsValue: uniqueID, tableName: name)
 	}
 
 	func deleteChildObjects(parentUniqueID: Int, database: FMDatabase) {
-
 		database.rs_deleteRowsWhereKey(Key.parentID, equalsValue: parentUniqueID, tableName: name)
 	}
 
-	func insertValueObject(name: String, value: ODBValue, parentTable: ODBTable, database: FMDatabase) -> ODBValueObject? {
+	func insertValueObject(name: String, value: ODBValue, parentTable: ODBTable, database: FMDatabase) -> ODBValueObject {
 
-		guard let odb = odb else {
-			return nil
-		}
-
-		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, Key.name: name, Key.primitiveType: value.primitiveType, Key.value: value.value]
+		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, Key.name: name, Key.primitiveType: value.primitiveType, Key.value: value.rawValue]
 		if let applicationType = value.applicationType {
 			d.setValue(applicationType, forKey: Key.applicationType)
 		}
 
 		insertRow(d, insertType: .normal, in: database)
 		let uniqueID = Int(database.lastInsertRowId())
-		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value, odb: odb)
+		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value)
 	}
 }
 
@@ -67,9 +53,6 @@ private extension ODBValuesTable {
 
 	func valueObject(with row: FMResultSet, parentTable: ODBTable) -> ODBValueObject? {
 
-		guard let odb = odb else {
-			return nil
-		}
 		guard let value = value(with: row) else {
 			return nil
 		}
@@ -78,7 +61,7 @@ private extension ODBValuesTable {
 		}
 		let uniqueID = Int(row.longLongInt(forColumn: Key.uniqueID))
 
-		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value, odb: odb)
+		return ODBValueObject(uniqueID: uniqueID, parentTable: parentTable, name: name, value: value)
 	}
 
 	func value(with row: FMResultSet) -> ODBValue? {
@@ -110,6 +93,6 @@ private extension ODBValuesTable {
 			return nil
 		}
 
-		return ODBValue(value: fetchedValue, primitiveType: primitiveType, applicationType: applicationType)
+		return ODBValue(rawValue: fetchedValue, primitiveType: primitiveType, applicationType: applicationType)
 	}
 }

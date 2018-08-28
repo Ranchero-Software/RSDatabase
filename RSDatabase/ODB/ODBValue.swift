@@ -8,7 +8,7 @@
 
 import Foundation
 
-public struct ODBValue: Equatable {
+public struct ODBValue: Hashable {
 
 	public enum PrimitiveType: Int {
 		case boolean
@@ -19,25 +19,31 @@ public struct ODBValue: Equatable {
 		case data
 	}
 
-	public let value: Any
+	public let rawValue: Any
 	public let primitiveType: PrimitiveType
 	public let applicationType: String? // Application-defined
 
-	private static let trueValue = ODBValue(value: true, primitiveType: .boolean)
-	private static let falseValue = ODBValue(value: false, primitiveType: .boolean)
+	private static let trueValue = ODBValue(rawValue: true, primitiveType: .boolean)
+	private static let falseValue = ODBValue(rawValue: false, primitiveType: .boolean)
 	private static var integerValueCache = [Int: ODBValue]()
 	private static let integerValueCacheLock = NSLock()
 
-	public init(value: Any, primitiveType: PrimitiveType, applicationType: String?) {
-
-		self.value = value
+	public init(rawValue: Any, primitiveType: PrimitiveType, applicationType: String?) {
+		self.rawValue = rawValue
 		self.primitiveType = primitiveType
 		self.applicationType = applicationType
 	}
 
-	public init(value: Any, primitiveType: PrimitiveType) {
+	public init(rawValue: Any, primitiveType: PrimitiveType) {
 
-		self.init(value: value, primitiveType: primitiveType, applicationType: nil)
+		self.init(rawValue: rawValue, primitiveType: primitiveType, applicationType: nil)
+	}
+
+	public init?(rawValue: Any) {
+		guard let primitiveType = ODBValue.primitiveTypeForRawValue(rawValue) else {
+			return nil
+		}
+		self.init(rawValue: rawValue, primitiveType: primitiveType)
 	}
 
 	public static func bool(_ boolean: Bool) -> ODBValue {
@@ -55,30 +61,58 @@ public struct ODBValue: Equatable {
 		if let cachedValue = integerValueCache[integer] {
 			return cachedValue
 		}
-		let value = ODBValue(value: integer, primitiveType: .integer)
+		let value = ODBValue(rawValue: integer, primitiveType: .integer)
 		integerValueCache[integer] = value
 		return value
 	}
 
 	public static func double(_ double: Double) -> ODBValue {
 
-		return ODBValue(value: double, primitiveType: .double)
+		return ODBValue(rawValue: double, primitiveType: .double)
 	}
 
 	public static func date(_ date: Date) -> ODBValue {
 
-		return ODBValue(value: date, primitiveType: .double)
+		return ODBValue(rawValue: date, primitiveType: .double)
 	}
 
 	public static func string(_ string: String) -> ODBValue {
 
-		return ODBValue(value: string, primitiveType: .string)
+		return ODBValue(rawValue: string, primitiveType: .string)
 	}
 
 	public static func data(_ data: Data) -> ODBValue {
 
-		return ODBValue(value: data, primitiveType: .data)
+		return ODBValue(rawValue: data, primitiveType: .data)
 	}
+
+	// MARK: - Hashable
+
+	public func hash(into hasher: inout Hasher) {
+		if let booleanValue = rawValue as? Bool {
+			hasher.combine(booleanValue)
+		}
+		else if let integerValue = rawValue as? Int {
+			hasher.combine(integerValue)
+		}
+		else if let doubleValue = rawValue as? Double {
+			hasher.combine(doubleValue)
+		}
+		else if let stringValue = rawValue as? String {
+			hasher.combine(stringValue)
+		}
+		else if let dataValue = rawValue as? Data {
+			hasher.combine(dataValue)
+		}
+		else if let dateValue = rawValue as? Date {
+			hasher.combine(dateValue)
+		}
+		
+		hasher.combine(primitiveType)
+		hasher.combine(applicationType)
+	}
+
+	// MARK: - Equatable
 
 	public static func ==(lhs: ODBValue, rhs: ODBValue) -> Bool {
 
@@ -88,17 +122,17 @@ public struct ODBValue: Equatable {
 
 		switch lhs.primitiveType {
 		case .boolean:
-			return compareBooleans(lhs.value, rhs.value)
+			return compareBooleans(lhs.rawValue, rhs.rawValue)
 		case .integer:
-			return compareIntegers(lhs.value, rhs.value)
+			return compareIntegers(lhs.rawValue, rhs.rawValue)
 		case .double:
-			return compareDoubles(lhs.value, rhs.value)
+			return compareDoubles(lhs.rawValue, rhs.rawValue)
 		case .string:
-			return compareStrings(lhs.value, rhs.value)
+			return compareStrings(lhs.rawValue, rhs.rawValue)
 		case .data:
-			return compareData(lhs.value, rhs.value)
+			return compareData(lhs.rawValue, rhs.rawValue)
 		case .date:
-			return compareDates(lhs.value, rhs.value)
+			return compareDates(lhs.rawValue, rhs.rawValue)
 		}
 	}
 }
@@ -151,5 +185,25 @@ private extension ODBValue {
 			return false
 		}
 		return left == right
+	}
+
+	static func primitiveTypeForRawValue(_ rawValue: Any) -> ODBValue.PrimitiveType? {
+
+		switch rawValue {
+		case is Bool:
+			return .boolean
+		case is Int:
+			return .integer
+		case is Double:
+			return .double
+		case is Date:
+			return .date
+		case is String:
+			return .string
+		case is Data:
+			return .data
+		default:
+			return nil
+		}
 	}
 }
