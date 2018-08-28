@@ -45,6 +45,18 @@ class ODBTests: XCTestCase {
 		closeAndDelete(odb)
 	}
 
+	func testReadSimpleBoolPerformance() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["TestBool"])
+		try! path.setRawValue(true, odb: odb)
+		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+
+		self.measure {
+			let _ = try! path.rawValue(with: odb)
+		}
+		closeAndDelete(odb)
+	}
+
 }
 
 private extension ODBTests {
