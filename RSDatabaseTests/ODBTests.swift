@@ -57,6 +57,15 @@ class ODBTests: XCTestCase {
 		closeAndDelete(odb)
 	}
 
+	func testSetSimpleUnchangingBoolPerformance() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["TestBool"])
+		self.measure {
+			try! path.setRawValue(true, odb: odb)
+		}
+		closeAndDelete(odb)
+	}
+
 	func testReadAndCloseAndReadSimpleBool() {
 		let f = pathForTestFile("testReadAndCloseAndReadSimpleBool.odb")
 		var odb = ODB(filepath: f)
@@ -90,7 +99,29 @@ class ODBTests: XCTestCase {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["A", "B", "C", "D"])
 		let _ = try! path.ensureTable(with: odb)
+		closeAndDelete(odb)
+	}
 
+	func testEnsureTablePerformance() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["A", "B", "C", "D"])
+
+		self.measure {
+			let _ = try! path.ensureTable(with: odb)
+		}
+
+		closeAndDelete(odb)
+	}
+
+	func testStoreDateInSubtable() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["A", "B", "C", "D"])
+		try! path.ensureTable(with: odb)
+		
+		let d = Date()
+		let datePath = path + "TestValue"
+		try! datePath.setRawValue(d, odb: odb)
+		XCTAssertEqual(try! datePath.rawValue(with: odb) as! Date, d)
 		closeAndDelete(odb)
 	}
 }
