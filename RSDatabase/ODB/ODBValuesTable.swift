@@ -66,10 +66,7 @@ private extension ODBValuesTable {
 
 	func value(with row: FMResultSet) -> ODBValue? {
 
-		guard let applicationType = row.string(forColumn: Key.applicationType) else {
-			return nil
-		}
-		guard let primitiveType = ODBValue.PrimitiveType(rawValue: Int(row.longLongInt(forColumn: Key.uniqueID))) else {
+		guard let primitiveType = ODBValue.PrimitiveType(rawValue: Int(row.longLongInt(forColumn: Key.primitiveType))) else {
 			return nil
 		}
 		var value: Any? = nil
@@ -92,7 +89,8 @@ private extension ODBValuesTable {
 		guard let fetchedValue = value else {
 			return nil
 		}
-
+		
+		let applicationType = row.string(forColumn: Key.applicationType)
 		return ODBValue(rawValue: fetchedValue, primitiveType: primitiveType, applicationType: applicationType)
 	}
 }

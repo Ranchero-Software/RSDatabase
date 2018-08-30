@@ -57,6 +57,19 @@ class ODBTests: XCTestCase {
 		closeAndDelete(odb)
 	}
 
+	func testReadAndCloseAndReadSimpleBool() {
+		let f = pathForTestFile("testReadAndCloseAndReadSimpleBool.odb")
+		var odb = ODB(filepath: f)
+		let path = ODBPath.path(["testBool"])
+		try! path.setRawValue(true, odb: odb)
+
+		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+		odb.close()
+
+		odb = ODB(filepath: f)
+		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+		closeAndDelete(odb)
+	}
 }
 
 private extension ODBTests {

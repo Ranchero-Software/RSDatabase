@@ -82,7 +82,24 @@ public final class ODBTable: ODBObject, Hashable {
 
 	public func setValue(_ value: ODBValue, name: String) throws {
 		let odb = try strongODB()
+		ensureChildren()
+		// Don’t bother if key/value pair already exists.
+		// If child with same name exists, delete it.
+		var existingObjectToDelete: ODBObject? = nil
+		do {
+			let existingObject = try object(for: name)
+			if let existingValueObject = existingObject as? ODBValueObject {
+				if existingValueObject.value == value {
+					return
+				}
+			}
+			existingObjectToDelete = existingObject
+		}
+		catch {}
 		let valueObject = try odb.insertValueObject(name: name, value: value, parent: self)
+		if let existingObjectToDelete = existingObjectToDelete {
+			try deleteChild(existingObjectToDelete)
+		}
 		try addChild(name: name, object: valueObject)
 	}
 
@@ -128,5 +145,9 @@ private extension ODBTable {
 
 	func addChild(name: String, object: ODBObject) throws {
 		children[name.odbLowercased()] = object
+	}
+
+	func ensureChildren() {
+		let _ = children
 	}
 }

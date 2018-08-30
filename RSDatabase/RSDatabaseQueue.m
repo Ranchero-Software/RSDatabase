@@ -54,7 +54,7 @@
 	NSMutableDictionary *threadDictionary = [[NSThread currentThread] threadDictionary];
 	FMDatabase *database = threadDictionary[self.databasePath];
 
-	if (!database) {
+	if (!database || !database.open) {
 
 		database = [FMDatabase databaseWithPath:self.databasePath];
 		[database open];

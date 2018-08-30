@@ -11,12 +11,12 @@ import Foundation
 public struct ODBValue: Hashable {
 
 	public enum PrimitiveType: Int {
-		case boolean
-		case integer
-		case double
-		case date
-		case string
-		case data
+		case boolean=1
+		case integer=10
+		case double=11
+		case date=20
+		case string=30
+		case data=40
 	}
 
 	public let rawValue: Any
