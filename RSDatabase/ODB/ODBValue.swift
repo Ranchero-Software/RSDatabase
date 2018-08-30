@@ -10,13 +10,14 @@ import Foundation
 
 public struct ODBValue: Hashable {
 
+	// Values are arbitrary but must not change: they’re stored in the database.
 	public enum PrimitiveType: Int {
-		case boolean=1
-		case integer=10
-		case double=11
-		case date=20
-		case string=30
-		case data=40
+		case boolean=8
+		case integer=16
+		case double=32
+		case date=64
+		case string=128
+		case data=256
 	}
 
 	public let rawValue: Any

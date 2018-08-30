@@ -70,6 +70,29 @@ class ODBTests: XCTestCase {
 		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
 		closeAndDelete(odb)
 	}
+
+	func testReplaceSimpleObject() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["TestValue"])
+		let intValue = 3487456
+		try! path.setRawValue(intValue, odb: odb)
+
+		XCTAssertEqual(try! path.rawValue(with: odb) as! Int, intValue)
+
+		let stringValue = "test string value"
+		try! path.setRawValue(stringValue, odb: odb)
+		XCTAssertEqual(try! path.rawValue(with: odb) as! String, stringValue)
+
+		closeAndDelete(odb)
+	}
+
+	func testEnsureTable() {
+		let odb = genericTestODB()
+		let path = ODBPath.path(["A", "B", "C", "D"])
+		let _ = try! path.ensureTable(with: odb)
+
+		closeAndDelete(odb)
+	}
 }
 
 private extension ODBTests {
