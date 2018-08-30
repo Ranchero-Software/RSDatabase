@@ -8,7 +8,7 @@
 
 import Foundation
 
-// Protocol for a database table for related objects — authors and attachments in Evergreen, for instance.
+// Protocol for a database table for related objects — authors and attachments in NetNewsWire, for instance.
 
 public protocol DatabaseRelatedObjectsTable: DatabaseTable {
 
