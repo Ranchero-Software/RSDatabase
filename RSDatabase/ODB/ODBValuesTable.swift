@@ -75,7 +75,7 @@ private extension ODBValuesTable {
 		case .boolean:
 			value = row.bool(forColumn: Key.value)
 		case .integer:
-			value = row.longLongInt(forColumn: Key.value)
+			value = Int(row.longLongInt(forColumn: Key.value))
 		case .double:
 			value = row.double(forColumn: Key.value)
 		case .string:

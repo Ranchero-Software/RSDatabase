@@ -60,6 +60,8 @@ public struct ODBPath: Hashable {
 		}
 	}
 
+	// MARK: - API
+
 	/// Create a path.
 	public static func path(_ elements: [String]) -> ODBPath {
 
@@ -87,97 +89,71 @@ public struct ODBPath: Hashable {
 	}
 
 	/// Fetch the database object at this path.
-	public func odbObject(with odb: ODB) throws -> ODBObject {
-		return try resolvedObject(odb)
+	public func odbObject(with odb: ODB) -> ODBObject? {
+		return resolvedObject(odb)
 	}
 
 	/// Fetch the value at this path.
-	public func value(with odb: ODB) throws -> ODBValue {
-		guard let valueObject = try odbObject(with: odb) as? ODBValueObject else {
-			throw ODBError.notAValue(path: self)
-		}
-		return valueObject.value
-	}
-
-	/// Fetch the raw value at this path.
-	public func rawValue(with odb: ODB) throws -> Any {
-		let valueObject = try value(with: odb)
-		return valueObject.rawValue
+	public func odbValue(with odb: ODB) -> ODBValue? {
+		return parentTable(with: odb)?.odbValue(name)
 	}
 
 	/// Set a value for this path. Will overwrite existing value or table.
-	public func setValue(_ value: ODBValue, odb: ODB) throws {
-		if isRoot {
-			throw ODBError.illegalOperationOnRootTable(path: self)
-		}
-		let table = try parentTable(with: odb)!
-		try table.setValue(value, name: name)
+	public func setODBValue(_ value: ODBValue, odb: ODB) -> Bool {
+		return parentTable(with: odb)?.set(value, name: name) ?? false
+	}
+
+	/// Fetch the raw value at this path.
+	public func rawValue(with odb: ODB) -> Any? {
+		return parentTable(with: odb)?.rawValue(name)
 	}
 
 	/// Set the raw value for this path. Will overwrite existing value or table.
-	public func setRawValue(_ rawValue: Any, odb: ODB) throws {
-		guard let value = ODBValue(rawValue: rawValue) else {
-			throw ODBError.invalidDataType(rawValue: rawValue)
-		}
-		try setValue(value, odb: odb)
+	@discardableResult
+	public func setRawValue(_ rawValue: Any, odb: ODB) -> Bool {
+		return parentTable(with: odb)?.set(rawValue, name: name) ?? false
 	}
 
 	/// Delete value or table at this path.
-	public func delete(from odb: ODB) throws {
-		if isRoot {
-			throw ODBError.illegalOperationOnRootTable(path: self)
-		}
-		let table = try parentTable(with: odb)!
-		try table.deleteObject(name: name)
+	public func delete(from odb: ODB) -> Bool {
+		return parentTable(with: odb)?.delete(name: name) ?? false
 	}
 
 	/// Fetch the table at this path.
-	public func table(with odb: ODB) throws -> ODBTable? {
-		let object = try odbObject(with: odb)
-		guard let table = object as? ODBTable else {
-			throw ODBError.notATable(path: self)
-		}
-		return table
+	public func table(with odb: ODB) -> ODBTable? {
+		return odbObject(with: odb) as? ODBTable
 	}
 
 	/// Fetch the parent table. Nil if this is the root table.
-	public func parentTable(with odb: ODB) throws -> ODBTable? {
-		return try parentTablePath?.table(with: odb)
+	public func parentTable(with odb: ODB) -> ODBTable? {
+		return parentTablePath?.table(with: odb)
 	}
 
 	/// Creates a table — will delete existing table.
-	public func createTable(with odb: ODB) throws -> ODBTable {
-		if isRoot {
-			throw ODBError.illegalOperationOnRootTable(path: self)
-		}
-		return try parentTable(with: odb)!.addSubtable(name: name)
+	public func createTable(with odb: ODB) -> ODBTable? {
+		return parentTable(with: odb)?.addSubtable(name: name)
 	}
 
 	/// Return the table for the final item in the path.
 	/// Won’t delete anything.
 	@discardableResult
-	public func ensureTable(with odb: ODB) throws -> ODBTable {
-
-		try odb.preflightCall()
+	public func ensureTable(with odb: ODB) -> ODBTable? {
 
 		if isRoot {
 			return odb.rootTable
 		}
 
-		do {
-			let existingObject = try odbObject(with: odb)
+		if let existingObject = odbObject(with: odb) {
 			if let existingTable = existingObject as? ODBTable {
 				return existingTable
 			}
-			throw ODBError.notATable(path: self) // It must be a value: don’t overwrite.
-		} catch ODBError.undefined {
-
-		} catch {
-			throw error
+			return nil // It must be a value: don’t overwrite.
 		}
 
-		let parentTable = try parentTablePath!.ensureTable(with: odb)
-		return try parentTable.addSubtable(name: name)
+		if let parentTable = parentTablePath!.ensureTable(with: odb) {
+			return parentTable.addSubtable(name: name)
+		}
+		return nil
 	}
 
 	// MARK: - Hashable
@@ -193,15 +169,18 @@ public struct ODBPath: Hashable {
 	}
 }
 
+// MARK: - Private
+
 private extension ODBPath {
 
-	func resolvedObject(_ odb: ODB) throws -> ODBObject {
-		try odb.preflightCall()
+	func resolvedObject(_ odb: ODB) -> ODBObject? {
 		if isRoot {
 			return odb.rootTable
 		}
-		let table = try parentTable(with: odb)!
-		return try table.object(for: name)
+		guard let table = parentTable(with: odb) else {
+			return nil
+		}
+		return table[name]
 	}
 
 	static func dropLeadingRootElement(from elements: [String]) -> [String] {

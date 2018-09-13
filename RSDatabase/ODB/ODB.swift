@@ -10,22 +10,21 @@ import Foundation
 
 // This is not thread-safe. Neither are the other ODB* objects and structs.
 // It’s up to the caller to implement thread safety.
-// Recommended use: in your code, create references to ODB, ODBPath, and ODBValue,
-// and use ODBObject, ODBTable, and ODBValueObject the least amount possible. Do not keep references to them.
 
 public final class ODB: Hashable {
 
 	public let filepath: String
 
-	/// It’s an error to use the ODB once closed. This exists because somebody have kept a reference to the ODB.
-	/// Call odb.close() when finished with it.
-	public var isClosed = false
+	public var isClosed: Bool {
+		return _closed
+	}
 
 	static let rootTableID = -1
-	public lazy var rootTable: ODBTable = {
+	public lazy var rootTable: ODBTable? = {
 		ODBTable(uniqueID: ODB.rootTableID, name: ODBPath.rootTableName, parentTable: nil, isRootTable: true, odb: self)
 	}()
 
+	private var _closed = false
 	private let queue: RSDatabaseQueue
 	private var odbTablesTable: ODBTablesTable? = ODBTablesTable()
 	private var odbValuesTable: ODBValuesTable? = ODBValuesTable()
@@ -40,18 +39,26 @@ public final class ODB: Hashable {
 	/// Call when finished, to make sure no stray references can do undefined things.
 	/// It’s not necessary to call this on app termination.
 	public func close() {
-		isClosed = true
+		guard !_closed else {
+			return
+		}
+		_closed = true
 		queue.close()
 		odbValuesTable = nil
 		odbTablesTable = nil
-		rootTable.close()
+		rootTable?.close()
+		rootTable = nil
 	}
 
-	/// Make sure it’s okay to use the odb — check that it hasn’t been closed.
-	public func preflightCall() throws {
-		if isClosed {
-			throw ODBError.odbClosed(filePath: filepath)
-		}
+	/// Get a reference to an ODBTable at a path, making sure it exists.
+	/// Returns nil if there’s a value in the path preventing the table from being made.
+	public func ensureTable(_ path: ODBPath) -> ODBTable? {
+		return path.ensureTable(with: self)
+	}
+
+	/// Compact the database on disk.
+	public func vacuum() {
+		queue.vacuum()
 	}
 
 	// MARK: - Hashable
@@ -69,71 +76,74 @@ public final class ODB: Hashable {
 
 extension ODB {
 
-	func deleteObject(_ object: ODBObject) throws {
-
-		try preflightCall()
+	func delete(_ object: ODBObject) -> Bool {
+		guard let odbValuesTable = odbValuesTable, let odbTablesTable = odbTablesTable else {
+			return false
+		}
 
 		if let valueObject = object as? ODBValueObject {
 			let uniqueID = valueObject.uniqueID
 			queue.updateSync { (database) in
-				self.odbValuesTable!.deleteObject(uniqueID: uniqueID, database: database)
+				odbValuesTable.deleteObject(uniqueID: uniqueID, database: database)
 			}
 		}
 		else if let tableObject = object as? ODBTable {
 			let uniqueID = tableObject.uniqueID
 			queue.updateSync { (database) in
-				self.odbTablesTable!.deleteTable(uniqueID: uniqueID, database: database)
+				odbTablesTable.deleteTable(uniqueID: uniqueID, database: database)
 			}
 		}
-		else {
-			preconditionFailure("deleteObject: object neither ODBValueObject or ODBTable")
-		}
+		return true
 	}
 
-	func deleteChildren(of table: ODBTable) throws {
-
-		try preflightCall()
+	func deleteChildren(of table: ODBTable) -> Bool {
+		guard let odbValuesTable = odbValuesTable, let odbTablesTable = odbTablesTable else {
+			return false
+		}
 
 		let parentUniqueID = table.uniqueID
 		queue.updateSync { (database) in
-			self.odbTablesTable!.deleteChildTables(parentUniqueID: parentUniqueID, database: database)
-			self.odbValuesTable!.deleteChildObjects(parentUniqueID: parentUniqueID, database: database)
+			odbTablesTable.deleteChildTables(parentUniqueID: parentUniqueID, database: database)
+			odbValuesTable.deleteChildObjects(parentUniqueID: parentUniqueID, database: database)
 		}
+		return true
 	}
 
-	func insertTable(name: String, parent: ODBTable) throws -> ODBTable {
-
-		try preflightCall()
+	func insertTable(name: String, parent: ODBTable) -> ODBTable? {
+		guard let odbTablesTable = odbTablesTable else {
+			return nil
+		}
 
 		var table: ODBTable? = nil
 		queue.fetchSync { (database) in
-			table = self.odbTablesTable!.insertTable(name: name, parentTable: parent, odb: self, database: database)
+			table = odbTablesTable.insertTable(name: name, parentTable: parent, odb: self, database: database)
 		}
 		return table!
 	}
 
-	func insertValueObject(name: String, value: ODBValue, parent: ODBTable) throws -> ODBValueObject {
-
-		try preflightCall()
+	func insertValueObject(name: String, value: ODBValue, parent: ODBTable) -> ODBValueObject? {
+		guard let odbValuesTable = odbValuesTable else {
+			return nil
+		}
 
 		var valueObject: ODBValueObject? = nil
 		queue.updateSync { (database) in
-			valueObject = self.odbValuesTable!.insertValueObject(name: name, value: value, parentTable: parent, database: database)
+			valueObject = odbValuesTable.insertValueObject(name: name, value: value, parentTable: parent, database: database)
 		}
-
 		return valueObject!
 	}
 
-	func fetchChildren(of table: ODBTable) throws -> ODBDictionary {
-
-		try preflightCall()
+	func fetchChildren(of table: ODBTable) -> ODBDictionary {
+		guard let odbValuesTable = odbValuesTable, let odbTablesTable = odbTablesTable else {
+			return ODBDictionary()
+		}
 
 		var children = ODBDictionary()
 
 		queue.fetchSync { (database) in
 
-			let tables = self.odbTablesTable!.fetchSubtables(of: table, database: database, odb: self)
-			let valueObjects = self.odbValuesTable!.fetchValueObjects(of: table, database: database)
+			let tables = odbTablesTable.fetchSubtables(of: table, database: database, odb: self)
+			let valueObjects = odbValuesTable.fetchValueObjects(of: table, database: database)
 
 			// Keys are lower-cased, since we case-insensitive lookups.
 

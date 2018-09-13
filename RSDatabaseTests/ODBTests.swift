@@ -19,9 +19,9 @@ class ODBTests: XCTestCase {
 	func testSimpleBoolStorage() {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["testBool"])
-		try! path.setRawValue(true, odb: odb)
+		path.setRawValue(true, odb: odb)
 
-		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+		XCTAssertEqual(path.rawValue(with: odb) as! Bool, true)
 		closeAndDelete(odb)
 	}
 
@@ -29,9 +29,9 @@ class ODBTests: XCTestCase {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["TestInt"])
 		let intValue = 3487456
-		try! path.setRawValue(intValue, odb: odb)
+		path.setRawValue(intValue, odb: odb)
 
-		XCTAssertEqual(try! path.rawValue(with: odb) as! Int, intValue)
+		XCTAssertEqual(path.rawValue(with: odb) as! Int, intValue)
 		closeAndDelete(odb)
 	}
 
@@ -39,20 +39,20 @@ class ODBTests: XCTestCase {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["TestDouble"])
 		let doubleValue = 3498.45745
-		try! path.setRawValue(doubleValue, odb: odb)
+		path.setRawValue(doubleValue, odb: odb)
 
-		XCTAssertEqual(try! path.rawValue(with: odb) as! Double, doubleValue)
+		XCTAssertEqual(path.rawValue(with: odb) as! Double, doubleValue)
 		closeAndDelete(odb)
 	}
 
 	func testReadSimpleBoolPerformance() {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["TestBool"])
-		try! path.setRawValue(true, odb: odb)
-		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+		path.setRawValue(true, odb: odb)
+		XCTAssertEqual(path.rawValue(with: odb) as! Bool, true)
 
 		self.measure {
-			let _ = try! path.rawValue(with: odb)
+			let _ = path.rawValue(with: odb)
 		}
 		closeAndDelete(odb)
 	}
@@ -61,7 +61,7 @@ class ODBTests: XCTestCase {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["TestBool"])
 		self.measure {
-			try! path.setRawValue(true, odb: odb)
+			path.setRawValue(true, odb: odb)
 		}
 		closeAndDelete(odb)
 	}
@@ -70,13 +70,13 @@ class ODBTests: XCTestCase {
 		let f = pathForTestFile("testReadAndCloseAndReadSimpleBool.odb")
 		var odb = ODB(filepath: f)
 		let path = ODBPath.path(["testBool"])
-		try! path.setRawValue(true, odb: odb)
+		path.setRawValue(true, odb: odb)
 
-		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+		XCTAssertEqual(path.rawValue(with: odb) as! Bool, true)
 		odb.close()
 
 		odb = ODB(filepath: f)
-		XCTAssertEqual(try! path.rawValue(with: odb) as! Bool, true)
+		XCTAssertEqual(path.rawValue(with: odb) as! Bool, true)
 		closeAndDelete(odb)
 	}
 
@@ -84,13 +84,13 @@ class ODBTests: XCTestCase {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["TestValue"])
 		let intValue = 3487456
-		try! path.setRawValue(intValue, odb: odb)
+		path.setRawValue(intValue, odb: odb)
 
-		XCTAssertEqual(try! path.rawValue(with: odb) as! Int, intValue)
+		XCTAssertEqual(path.rawValue(with: odb) as! Int, intValue)
 
 		let stringValue = "test string value"
-		try! path.setRawValue(stringValue, odb: odb)
-		XCTAssertEqual(try! path.rawValue(with: odb) as! String, stringValue)
+		path.setRawValue(stringValue, odb: odb)
+		XCTAssertEqual(path.rawValue(with: odb) as! String, stringValue)
 
 		closeAndDelete(odb)
 	}
@@ -98,7 +98,7 @@ class ODBTests: XCTestCase {
 	func testEnsureTable() {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["A", "B", "C", "D"])
-		let _ = try! path.ensureTable(with: odb)
+		let _ = path.ensureTable(with: odb)
 		closeAndDelete(odb)
 	}
 
@@ -107,7 +107,7 @@ class ODBTests: XCTestCase {
 		let path = ODBPath.path(["A", "B", "C", "D"])
 
 		self.measure {
-			let _ = try! path.ensureTable(with: odb)
+			let _ = path.ensureTable(with: odb)
 		}
 
 		closeAndDelete(odb)
@@ -116,12 +116,12 @@ class ODBTests: XCTestCase {
 	func testStoreDateInSubtable() {
 		let odb = genericTestODB()
 		let path = ODBPath.path(["A", "B", "C", "D"])
-		try! path.ensureTable(with: odb)
+		path.ensureTable(with: odb)
 		
 		let d = Date()
 		let datePath = path + "TestValue"
-		try! datePath.setRawValue(d, odb: odb)
-		XCTAssertEqual(try! datePath.rawValue(with: odb) as! Date, d)
+		datePath.setRawValue(d, odb: odb)
+		XCTAssertEqual(datePath.rawValue(with: odb) as! Date, d)
 		closeAndDelete(odb)
 	}
 }
