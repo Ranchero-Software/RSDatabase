@@ -24,11 +24,6 @@ public struct ODBValue: Hashable {
 	public let primitiveType: PrimitiveType
 	public let applicationType: String? // Application-defined
 
-	private static let trueValue = ODBValue(rawValue: true, primitiveType: .boolean)
-	private static let falseValue = ODBValue(rawValue: false, primitiveType: .boolean)
-	private static var integerValueCache = [Int: ODBValue]()
-	private static let integerValueCacheLock = NSLock()
-
 	public init(rawValue: Any, primitiveType: PrimitiveType, applicationType: String?) {
 		self.rawValue = rawValue
 		self.primitiveType = primitiveType
@@ -36,7 +31,6 @@ public struct ODBValue: Hashable {
 	}
 
 	public init(rawValue: Any, primitiveType: PrimitiveType) {
-
 		self.init(rawValue: rawValue, primitiveType: primitiveType, applicationType: nil)
 	}
 
@@ -45,46 +39,6 @@ public struct ODBValue: Hashable {
 			return nil
 		}
 		self.init(rawValue: rawValue, primitiveType: primitiveType)
-	}
-
-	public static func bool(_ boolean: Bool) -> ODBValue {
-
-		return boolean ? ODBValue.trueValue : ODBValue.falseValue
-	}
-
-	public static func integer(_ integer: Int) -> ODBValue {
-
-		integerValueCacheLock.lock()
-		defer {
-			integerValueCacheLock.unlock()
-		}
-
-		if let cachedValue = integerValueCache[integer] {
-			return cachedValue
-		}
-		let value = ODBValue(rawValue: integer, primitiveType: .integer)
-		integerValueCache[integer] = value
-		return value
-	}
-
-	public static func double(_ double: Double) -> ODBValue {
-
-		return ODBValue(rawValue: double, primitiveType: .double)
-	}
-
-	public static func date(_ date: Date) -> ODBValue {
-
-		return ODBValue(rawValue: date, primitiveType: .double)
-	}
-
-	public static func string(_ string: String) -> ODBValue {
-
-		return ODBValue(rawValue: string, primitiveType: .string)
-	}
-
-	public static func data(_ data: Data) -> ODBValue {
-
-		return ODBValue(rawValue: data, primitiveType: .data)
 	}
 
 	// MARK: - Hashable
@@ -108,7 +62,7 @@ public struct ODBValue: Hashable {
 		else if let dateValue = rawValue as? Date {
 			hasher.combine(dateValue)
 		}
-		
+
 		hasher.combine(primitiveType)
 		hasher.combine(applicationType)
 	}
