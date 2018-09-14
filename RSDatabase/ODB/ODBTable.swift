@@ -30,6 +30,10 @@ public final class ODBTable: ODBObject, Hashable {
 		}
 	}
 
+	public lazy var rawValueTable = {
+		return ODBRawValueTable(table: self)
+	}()
+
 	init(uniqueID: Int, name: String, parentTable: ODBTable?, isRootTable: Bool, odb: ODB) {
 		self.uniqueID = uniqueID
 		self.name = name
