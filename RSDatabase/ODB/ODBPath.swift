@@ -40,7 +40,6 @@ public struct ODBPath: Hashable {
 		return ODBPath.path(Array(elements.dropLast()))
 	}
 
-	private let lowercasedElements: [String]
 	private static var pathCache = [[String]: ODBPath]()
 	private static let pathCacheLock = NSLock()
 
@@ -48,7 +47,6 @@ public struct ODBPath: Hashable {
 
 		let canonicalElements = ODBPath.dropLeadingRootElement(from: elements)
 		self.elements = canonicalElements
-		self.lowercasedElements = canonicalElements.odbLowercased()
 
 		if canonicalElements.count < 1 {
 			self.name = ODBPath.rootTableName
@@ -159,13 +157,13 @@ public struct ODBPath: Hashable {
 	// MARK: - Hashable
 
 	public func hash(into hasher: inout Hasher) {
-		hasher.combine(lowercasedElements)
+		hasher.combine(elements)
 	}
 
 	// MARK: - Equatable
 
 	public static func ==(lhs: ODBPath, rhs: ODBPath) -> Bool {
-		return lhs.lowercasedElements == rhs.lowercasedElements
+		return lhs.elements == rhs.elements
 	}
 }
 
@@ -189,7 +187,7 @@ private extension ODBPath {
 		}
 		
 		let firstElement = elements.first!
-		if firstElement.odbLowercased() == ODBPath.rootTableName {
+		if firstElement == ODBPath.rootTableName {
 			return Array(elements.dropFirst())
 		}
 

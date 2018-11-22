@@ -148,13 +148,11 @@ extension ODB {
 			// Keys are lower-cased, since we case-insensitive lookups.
 
 			for valueObject in valueObjects {
-				let lowerName = valueObject.name.odbLowercased()
-				children[lowerName] = valueObject
+				children[valueObject.name] = valueObject
 			}
 
 			for table in tables {
-				let lowerName = table.name.odbLowercased()
-				children[lowerName] = table
+				children[table.name] = table
 			}
 		}
 
@@ -177,18 +175,4 @@ private extension ODB {
 	"""
 }
 
-extension String {
 
-	private static let lowercaseLocale = Locale(identifier: "en")
-
-	func odbLowercased() -> String {
-		return self.lowercased(with: String.lowercaseLocale)
-	}
-}
-
-extension Array where Element == String {
-
-	func odbLowercased() -> [String] {
-		return self.map{ $0.odbLowercased() }
-	}
-}

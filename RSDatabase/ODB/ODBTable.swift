@@ -45,7 +45,7 @@ public final class ODBTable: ODBObject, Hashable {
 
 	/// Get the ODBObject for the given name.
 	public subscript(_ name: String) -> ODBObject? {
-		return children[name.odbLowercased()]
+		return children[name]
 	}
 
 	/// Fetch the ODBValue for the given name.
@@ -161,7 +161,7 @@ extension ODBTable {
 private extension ODBTable {
 
 	func addChild(name: String, object: ODBObject) {
-		children[name.odbLowercased()] = object
+		children[name] = object
 	}
 
 	func ensureChildren() {
