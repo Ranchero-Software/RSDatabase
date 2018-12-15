@@ -23,13 +23,17 @@
 
 	static NSMutableDictionary *cache = nil;
 	static dispatch_once_t onceToken;
+	static NSLock *lock = nil;
 	dispatch_once(&onceToken, ^{
+		lock = [[NSLock alloc] init];
 		cache = [NSMutableDictionary new];
 	});
-	
+
+	[lock lock];
 	NSNumber *cacheKey = @(numberOfValues);
 	NSString *cachedString = cache[cacheKey];
 	if (cachedString) {
+		[lock unlock];
 		return cachedString;
 	}
 
@@ -48,7 +52,8 @@
 	[s appendString:@")"];
 	
 	cache[cacheKey] = s;
-	
+	[lock unlock];
+
 	return s;
 }
 
@@ -59,20 +64,25 @@
 
 	static NSMutableDictionary *cache = nil;
 	static dispatch_once_t onceToken;
+	static NSLock *lock = nil;
 	dispatch_once(&onceToken, ^{
+		lock = [[NSLock alloc] init];
 		cache = [NSMutableDictionary new];
 	});
 
+	[lock lock];
 	NSArray *cacheKey = keys;
 	NSString *cachedString = cache[cacheKey];
 	if (cachedString) {
+		[lock unlock];
 		return cachedString;
 	}
 	
 	NSString *s = [NSString stringWithFormat:@"(%@)", [keys componentsJoinedByString:@", "]];
 
 	cache[cacheKey] = s;
-	
+	[lock unlock];
+
 	return s;
 }
 
@@ -85,13 +95,17 @@
 	
 	static NSMutableDictionary *cache = nil;
 	static dispatch_once_t onceToken;
+	static NSLock *lock = nil;
 	dispatch_once(&onceToken, ^{
+		lock = [[NSLock alloc] init];
 		cache = [NSMutableDictionary new];
 	});
 
+	[lock lock];
 	NSArray *cacheKey = keys;
 	NSString *cachedString = cache[cacheKey];
 	if (cachedString) {
+		[lock unlock];
 		return cachedString;
 	}
 	
@@ -112,7 +126,8 @@
 	}
 
 	cache[cacheKey] = s;
-	
+	[lock unlock];
+
 	return s;
 }
 
