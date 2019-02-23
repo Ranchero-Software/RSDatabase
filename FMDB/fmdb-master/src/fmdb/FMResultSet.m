@@ -61,7 +61,7 @@
         int columnIdx = 0;
         for (columnIdx = 0; columnIdx < columnCount; columnIdx++) {
             [_columnNameToIndexMap setObject:[NSNumber numberWithInt:columnIdx]
-                                      forKey:[[NSString stringWithUTF8String:sqlite3_column_name([_statement statement], columnIdx)] lowercaseString]];
+                                      forKey:[self _lowercaseString:[NSString stringWithUTF8String:sqlite3_column_name([_statement statement], columnIdx)]]];
         }
     }
     return _columnNameToIndexMap;
@@ -203,7 +203,7 @@
 }
 
 - (int)columnIndexForName:(NSString*)columnName {
-    columnName = [columnName lowercaseString];
+	columnName = [self _lowercaseString:columnName];
     
     NSNumber *n = [[self columnNameToIndexMap] objectForKey:columnName];
     
@@ -408,5 +408,28 @@
     return [self objectForColumnName:columnName];
 }
 
+// Brent 22 Feb. 2019: Calls to lowerCaseString show up in Instruments too much.
+// Given that the amount of column names in a given app is going to be pretty small,
+// we can just cache the lowercase versions
+- (NSString *)_lowercaseString:(NSString *)s {
+	static NSLock *lock = nil;
+	static NSMutableDictionary *lowercaseStringCache = nil;
+
+	static dispatch_once_t onceToken;
+	dispatch_once(&onceToken, ^{
+		lock = [[NSLock alloc] init];
+		lowercaseStringCache = [[NSMutableDictionary alloc] init];
+	});
+
+	[lock lock];
+	NSString *lowercaseString = lowercaseStringCache[s];
+	if (lowercaseString == nil) {
+		lowercaseString = s.lowercaseString;
+		lowercaseStringCache[s] = lowercaseString;
+	}
+	[lock unlock];
+	
+	return lowercaseString;
+}
 
 @end
