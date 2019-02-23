@@ -101,6 +101,19 @@ public extension DatabaseTable {
 		}
 		return objects
 	}
+
+	// MARK: Columns
+
+	func containsColumn(_ columnName: String, in database: FMDatabase) -> Bool {
+		if let resultSet = database.executeQuery("select * from \(name) limit 1;", withArgumentsIn: nil) {
+			if let columnMap = resultSet.columnNameToIndexMap {
+				if let _ = columnMap[columnName.lowercased()] {
+					return true
+				}
+			}
+		}
+		return false
+	}
 }
 
 public extension FMResultSet {
