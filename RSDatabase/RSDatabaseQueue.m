@@ -62,7 +62,6 @@
 		[database executeUpdate:@"PRAGMA synchronous = 1;"];
 		[database setShouldCacheStatements:YES];
 
-		[[self class] addBasicTextSearchFunction:database];
 		if ([self.delegate respondsToSelector:@selector(makeFunctionsForDatabase:queue:)]) {
 			[self.delegate makeFunctionsForDatabase:database queue:self];
 		}
@@ -81,61 +80,6 @@
 	}
 
 	return database;
-}
-
-static BOOL textContainsSearchString(NSString *text, NSString *searchString) {
-
-	// Check each individual word. Return YES if all found.
-	// The check is case-insensitive and diacritic-insensitive.
-
-	if (text == nil || text.length < 1 || searchString == nil || searchString.length < 1) {
-		return NO;
-	}
-
-	@autoreleasepool {
-		__block BOOL found = YES;
-
-		[searchString enumerateSubstringsInRange:NSMakeRange(0, [searchString length]) options:NSStringEnumerationByWords usingBlock:^(NSString *substring, NSRange substringRange, NSRange enclosingRange, BOOL *stop) {
-
-			NSRange range = [text rangeOfString:substring options:NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch];
-			if (range.location == NSNotFound) {
-				found = NO;
-				*stop = YES;
-			}
-		}];
-
-		return found;
-	}
-}
-
-+ (void)addBasicTextSearchFunction:(FMDatabase *)database {
-
-	// Adds a very basic search function called textMatchesSearchString.
-	// There’s no indexing — it looks at the actual text.
-	// This may not be fast enough for every conceivable use.
-	// Alternatives include SQLite FTS and Apple Search Kit.
-
-	[database makeFunctionNamed:@"textMatchesSearchString" maximumArguments:2 withBlock:^(void *context, int argc, void **argv) {
-
-		@autoreleasepool {
-
-			if (sqlite3_value_type(argv[0]) == SQLITE_TEXT) {
-
-				const unsigned char *a = sqlite3_value_text(argv[0]);
-				const unsigned char *b = sqlite3_value_text(argv[1]);
-
-				NSString *text = [NSString stringWithUTF8String:(const char *)a];
-				NSString *searchString = [NSString stringWithUTF8String:(const char *)b];
-
-				BOOL matches = textContainsSearchString(text, searchString);
-				sqlite3_result_int(context, (int)matches);
-			}
-
-			else {
-				sqlite3_result_null(context);
-			}
-		}
-	}];
 }
 
 #pragma mark - API
