@@ -8,11 +8,13 @@
 
 import Foundation
 
+public typealias DatabaseDictionary = [String: Any]
+
 public protocol DatabaseObject {
 
 	var databaseID: String { get }
 
-	func databaseDictionary() -> NSDictionary?
+	func databaseDictionary() -> DatabaseDictionary?
 
 	func relatedObjectsWithName(_ name: String) -> [DatabaseObject]?
 }
@@ -51,7 +53,7 @@ extension Array where Element == DatabaseObject {
 		return false
 	}
 
-	func databaseDictionaries() -> [NSDictionary]? {
+	func databaseDictionaries() -> [DatabaseDictionary]? {
 
 		let dictionaries = self.compactMap{ $0.databaseDictionary() }
 		return dictionaries.isEmpty ? nil : dictionaries

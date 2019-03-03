@@ -26,7 +26,7 @@ final class ODBTablesTable: DatabaseTable {
 	}
 
 	func insertTable(name: String, parentTable: ODBTable, odb: ODB, database: FMDatabase) -> ODBTable {
-		let d: NSDictionary = [Key.parentID: parentTable.uniqueID, Key.name: name]
+		let d: DatabaseDictionary = [Key.parentID: parentTable.uniqueID, Key.name: name]
 		insertRow(d, insertType: .normal, in: database)
 		let uniqueID = Int(database.lastInsertRowId())
 		return ODBTable(uniqueID: uniqueID, name: name, parentTable: parentTable, isRootTable: false, odb: odb)

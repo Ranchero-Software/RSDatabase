@@ -52,21 +52,21 @@ public extension DatabaseTable {
 		let _ = database.rs_updateRows(withValue: value, valueKey: valueKey, whereKey: whereKey, inValues: matches, tableName: self.name)
 	}
 	
-	public func updateRowsWithDictionary(_ dictionary: NSDictionary, whereKey: String, matches: Any, database: FMDatabase) {
+	public func updateRowsWithDictionary(_ dictionary: DatabaseDictionary, whereKey: String, matches: Any, database: FMDatabase) {
 		
-		let _ = database.rs_updateRows(with: dictionary as! [AnyHashable : Any], whereKey: whereKey, equalsValue: matches, tableName: self.name)
+		let _ = database.rs_updateRows(with: dictionary, whereKey: whereKey, equalsValue: matches, tableName: self.name)
 	}
 	
 	// MARK: Saving
 
-	public func insertRows(_ dictionaries: [NSDictionary], insertType: RSDatabaseInsertType, in database: FMDatabase) {
+	public func insertRows(_ dictionaries: [DatabaseDictionary], insertType: RSDatabaseInsertType, in database: FMDatabase) {
 
 		dictionaries.forEach { (oneDictionary) in
-			let _ = database.rs_insertRow(with: oneDictionary as [NSObject: AnyObject], insertType: insertType, tableName: self.name)
+			let _ = database.rs_insertRow(with: oneDictionary, insertType: insertType, tableName: self.name)
 		}
 	}
 
-	public func insertRow(_ rowDictionary: NSDictionary, insertType: RSDatabaseInsertType, in database: FMDatabase) {
+	public func insertRow(_ rowDictionary: DatabaseDictionary, insertType: RSDatabaseInsertType, in database: FMDatabase) {
 
 		insertRows([rowDictionary], insertType: insertType, in: database)
 	}
