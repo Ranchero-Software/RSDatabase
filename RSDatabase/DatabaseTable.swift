@@ -17,17 +17,17 @@ public extension DatabaseTable {
 	
 	// MARK: Fetching
 
-	public func selectRowsWhere(key: String, equals value: Any, in database: FMDatabase) -> FMResultSet? {
+	func selectRowsWhere(key: String, equals value: Any, in database: FMDatabase) -> FMResultSet? {
 		
 		return database.rs_selectRowsWhereKey(key, equalsValue: value, tableName: name)
 	}
 
-	public func selectSingleRowWhere(key: String, equals value: Any, in database: FMDatabase) -> FMResultSet? {
+	func selectSingleRowWhere(key: String, equals value: Any, in database: FMDatabase) -> FMResultSet? {
 
 		return database.rs_selectSingleRowWhereKey(key, equalsValue: value, tableName: name)
 	}
 
-	public func selectRowsWhere(key: String, inValues values: [Any], in database: FMDatabase) -> FMResultSet? {
+	func selectRowsWhere(key: String, inValues values: [Any], in database: FMDatabase) -> FMResultSet? {
 
 		if values.isEmpty {
 			return nil
@@ -37,7 +37,7 @@ public extension DatabaseTable {
 
 	// MARK: Deleting
 
-	public func deleteRowsWhere(key: String, equalsAnyValue values: [Any], in database: FMDatabase) {
+	func deleteRowsWhere(key: String, equalsAnyValue values: [Any], in database: FMDatabase) {
 		
 		if values.isEmpty {
 			return
@@ -47,26 +47,26 @@ public extension DatabaseTable {
 
 	// MARK: Updating
 
-	public func updateRowsWithValue(_ value: Any, valueKey: String, whereKey: String, matches: [Any], database: FMDatabase) {
+	func updateRowsWithValue(_ value: Any, valueKey: String, whereKey: String, matches: [Any], database: FMDatabase) {
 		
 		let _ = database.rs_updateRows(withValue: value, valueKey: valueKey, whereKey: whereKey, inValues: matches, tableName: self.name)
 	}
 	
-	public func updateRowsWithDictionary(_ dictionary: DatabaseDictionary, whereKey: String, matches: Any, database: FMDatabase) {
+	func updateRowsWithDictionary(_ dictionary: DatabaseDictionary, whereKey: String, matches: Any, database: FMDatabase) {
 		
 		let _ = database.rs_updateRows(with: dictionary, whereKey: whereKey, equalsValue: matches, tableName: self.name)
 	}
 	
 	// MARK: Saving
 
-	public func insertRows(_ dictionaries: [DatabaseDictionary], insertType: RSDatabaseInsertType, in database: FMDatabase) {
+	func insertRows(_ dictionaries: [DatabaseDictionary], insertType: RSDatabaseInsertType, in database: FMDatabase) {
 
 		dictionaries.forEach { (oneDictionary) in
 			let _ = database.rs_insertRow(with: oneDictionary, insertType: insertType, tableName: self.name)
 		}
 	}
 
-	public func insertRow(_ rowDictionary: DatabaseDictionary, insertType: RSDatabaseInsertType, in database: FMDatabase) {
+	func insertRow(_ rowDictionary: DatabaseDictionary, insertType: RSDatabaseInsertType, in database: FMDatabase) {
 
 		insertRows([rowDictionary], insertType: insertType, in: database)
 	}
@@ -118,7 +118,7 @@ public extension DatabaseTable {
 
 public extension FMResultSet {
 
-	public func compactMap<T>(_ callback: (_ row: FMResultSet) -> T?) -> [T] {
+	func compactMap<T>(_ callback: (_ row: FMResultSet) -> T?) -> [T] {
 
 		var objects = [T]()
 		while next() {
@@ -130,7 +130,7 @@ public extension FMResultSet {
 		return objects
 	}
 
-	public func mapToSet<T>(_ callback: (_ row: FMResultSet) -> T?) -> Set<T> {
+	func mapToSet<T>(_ callback: (_ row: FMResultSet) -> T?) -> Set<T> {
 
 		return Set(compactMap(callback))
 	}

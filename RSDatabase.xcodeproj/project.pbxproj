@@ -411,6 +411,7 @@
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
 			knownRegions = (
+				English,
 				en,
 			);
 			mainGroup = 84F22C4B1B52E0D9000060CE;
@@ -546,7 +547,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D511EF0620242E6400712EC3 /* RSDatabase_project_debug.xcconfig */;
 			buildSettings = {
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -554,7 +554,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D511EF0320242E6400712EC3 /* RSDatabase_project_release.xcconfig */;
 			buildSettings = {
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
@@ -580,7 +579,6 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSDatabaseTests/RSDatabaseTests-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Debug;
 		};
@@ -591,7 +589,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				SWIFT_OBJC_BRIDGING_HEADER = "RSDatabaseTests/RSDatabaseTests-Bridging-Header.h";
-				SWIFT_VERSION = 4.2;
 			};
 			name = Release;
 		};
