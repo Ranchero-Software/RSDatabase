@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		51126BE12258F03000722696 /* DatabaseTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2D9208B0612008BA1F8 /* DatabaseTable.swift */; };
+		51126BE22258F04800722696 /* ODBRawValueTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6F841214B73010056318B /* ODBRawValueTable.swift */; };
 		8400ABFF1E0CFC0700AA7C57 /* RSDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419ADC1B5ABD7F00C26BB2 /* RSDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8400AC001E0CFC0700AA7C57 /* RSDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419ADD1B5ABD7F00C26BB2 /* RSDatabaseQueue.m */; };
 		8400AC011E0CFC0700AA7C57 /* FMDatabase+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -460,6 +462,7 @@
 				84CED26E2090325C0073B251 /* ODBValue.swift in Sources */,
 				84F4A2E2208B0719008BA1F8 /* ODB.swift in Sources */,
 				848E22541F6652990031D7C5 /* DatabaseRelatedObjectsTable.swift in Sources */,
+				51126BE22258F04800722696 /* ODBRawValueTable.swift in Sources */,
 				8400AC001E0CFC0700AA7C57 /* RSDatabaseQueue.m in Sources */,
 				D511EF2E20244E8900712EC3 /* DatabaseObjectCache.swift in Sources */,
 				8400AC061E0CFC0700AA7C57 /* NSString+RSDatabase.m in Sources */,
@@ -476,6 +479,7 @@
 				84F4A304208BE7A5008BA1F8 /* ODBTable.swift in Sources */,
 				8400AC0A1E0CFC2900AA7C57 /* FMDatabaseAdditions.m in Sources */,
 				D511EF2F20244E9A00712EC3 /* DatabaseObject.swift in Sources */,
+				51126BE12258F03000722696 /* DatabaseTable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
