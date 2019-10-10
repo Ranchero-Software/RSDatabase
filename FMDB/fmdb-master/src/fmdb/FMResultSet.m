@@ -7,10 +7,14 @@
 - (void)resultSetDidClose:(FMResultSet *)resultSet;
 @end
 
+@interface FMResultSet ()
+@property (nonatomic, readonly) NSDictionary *columnNameToIndexMapNonLowercased;
+@end
 
 @implementation FMResultSet
 @synthesize query=_query;
 @synthesize statement=_statement;
+@synthesize columnNameToIndexMapNonLowercased = _columnNameToIndexMapNonLowercased;
 
 + (instancetype)resultSetWithStatement:(FMStatement *)statement usingParentDatabase:(FMDatabase*)aDB {
     
@@ -56,15 +60,28 @@
 
 - (NSMutableDictionary *)columnNameToIndexMap {
     if (!_columnNameToIndexMap) {
-        int columnCount = sqlite3_column_count([_statement statement]);
-        _columnNameToIndexMap = [[NSMutableDictionary alloc] initWithCapacity:(NSUInteger)columnCount];
-        int columnIdx = 0;
-        for (columnIdx = 0; columnIdx < columnCount; columnIdx++) {
-            [_columnNameToIndexMap setObject:[NSNumber numberWithInt:columnIdx]
-                                      forKey:[self _lowercaseString:[NSString stringWithUTF8String:sqlite3_column_name([_statement statement], columnIdx)]]];
-        }
+		NSDictionary *nonLowercasedMap = self.columnNameToIndexMapNonLowercased;
+		NSMutableDictionary *d = [[NSMutableDictionary alloc] initWithCapacity:nonLowercasedMap.count];
+		for (NSString *key in nonLowercasedMap.allKeys) {
+			[d setObject:nonLowercasedMap[key] forKey:[self _lowercaseString:key]];
+		}
+		 _columnNameToIndexMap = d;
     }
     return _columnNameToIndexMap;
+}
+
+- (NSDictionary *)columnNameToIndexMapNonLowercased {
+	if (!_columnNameToIndexMapNonLowercased) {
+        int columnCount = sqlite3_column_count([_statement statement]);
+		NSMutableDictionary *d = [[NSMutableDictionary alloc] initWithCapacity:(NSUInteger)columnCount];
+        int columnIdx = 0;
+        for (columnIdx = 0; columnIdx < columnCount; columnIdx++) {
+            [d setObject:[NSNumber numberWithInt:columnIdx]
+                                      forKey:[NSString stringWithUTF8String:sqlite3_column_name([_statement statement], columnIdx)]];
+        }
+		_columnNameToIndexMapNonLowercased = d;
+	}
+	return _columnNameToIndexMapNonLowercased;
 }
 
 - (void)kvcMagic:(id)object {
@@ -203,9 +220,11 @@
 }
 
 - (int)columnIndexForName:(NSString*)columnName {
-	columnName = [self _lowercaseString:columnName];
-    
-    NSNumber *n = [[self columnNameToIndexMap] objectForKey:columnName];
+	NSNumber *n = self.columnNameToIndexMapNonLowercased[columnName];
+	if (!n) {
+		columnName = [self _lowercaseString:columnName];
+		n = [[self columnNameToIndexMap] objectForKey:columnName];
+	}
     
     if (n) {
         return [n intValue];
