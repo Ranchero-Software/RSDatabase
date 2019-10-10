@@ -337,6 +337,7 @@
 				8400ABF31E0CFBD800AA7C57 /* Frameworks */,
 				8400ABF41E0CFBD800AA7C57 /* Headers */,
 				8400ABF51E0CFBD800AA7C57 /* Resources */,
+				51C8F341234FAFAE0048ED95 /* Run Script: Verify No Build Settings */,
 			);
 			buildRules = (
 			);
@@ -355,6 +356,7 @@
 				84F22C511B52E0D9000060CE /* Frameworks */,
 				84F22C521B52E0D9000060CE /* Headers */,
 				84F22C531B52E0D9000060CE /* Resources */,
+				51C8F343234FAFF10048ED95 /* Run Script: Verify No Build Settings */,
 			);
 			buildRules = (
 			);
@@ -394,13 +396,14 @@
 				TargetAttributes = {
 					8400ABF61E0CFBD800AA7C57 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 9C84TZ7Q6Z;
-						ProvisioningStyle = Automatic;
+						DevelopmentTeam = M8L2WTLA8W;
+						ProvisioningStyle = Manual;
 					};
 					84F22C541B52E0D9000060CE = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 9C84TZ7Q6Z;
+						DevelopmentTeam = SHJK2V3AJG;
 						LastSwiftMigration = 0900;
+						ProvisioningStyle = Automatic;
 					};
 					84F22C5E1B52E0D9000060CE = {
 						CreatedOnToolsVersion = 7.0;
@@ -451,6 +454,45 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		51C8F341234FAFAE0048ED95 /* Run Script: Verify No Build Settings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script: Verify No Build Settings";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xcrun -sdk macosx swiftc -target x86_64-macosx10.11  buildscripts/VerifyNoBuildSettings.swift -o $CONFIGURATION_TEMP_DIR/VerifyNoBS\n$CONFIGURATION_TEMP_DIR/VerifyNoBS ${PROJECT_NAME}.xcodeproj/project.pbxproj\n";
+		};
+		51C8F343234FAFF10048ED95 /* Run Script: Verify No Build Settings */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script: Verify No Build Settings";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "xcrun -sdk macosx swiftc -target x86_64-macosx10.11  buildscripts/VerifyNoBuildSettings.swift -o $CONFIGURATION_TEMP_DIR/VerifyNoBS\n$CONFIGURATION_TEMP_DIR/VerifyNoBS ${PROJECT_NAME}.xcodeproj/project.pbxproj\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		8400ABF21E0CFBD800AA7C57 /* Sources */ = {
@@ -579,10 +621,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D511EF0420242E6400712EC3 /* RSDatabaseTests_target.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = "RSDatabaseTests/RSDatabaseTests-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
@@ -590,9 +628,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = D511EF0420242E6400712EC3 /* RSDatabaseTests_target.xcconfig */;
 			buildSettings = {
-				CLANG_ENABLE_MODULES = YES;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				SWIFT_OBJC_BRIDGING_HEADER = "RSDatabaseTests/RSDatabaseTests-Bridging-Header.h";
 			};
 			name = Release;
 		};
