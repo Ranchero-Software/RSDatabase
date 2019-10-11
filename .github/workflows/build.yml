@@ -29,7 +29,7 @@ jobs:
       run: xcodebuild -showsdks
     
     - name: Show Available Destinations
-      run: xcodebuild -scheme RSCoreiOS -showdestinations
+      run: xcodebuild -scheme RSDatabaseiOS -showdestinations
 
     - name: Run Build
       env:
