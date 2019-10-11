@@ -128,14 +128,12 @@ class ODBTests: XCTestCase {
 
 private extension ODBTests {
 
-	func desktopFolderPath() -> String {
-		let paths = FileManager.default.urls(for: .desktopDirectory, in: .userDomainMask)
-		let folder = paths[0]
-		return folder.path
+	func tempFolderPath() -> String {
+		return FileManager.default.temporaryDirectory.path
 	}
 
 	func pathForTestFile(_ name: String) -> String {
-		let folder = desktopFolderPath()
+		let folder = tempFolderPath()
 		return (folder as NSString).appendingPathComponent(name)
 	}
 
