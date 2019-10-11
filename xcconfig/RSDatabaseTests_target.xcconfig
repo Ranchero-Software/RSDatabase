@@ -5,7 +5,7 @@ PRODUCT_BUNDLE_IDENTIFIER = com.ranchero.RSDatabaseTests
 PRODUCT_NAME = $(TARGET_NAME)
 CLANG_ENABLE_OBJC_WEAK = YES
 SWIFT_VERSION = 5.1
-
+SUPPORTED_PLATFORMS = macosx iphoneos iphonesimulator
 
 
 
