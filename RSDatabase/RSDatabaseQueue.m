@@ -9,6 +9,7 @@
 #import "RSDatabaseQueue.h"
 #import <sqlite3.h>
 
+// This has been deprecated — use DatabaseQueue instead.
 
 @interface RSDatabaseQueue ()
 

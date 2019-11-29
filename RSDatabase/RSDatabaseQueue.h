@@ -9,6 +9,8 @@
 @import Foundation;
 #import "FMDatabase.h"
 
+// This has been deprecated — use DatabaseQueue instead.
+
 @class RSDatabaseQueue;
 
 NS_ASSUME_NONNULL_BEGIN
