@@ -128,7 +128,7 @@ public final class DatabaseQueue {
 
 	/// Vacuum the database if it’s been more than daysBetweenVacuums since the last vacuum.
 	/// Normally you would call this right after initing a DatabaseQueue.
-	public func vacuumIfNeeded(_ daysBetweenVacuums: Int) {
+	public func vacuumIfNeeded(daysBetweenVacuums: Int) {
 		let defaultsKey = "DatabaseQueue-LastVacuumDate-\(databasePath)"
 		let minimumVacuumInterval = TimeInterval(daysBetweenVacuums * (60 * 60 * 24)) // Doesn’t have to be precise
 		let now = Date()
