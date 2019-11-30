@@ -162,7 +162,7 @@ private extension DatabaseQueue {
 
 	func _runInDatabase(_ database: FMDatabase, _ databaseBlock: DatabaseBlock, _ useTransaction: Bool) {
 		precondition(!isCallingDatabase)
-		precondition(!isSuspended)
+		precondition(!_isSuspended)
 		isCallingDatabase = true
 		autoreleasepool {
 			if useTransaction {
