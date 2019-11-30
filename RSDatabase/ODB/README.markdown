@@ -1,5 +1,7 @@
 # ODB
 
+**NOTE**: This all has been excluded from building. It’s a work in progress, not ready for use.
+
 ODB stands for Object Database.
 
 “Object” doesn’t mean object in the object-oriented programming sense — it just means *thing*.

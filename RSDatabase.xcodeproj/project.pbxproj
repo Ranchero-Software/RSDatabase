@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		51126BE12258F03000722696 /* DatabaseTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2D9208B0612008BA1F8 /* DatabaseTable.swift */; };
-		51126BE22258F04800722696 /* ODBRawValueTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6F841214B73010056318B /* ODBRawValueTable.swift */; };
 		8400ABFF1E0CFC0700AA7C57 /* RSDatabaseQueue.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419ADC1B5ABD7F00C26BB2 /* RSDatabaseQueue.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		8400AC001E0CFC0700AA7C57 /* RSDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419ADD1B5ABD7F00C26BB2 /* RSDatabaseQueue.m */; };
 		8400AC011E0CFC0700AA7C57 /* FMDatabase+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -27,7 +26,6 @@
 		8400AC101E0CFD6B00AA7C57 /* RSDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 84F22C581B52E0D9000060CE /* RSDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84143FC1238F93610008487A /* DatabaseQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84143FC0238F93600008487A /* DatabaseQueue.swift */; };
 		84143FC2238F93610008487A /* DatabaseQueue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84143FC0238F93600008487A /* DatabaseQueue.swift */; };
-		84297FF2213503AE004F3988 /* ODBTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84297FF1213503AE004F3988 /* ODBTests.swift */; };
 		84314F4A1F68ECC600F710B2 /* DatabaseObjectCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84314F491F68ECC600F710B2 /* DatabaseObjectCache.swift */; };
 		84419AD61B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419AD41B5ABD6D00C26BB2 /* FMDatabase+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84419AD71B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419AD51B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m */; };
@@ -37,8 +35,6 @@
 		84419AE71B5ABD7F00C26BB2 /* RSDatabaseQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419ADD1B5ABD7F00C26BB2 /* RSDatabaseQueue.m */; };
 		84419B051B5ABFF700C26BB2 /* FMResultSet+RSExtras.h in Headers */ = {isa = PBXBuildFile; fileRef = 84419B031B5ABFF700C26BB2 /* FMResultSet+RSExtras.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84419B061B5ABFF700C26BB2 /* FMResultSet+RSExtras.m in Sources */ = {isa = PBXBuildFile; fileRef = 84419B041B5ABFF700C26BB2 /* FMResultSet+RSExtras.m */; };
-		844725F020903E720027551E /* ODBObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844725EF20903E720027551E /* ODBObject.swift */; };
-		844725F120903E720027551E /* ODBObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844725EF20903E720027551E /* ODBObject.swift */; };
 		844ECFB91F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844ECFB81F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift */; };
 		848E22541F6652990031D7C5 /* DatabaseRelatedObjectsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 844ECFB81F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift */; };
 		848E22561F6652C70031D7C5 /* RelatedObjectsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848E22551F6652C70031D7C5 /* RelatedObjectsMap.swift */; };
@@ -47,9 +43,6 @@
 		84ABC1D11F364B07000DCC55 /* DatabaseLookupTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ABC1D01F364B07000DCC55 /* DatabaseLookupTable.swift */; };
 		84ABC1D21F364B07000DCC55 /* DatabaseLookupTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84ABC1D01F364B07000DCC55 /* DatabaseLookupTable.swift */; };
 		84C6DD011F395C13009AFB47 /* DatabaseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C6DD001F395C13009AFB47 /* DatabaseObject.swift */; };
-		84CED26D2090325C0073B251 /* ODBValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CED26C2090325C0073B251 /* ODBValue.swift */; };
-		84CED26E2090325C0073B251 /* ODBValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84CED26C2090325C0073B251 /* ODBValue.swift */; };
-		84D6F842214B73010056318B /* ODBRawValueTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84D6F841214B73010056318B /* ODBRawValueTable.swift */; };
 		84DDF1961C94FC45005E6CF5 /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 84DDF18B1C94FC45005E6CF5 /* FMDatabase.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		84DDF1971C94FC45005E6CF5 /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 84DDF18C1C94FC45005E6CF5 /* FMDatabase.m */; };
 		84DDF1981C94FC45005E6CF5 /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 84DDF18D1C94FC45005E6CF5 /* FMDatabaseAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -60,18 +53,6 @@
 		84F22C601B52E0D9000060CE /* RSDatabase.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 84F22C551B52E0D9000060CE /* RSDatabase.framework */; };
 		84F22C651B52E0D9000060CE /* RSDatabaseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 84F22C641B52E0D9000060CE /* RSDatabaseTests.m */; };
 		84F4A2DA208B0612008BA1F8 /* DatabaseTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2D9208B0612008BA1F8 /* DatabaseTable.swift */; };
-		84F4A2E1208B0719008BA1F8 /* ODB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2E0208B0719008BA1F8 /* ODB.swift */; };
-		84F4A2E2208B0719008BA1F8 /* ODB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2E0208B0719008BA1F8 /* ODB.swift */; };
-		84F4A2F7208B0C8A008BA1F8 /* ODBTablesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2F6208B0C8A008BA1F8 /* ODBTablesTable.swift */; };
-		84F4A2F8208B0C8A008BA1F8 /* ODBTablesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2F6208B0C8A008BA1F8 /* ODBTablesTable.swift */; };
-		84F4A2FA208B0D56008BA1F8 /* ODBValuesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2F9208B0D56008BA1F8 /* ODBValuesTable.swift */; };
-		84F4A2FB208B0D56008BA1F8 /* ODBValuesTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2F9208B0D56008BA1F8 /* ODBValuesTable.swift */; };
-		84F4A300208BE763008BA1F8 /* ODBPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2FF208BE763008BA1F8 /* ODBPath.swift */; };
-		84F4A301208BE763008BA1F8 /* ODBPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A2FF208BE763008BA1F8 /* ODBPath.swift */; };
-		84F4A303208BE7A5008BA1F8 /* ODBTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A302208BE7A5008BA1F8 /* ODBTable.swift */; };
-		84F4A304208BE7A5008BA1F8 /* ODBTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A302208BE7A5008BA1F8 /* ODBTable.swift */; };
-		84F4A306208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */; };
-		84F4A307208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84F4A305208BE7AF008BA1F8 /* ODBValueObject.swift */; };
 		D511EF2E20244E8900712EC3 /* DatabaseObjectCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84314F491F68ECC600F710B2 /* DatabaseObjectCache.swift */; };
 		D511EF2F20244E9A00712EC3 /* DatabaseObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C6DD001F395C13009AFB47 /* DatabaseObject.swift */; };
 		D511EF3020244EA400712EC3 /* RelatedObjectsMap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 848E22551F6652C70031D7C5 /* RelatedObjectsMap.swift */; };
@@ -230,9 +211,9 @@
 				84C6DD001F395C13009AFB47 /* DatabaseObject.swift */,
 				84F4A2D9208B0612008BA1F8 /* DatabaseTable.swift */,
 				84314F491F68ECC600F710B2 /* DatabaseObjectCache.swift */,
-				84F4A2DF208B0719008BA1F8 /* ODB */,
 				848E22531F66528C0031D7C5 /* Related Objects */,
 				84DDF18A1C94FC45005E6CF5 /* FMDB */,
+				84F4A2DF208B0719008BA1F8 /* ODB */,
 				84F22C5A1B52E0D9000060CE /* Info.plist */,
 				849BF8C51C94FB8E0071D1DA /* libsqlite3.tbd */,
 				84F22C631B52E0D9000060CE /* RSDatabaseTests */,
@@ -505,27 +486,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				84F4A301208BE763008BA1F8 /* ODBPath.swift in Sources */,
 				D511EF3120244EAE00712EC3 /* RelatedObjectIDsMap.swift in Sources */,
-				84CED26E2090325C0073B251 /* ODBValue.swift in Sources */,
-				84F4A2E2208B0719008BA1F8 /* ODB.swift in Sources */,
 				848E22541F6652990031D7C5 /* DatabaseRelatedObjectsTable.swift in Sources */,
-				51126BE22258F04800722696 /* ODBRawValueTable.swift in Sources */,
 				8400AC001E0CFC0700AA7C57 /* RSDatabaseQueue.m in Sources */,
 				D511EF2E20244E8900712EC3 /* DatabaseObjectCache.swift in Sources */,
 				8400AC061E0CFC0700AA7C57 /* NSString+RSDatabase.m in Sources */,
 				D511EF3020244EA400712EC3 /* RelatedObjectsMap.swift in Sources */,
-				84F4A2FB208B0D56008BA1F8 /* ODBValuesTable.swift in Sources */,
 				84ABC1D21F364B07000DCC55 /* DatabaseLookupTable.swift in Sources */,
-				84F4A2F8208B0C8A008BA1F8 /* ODBTablesTable.swift in Sources */,
 				8400AC0C1E0CFC3100AA7C57 /* FMResultSet.m in Sources */,
 				8400AC021E0CFC0700AA7C57 /* FMDatabase+RSExtras.m in Sources */,
-				84F4A307208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */,
 				84143FC2238F93610008487A /* DatabaseQueue.swift in Sources */,
-				844725F120903E720027551E /* ODBObject.swift in Sources */,
 				8400AC081E0CFC2000AA7C57 /* FMDatabase.m in Sources */,
 				8400AC041E0CFC0700AA7C57 /* FMResultSet+RSExtras.m in Sources */,
-				84F4A304208BE7A5008BA1F8 /* ODBTable.swift in Sources */,
 				8400AC0A1E0CFC2900AA7C57 /* FMDatabaseAdditions.m in Sources */,
 				D511EF2F20244E9A00712EC3 /* DatabaseObject.swift in Sources */,
 				51126BE12258F03000722696 /* DatabaseTable.swift in Sources */,
@@ -540,26 +512,17 @@
 				84419AD71B5ABD6D00C26BB2 /* FMDatabase+RSExtras.m in Sources */,
 				84314F4A1F68ECC600F710B2 /* DatabaseObjectCache.swift in Sources */,
 				84C6DD011F395C13009AFB47 /* DatabaseObject.swift in Sources */,
-				84F4A300208BE763008BA1F8 /* ODBPath.swift in Sources */,
-				84D6F842214B73010056318B /* ODBRawValueTable.swift in Sources */,
 				84419ADB1B5ABD7400C26BB2 /* NSString+RSDatabase.m in Sources */,
 				84ABC1D11F364B07000DCC55 /* DatabaseLookupTable.swift in Sources */,
 				84DDF1971C94FC45005E6CF5 /* FMDatabase.m in Sources */,
-				84F4A2F7208B0C8A008BA1F8 /* ODBTablesTable.swift in Sources */,
-				84F4A303208BE7A5008BA1F8 /* ODBTable.swift in Sources */,
-				84CED26D2090325C0073B251 /* ODBValue.swift in Sources */,
 				84DDF1A01C94FC45005E6CF5 /* FMResultSet.m in Sources */,
 				844ECFB91F5B17F9005E405A /* DatabaseRelatedObjectsTable.swift in Sources */,
-				84F4A2E1208B0719008BA1F8 /* ODB.swift in Sources */,
 				84419B061B5ABFF700C26BB2 /* FMResultSet+RSExtras.m in Sources */,
 				84143FC1238F93610008487A /* DatabaseQueue.swift in Sources */,
-				84F4A2FA208B0D56008BA1F8 /* ODBValuesTable.swift in Sources */,
 				84DDF1991C94FC45005E6CF5 /* FMDatabaseAdditions.m in Sources */,
 				84F4A2DA208B0612008BA1F8 /* DatabaseTable.swift in Sources */,
-				84F4A306208BE7AF008BA1F8 /* ODBValueObject.swift in Sources */,
 				848E22581F6653960031D7C5 /* RelatedObjectIDsMap.swift in Sources */,
 				848E22561F6652C70031D7C5 /* RelatedObjectsMap.swift in Sources */,
-				844725F020903E720027551E /* ODBObject.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -568,7 +531,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				84F22C651B52E0D9000060CE /* RSDatabaseTests.m in Sources */,
-				84297FF2213503AE004F3988 /* ODBTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
