@@ -31,19 +31,11 @@ public final class DatabaseQueue {
 	private let serialDispatchQueue: DispatchQueue
 
 	/// When init returns, the database will not be suspended: it will be ready for database calls.
-	public init(databasePath: String, excludeFromBackup: Bool = false) {
+	public init(databasePath: String) {
 		precondition(Thread.isMainThread)
 		self.serialDispatchQueue = DispatchQueue(label: "DatabaseQueue - \(databasePath)")
 		self.databasePath = databasePath
 		self.database = FMDatabase(path: databasePath)!
-
-		if excludeFromBackup {
-			var databaseURL = URL(fileURLWithPath: databasePath, isDirectory: false)
-			var resourceValues = URLResourceValues()
-			resourceValues.isExcludedFromBackup = true
-			try? databaseURL.setResourceValues(resourceValues)
-		}
-
 		resume()
 	}
 
