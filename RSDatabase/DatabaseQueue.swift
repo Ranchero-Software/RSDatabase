@@ -13,12 +13,14 @@ public typealias DatabaseBlock = (FMDatabase) -> Void
 
 /// This manages a serial queue and a SQLite database.
 /// It replaces RSDatabaseQueue, which is deprecated.
+/// Main-thread only.
 
 public final class DatabaseQueue {
 
 	/// Check to see if the queue is suspended. Read-only.
 	/// Calling suspend() and resume() will change the value of this property.
 	public var isSuspended: Bool {
+		precondition(Thread.isMainThread)
 		return _isSuspended
 	}
 
@@ -30,6 +32,7 @@ public final class DatabaseQueue {
 
 	/// When init returns, the database will not be suspended: it will be ready for database calls.
 	public init(databasePath: String, excludeFromBackup: Bool = false) {
+		precondition(Thread.isMainThread)
 		self.serialDispatchQueue = DispatchQueue(label: "DatabaseQueue - \(databasePath)")
 		self.databasePath = databasePath
 		self.database = FMDatabase(path: databasePath)!
@@ -51,6 +54,7 @@ public final class DatabaseQueue {
 	/// After calling suspend, if you call into the database before calling resume, the app will crash.
 	/// This is by design.
 	public func suspend() {
+		precondition(Thread.isMainThread)
 		guard !isSuspended else {
 			return
 		}
@@ -63,6 +67,7 @@ public final class DatabaseQueue {
 	/// Open the SQLite database. Allow database calls again.
 	/// This is also for iOS.
 	public func resume() {
+		precondition(Thread.isMainThread)
 		guard isSuspended else {
 			return
 		}
@@ -82,6 +87,7 @@ public final class DatabaseQueue {
 	/// the DatabaseBlock *and* depending on how many other calls have been
 	/// scheduled on the queue. Use sparingly — prefer async versions.
 	public func runInDatabaseSync(_ databaseBlock: DatabaseBlock) {
+		precondition(Thread.isMainThread)
 		serialDispatchQueue.sync {
 			self._runInDatabase(self.database, databaseBlock, false)
 		}
@@ -89,6 +95,7 @@ public final class DatabaseQueue {
 
 	/// Run a DatabaseBlock asynchronously.
 	public func runInDatabase(_ databaseBlock: @escaping DatabaseBlock) {
+		precondition(Thread.isMainThread)
 		serialDispatchQueue.async {
 			self._runInDatabase(self.database, databaseBlock, false)
 		}
@@ -97,6 +104,7 @@ public final class DatabaseQueue {
 	/// Run a DatabaseBlock wrapped in a transaction asynchronously.
 	/// Transactions help performance significantly when updating the database.
 	public func runInTransaction(_ databaseBlock: @escaping DatabaseBlock) {
+		precondition(Thread.isMainThread)
 		serialDispatchQueue.async {
 			self._runInDatabase(self.database, databaseBlock, true)
 		}
@@ -105,6 +113,7 @@ public final class DatabaseQueue {
 	/// Run all the lines that start with "create".
 	/// Use this to create tables, indexes, etc.
 	public func runCreateStatements(_ statements: String) {
+		precondition(Thread.isMainThread)
 		runInDatabase { database in
 			statements.enumerateLines { (line, stop) in
 				if line.lowercased().hasPrefix("create") {
@@ -121,6 +130,7 @@ public final class DatabaseQueue {
 	/// since the last vacuum() call. You almost certainly want to call
 	/// vacuumIfNeeded instead.
 	public func vacuum() {
+		precondition(Thread.isMainThread)
 		runInDatabase { database in
 			database.executeStatements("vacuum;")
 		}
@@ -129,6 +139,7 @@ public final class DatabaseQueue {
 	/// Vacuum the database if it’s been more than daysBetweenVacuums since the last vacuum.
 	/// Normally you would call this right after initing a DatabaseQueue.
 	public func vacuumIfNeeded(daysBetweenVacuums: Int) {
+		precondition(Thread.isMainThread)
 		let defaultsKey = "DatabaseQueue-LastVacuumDate-\(databasePath)"
 		let minimumVacuumInterval = TimeInterval(daysBetweenVacuums * (60 * 60 * 24)) // Doesn’t have to be precise
 		let now = Date()
