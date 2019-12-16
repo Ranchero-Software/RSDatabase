@@ -189,6 +189,7 @@ public final class DatabaseQueue {
 	/// Normally you would call this right after initing a DatabaseQueue.
 	///
 	/// - Returns: true if database will be vacuumed.
+	@discardableResult
 	public func vacuumIfNeeded(daysBetweenVacuums: Int) -> Bool {
 		precondition(Thread.isMainThread)
 		let defaultsKey = "DatabaseQueue-LastVacuumDate-\(databasePath)"
