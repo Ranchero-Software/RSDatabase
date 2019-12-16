@@ -9,13 +9,19 @@
 import Foundation
 
 public enum DatabaseError: Error {
-	case isSuspended
+	case isSuspended // On iOS, to support background refreshing, a database may be suspended.
 }
 
+/// Result type that provides an FMDatabase or a DatabaseError.
 public typealias DatabaseResult = Result<FMDatabase, DatabaseError>
 
 /// Block that executes database code or handles DatabaseQueueError.
 public typealias DatabaseBlock = (DatabaseResult) -> Void
+
+/// Completion block that provides an option DatabaseError.
+public typealias DatabaseCompletionBlock = (DatabaseError?) -> Void
+
+// MARK: - Extensions
 
 public extension DatabaseResult {
 	/// Convenience for getting the database from a DatabaseResult.
