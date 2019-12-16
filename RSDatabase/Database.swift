@@ -18,8 +18,14 @@ public typealias DatabaseResult = Result<FMDatabase, DatabaseError>
 /// Block that executes database code or handles DatabaseQueueError.
 public typealias DatabaseBlock = (DatabaseResult) -> Void
 
-/// Completion block that provides an option DatabaseError.
+/// Completion block that provides an optional DatabaseError.
 public typealias DatabaseCompletionBlock = (DatabaseError?) -> Void
+
+/// Result type for fetching an Int or getting a DatabaseError.
+public typealias DatabaseIntResult = Result<Int, DatabaseError>
+
+/// Completion block for DatabaseIntResult.
+public typealias DatabaseIntCompletionBlock = Result<DatabaseIntResult, DatabaseError>
 
 // MARK: - Extensions
 
