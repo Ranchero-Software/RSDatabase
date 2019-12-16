@@ -9,37 +9,6 @@
 import Foundation
 import SQLite3
 
-public enum DatabaseQueueError: Error {
-	case isSuspended
-}
-
-public typealias DatabaseQueueResult = Result<FMDatabase, DatabaseQueueError>
-
-public extension DatabaseQueueResult {
-	/// Convenience for getting the database from a DatabaseQueueResult.
-	var database: FMDatabase? {
-		switch self {
-		case .success(let database):
-			return database
-		case .failure:
-			return nil
-		}
-	}
-
-	/// Convenience for getting the error from a DatabaseQueueResult.
-	var error: DatabaseQueueError? {
-		switch self {
-		case .success:
-			return nil
-		case .failure(let error):
-			return error
-		}
-	}
-}
-
-/// Block that executes database code or handles DatabaseQueueError.
-public typealias DatabaseBlock = (DatabaseQueueResult) -> Void
-
 /// Manage a serial queue and a SQLite database.
 /// It replaces RSDatabaseQueue, which is deprecated.
 /// Main-thread only.
@@ -154,7 +123,7 @@ public final class DatabaseQueue {
 	/// Use this to create tables, indexes, etc.
 	public func runCreateStatements(_ statements: String) throws {
 		precondition(Thread.isMainThread)
-		var error: DatabaseQueueError? = nil
+		var error: DatabaseError? = nil
 		runInDatabaseSync { result in
 			switch result {
 			case .success(let database):
