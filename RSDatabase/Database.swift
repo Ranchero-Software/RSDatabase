@@ -25,7 +25,7 @@ public typealias DatabaseCompletionBlock = (DatabaseError?) -> Void
 public typealias DatabaseIntResult = Result<Int, DatabaseError>
 
 /// Completion block for DatabaseIntResult.
-public typealias DatabaseIntCompletionBlock = Result<DatabaseIntResult, DatabaseError>
+public typealias DatabaseIntCompletionBlock = (DatabaseIntResult) -> Void
 
 // MARK: - Extensions
 
