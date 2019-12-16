@@ -91,11 +91,11 @@ public extension DatabaseTable {
 
 	// MARK: Mapping
 
-	func mapResultSet<T>(_ resultSet: FMResultSet, _ callback: (_ resultSet: FMResultSet) -> T?) -> [T] {
+	func mapResultSet<T>(_ resultSet: FMResultSet, _ completion: (_ resultSet: FMResultSet) -> T?) -> [T] {
 
 		var objects = [T]()
 		while resultSet.next() {
-			if let obj = callback(resultSet) {
+			if let obj = completion(resultSet) {
 				objects += [obj]
 			}
 		}
@@ -118,11 +118,11 @@ public extension DatabaseTable {
 
 public extension FMResultSet {
 
-	func compactMap<T>(_ callback: (_ row: FMResultSet) -> T?) -> [T] {
+	func compactMap<T>(_ completion: (_ row: FMResultSet) -> T?) -> [T] {
 
 		var objects = [T]()
 		while next() {
-			if let obj = callback(self) {
+			if let obj = completion(self) {
 				objects += [obj]
 			}
 		}
@@ -130,9 +130,9 @@ public extension FMResultSet {
 		return objects
 	}
 
-	func mapToSet<T>(_ callback: (_ row: FMResultSet) -> T?) -> Set<T> {
+	func mapToSet<T>(_ completion: (_ row: FMResultSet) -> T?) -> Set<T> {
 
-		return Set(compactMap(callback))
+		return Set(compactMap(completion))
 	}
 }
 
