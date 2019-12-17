@@ -33,11 +33,17 @@ public final class DatabaseQueue {
 	private let database: FMDatabase
 	private let databasePath: String
 	private let serialDispatchQueue: DispatchQueue
+	private let targetDispatchQueue: DispatchQueue
 
 	/// When init returns, the database will not be suspended: it will be ready for database calls.
 	public init(databasePath: String) {
 		precondition(Thread.isMainThread)
-		self.serialDispatchQueue = DispatchQueue(label: "DatabaseQueue - \(databasePath)")
+		
+		self.serialDispatchQueue = DispatchQueue(label: "DatabaseQueue (Serial) - \(databasePath)", attributes: .initiallyInactive)
+		self.targetDispatchQueue = DispatchQueue(label: "DatabaseQueue (Target) - \(databasePath)")
+		self.serialDispatchQueue.setTarget(queue: self.targetDispatchQueue)
+		self.serialDispatchQueue.activate()
+		
 		self.databasePath = databasePath
 		self.database = FMDatabase(path: databasePath)!
 		openDatabase()
@@ -57,10 +63,18 @@ public final class DatabaseQueue {
 	public func suspend() {
 		#if os(iOS)
 		precondition(Thread.isMainThread)
-		runInDatabaseSync{ result in
+		
+		func suspendDatabase(_ result: DatabaseResult) {
 			result.database?.close()
 			_isSuspended = true
+			serialDispatchQueue.resume()
 		}
+
+		serialDispatchQueue.suspend()
+		targetDispatchQueue.sync {
+			self._runInDatabase(self.database, suspendDatabase, false)
+		}
+
 		#endif
 	}
 
