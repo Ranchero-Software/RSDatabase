@@ -9,6 +9,8 @@
 
 #import "FMResultSet.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface FMResultSet (RSExtras)
 
 
@@ -17,3 +19,5 @@
 - (NSSet *)rs_setForSingleColumnResultSet;
 
 @end
+
+NS_ASSUME_NONNULL_END

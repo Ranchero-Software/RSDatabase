@@ -8,6 +8,7 @@
 
 @import Foundation;
 
+NS_ASSUME_NONNULL_BEGIN
 
 @interface NSString (QSDatabase)
 
@@ -15,7 +16,7 @@
 /*Returns @"(?, ?, ?)" -- where number of ? spots is specified by numberOfValues.
  numberOfValues should be greater than 0. Triggers an NSParameterAssert if not.*/
 
-+ (NSString *)rs_SQLValueListWithPlaceholders:(NSUInteger)numberOfValues;
++ (nullable NSString *)rs_SQLValueListWithPlaceholders:(NSUInteger)numberOfValues;
 
 
 /*Returns @"(someColumn, anotherColumm, thirdColumn)" -- using passed-in keys.
@@ -31,3 +32,5 @@
 
 
 @end
+
+NS_ASSUME_NONNULL_END
