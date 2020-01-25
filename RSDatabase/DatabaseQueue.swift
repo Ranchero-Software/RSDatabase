@@ -34,6 +34,9 @@ public final class DatabaseQueue {
 	private let databasePath: String
 	private let serialDispatchQueue: DispatchQueue
 	private let targetDispatchQueue: DispatchQueue
+	#if os(iOS)
+	private let databaseLock = NSLock()
+	#endif
 
 	/// When init returns, the database will not be suspended: it will be ready for database calls.
 	public init(databasePath: String) {
@@ -71,7 +74,9 @@ public final class DatabaseQueue {
 
 		serialDispatchQueue.suspend()
 		targetDispatchQueue.sync {
+			lockDatabase()
 			database.close()
+			unlockDatabase()
 		}
 		serialDispatchQueue.resume()
 		#endif
@@ -89,7 +94,9 @@ public final class DatabaseQueue {
 		serialDispatchQueue.suspend()
 		targetDispatchQueue.sync {
 			if _isSuspended {
+				lockDatabase()
 				openDatabase()
+				unlockDatabase()
 				_isSuspended = false
 			}
 		}
@@ -202,8 +209,26 @@ public final class DatabaseQueue {
 
 private extension DatabaseQueue {
 
+	func lockDatabase() {
+		#if os(iOS)
+		databaseLock.lock()
+		#endif
+	}
+
+	func unlockDatabase() {
+		#if os(iOS)
+		databaseLock.unlock()
+		#endif
+	}
+
 	func _runInDatabase(_ database: FMDatabase, _ databaseBlock: DatabaseBlock, _ useTransaction: Bool) {
+		lockDatabase()
+		defer {
+			unlockDatabase()
+		}
+
 		precondition(!isCallingDatabase)
+
 		isCallingDatabase = true
 		autoreleasepool {
 			if _isSuspended {
@@ -228,3 +253,4 @@ private extension DatabaseQueue {
 		database.setShouldCacheStatements(true)
 	}
 }
+
