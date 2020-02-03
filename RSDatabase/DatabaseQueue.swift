@@ -73,17 +73,19 @@ public final class DatabaseQueue {
 		_isSuspended = true
 
 		serialDispatchQueue.suspend()
-		targetDispatchQueue.sync {
+		targetDispatchQueue.async {
 			lockDatabase()
 			database.close()
 			unlockDatabase()
+			DispatchQueue.main.async {
+				serialDispatchQueue.resume()
+			}
 		}
-		serialDispatchQueue.resume()
 		#endif
 	}
 
 	/// Open the SQLite database. Allow database calls again.
-	/// This is also for iOS.
+	/// This is also for iOS only.
 	public func resume() {
 		#if os(iOS)
 		precondition(Thread.isMainThread)
