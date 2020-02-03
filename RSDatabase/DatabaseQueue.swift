@@ -74,11 +74,11 @@ public final class DatabaseQueue {
 
 		serialDispatchQueue.suspend()
 		targetDispatchQueue.async {
-			lockDatabase()
-			database.close()
-			unlockDatabase()
+			self.lockDatabase()
+			self.database.close()
+			self.unlockDatabase()
 			DispatchQueue.main.async {
-				serialDispatchQueue.resume()
+				self.serialDispatchQueue.resume()
 			}
 		}
 		#endif
