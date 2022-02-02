@@ -26,7 +26,7 @@ public struct ODBPath: Hashable {
 	/// Root table name. Constant.
 	public static let rootTableName = "root"
 
-	/// Elements of the path minus any unneccessary initial "root" element.
+	/// Elements of the path minus any unnecessary initial "root" element.
 	public let elements: [String]
 
 	/// ODBPath that represents the root table.
