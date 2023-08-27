@@ -11,8 +11,7 @@ import SQLite3
 import RSDatabaseObjC
 
 /// Manage a serial queue and a SQLite database.
-/// It replaces RSDatabaseQueue, which is deprecated.
-/// Main-thread only.
+///
 /// Important note: on iOS, the queue can be suspended
 /// in order to support background refreshing.
 public final class DatabaseQueue {
@@ -22,7 +21,6 @@ public final class DatabaseQueue {
 	/// This will return true only on iOS — on macOS it’s always false.
 	public var isSuspended: Bool {
 		#if os(iOS)
-		precondition(Thread.isMainThread)
 		return _isSuspended
 		#else
 		return false
@@ -41,8 +39,6 @@ public final class DatabaseQueue {
 
 	/// When init returns, the database will not be suspended: it will be ready for database calls.
 	public init(databasePath: String) {
-		precondition(Thread.isMainThread)
-
 		self.serialDispatchQueue = DispatchQueue(label: "DatabaseQueue (Serial) - \(databasePath)", attributes: .initiallyInactive)
 		self.targetDispatchQueue = DispatchQueue(label: "DatabaseQueue (Target) - \(databasePath)")
 		self.serialDispatchQueue.setTarget(queue: self.targetDispatchQueue)
@@ -66,7 +62,6 @@ public final class DatabaseQueue {
 	/// On Mac, suspend() and resume() are no-ops, since there isn’t a need for them.
 	public func suspend() {
 		#if os(iOS)
-		precondition(Thread.isMainThread)
 		guard !_isSuspended else {
 			return
 		}
@@ -89,7 +84,6 @@ public final class DatabaseQueue {
 	/// This is also for iOS only.
 	public func resume() {
 		#if os(iOS)
-		precondition(Thread.isMainThread)
 		guard _isSuspended else {
 			return
 		}
@@ -114,7 +108,6 @@ public final class DatabaseQueue {
 	/// the DatabaseBlock *and* depending on how many other calls have been
 	/// scheduled on the queue. Use sparingly — prefer async versions.
 	public func runInDatabaseSync(_ databaseBlock: DatabaseBlock) {
-		precondition(Thread.isMainThread)
 		serialDispatchQueue.sync {
 			self._runInDatabase(self.database, databaseBlock, false)
 		}
@@ -122,7 +115,6 @@ public final class DatabaseQueue {
 
 	/// Run a DatabaseBlock asynchronously.
 	public func runInDatabase(_ databaseBlock: @escaping DatabaseBlock) {
-		precondition(Thread.isMainThread)
 		serialDispatchQueue.async {
 			self._runInDatabase(self.database, databaseBlock, false)
 		}
@@ -133,7 +125,6 @@ public final class DatabaseQueue {
 	/// Nevertheless, it’s best to avoid this because it will block the main thread —
 	/// prefer the async `runInTransaction` instead.
 	public func runInTransactionSync(_ databaseBlock: @escaping DatabaseBlock) {
-		precondition(Thread.isMainThread)
 		serialDispatchQueue.sync {
 			self._runInDatabase(self.database, databaseBlock, true)
 		}
@@ -142,7 +133,6 @@ public final class DatabaseQueue {
 	/// Run a DatabaseBlock wrapped in a transaction asynchronously.
 	/// Transactions help performance significantly when updating the database.
 	public func runInTransaction(_ databaseBlock: @escaping DatabaseBlock) {
-		precondition(Thread.isMainThread)
 		serialDispatchQueue.async {
 			self._runInDatabase(self.database, databaseBlock, true)
 		}
@@ -151,7 +141,6 @@ public final class DatabaseQueue {
 	/// Run all the lines that start with "create".
 	/// Use this to create tables, indexes, etc.
 	public func runCreateStatements(_ statements: String) throws {
-		precondition(Thread.isMainThread)
 		var error: DatabaseError? = nil
 		runInDatabaseSync { result in
 			switch result {
@@ -177,7 +166,6 @@ public final class DatabaseQueue {
 	/// since the last vacuum() call. You almost certainly want to call
 	/// vacuumIfNeeded instead.
 	public func vacuum() {
-		precondition(Thread.isMainThread)
 		runInDatabase { result in
 			result.database?.executeStatements("vacuum;")
 		}
@@ -189,7 +177,6 @@ public final class DatabaseQueue {
 	/// - Returns: true if database will be vacuumed.
 	@discardableResult
 	public func vacuumIfNeeded(daysBetweenVacuums: Int) -> Bool {
-		precondition(Thread.isMainThread)
 		let defaultsKey = "DatabaseQueue-LastVacuumDate-\(databasePath)"
 		let minimumVacuumInterval = TimeInterval(daysBetweenVacuums * (60 * 60 * 24)) // Doesn’t have to be precise
 		let now = Date()
